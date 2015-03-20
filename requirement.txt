@@ -1,0 +1,6 @@
+flask
+Flask-SQLAlchemy
+Flask-Migrate
+mysql-python
+flask-restful
+flask-cors
