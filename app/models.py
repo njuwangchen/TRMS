@@ -214,3 +214,96 @@ class Code(db.Model):
         self.size = size
         self.uri = uri
         self.language = language
+
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+
+    commenter_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    commenter = db.relationship('User', backref=db.backref('comments', lazy='dynamic'))
+
+    resource_id = db.Column(db.Integer, nullable=False)
+    type = db.Column(db.Integer, nullable=False)
+
+    content = db.Column(db.Text)
+    star = db.Column(db.Integer, nullable=False)
+    comment_time = db.Column(db.DateTime, nullable=False)
+
+    def __init__(self, commenter, comment_time, star, resource_id, type, content=''):
+        self.commenter = commenter
+        self.comment_time = comment_time
+        self.star = star
+        self.resource_id = resource_id
+        self.type = type
+        self.content = content
+
+class Comment_attribute(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+
+    comment_id = db.Column(db.Integer, db.ForeignKey('comment.id'), nullable=False)
+    comment = db.relationship('Comment', backref=db.backref('attribute_value_set', lazy='dynamic'))
+
+    attribute_id = db.Column(db.Integer, db.ForeignKey('attribute.id'), nullable=False)
+    attribute = db.relationship('Attribute', backref=db.backref('values', lazy='dynamic'))
+
+    value = db.Column(db.Text)
+
+    def __init__(self, comment, attribute, value=''):
+        self.comment = comment
+        self.attribute = attribute
+        self.value = value
+
+class Attribute(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), nullable=False)
+    type = db.Column(db.Integer, nullable=False)
+
+    def __init__(self, name, type):
+        self.name = name
+        self.type = type
+
+class Tag(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), nullable=False)
+
+    def __init__(self, name):
+        self.name = name
+
+class Tag_resource(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+
+    resource_id = db.Column(db.Integer, nullable=False)
+    type = db.Column(db.Integer, nullable=False)
+
+    tag_id = db.Column(db.Integer, db.ForeignKey('tag.id'), nullable=False)
+    tag = db.relationship('Tag', backref=db.backref('resources', lazy='dynamic'))
+
+    def __init__(self, resource_id, type, tag):
+        self.resource_id = resource_id
+        self.type = type
+        self.tag = tag
+
+class Favorite(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+
+    user_id = db.Column(db.Integer, nullable=False)
+    user = db.relationship('User', backref=db.backref('favorite_dirs', lazy='dynamic'))
+
+    name = db.Column(db.String(64), nullable=False)
+
+    def __init__(self, user, name):
+        self.user = user
+        self.name = name
+
+class Favorite_resource(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+
+    resource_id = db.Column(db.Integer, nullable=False)
+    type = db.Column(db.Integer, nullable=False)
+
+    favorite_id = db.Column(db.Integer, db.ForeignKey('favorite.id'), nullable=False)
+    favorite_dir = db.relationship('Favorite', backref=db.backref('resources', lazy='dynamic'))
+
+    def __init__(self, resource_id, type, favorite_dir):
+        self.resource_id = resource_id
+        self.type = type
+        self.favorite_dir = favorite_dir
