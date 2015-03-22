@@ -14,3 +14,4 @@ cor = CORS(app, allow_headers='Content-Type')
 api = Api(app)
 
 from app import models
+from app import comment_views
