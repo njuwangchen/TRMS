@@ -17,7 +17,7 @@ data_set_literature = db.Table('data_set_literature',
                                db.Column('data_set_id', db.Integer, db.ForeignKey('data_set.id')),
                                db.Column('literature_id', db.Integer, db.ForeignKey('literature_meta.id')))
 
-code_literature = db.Table('code_literature',
+Code_literature = db.Table('code_literature',
                                db.Column('code_id', db.Integer, db.ForeignKey('code.id')),
                                db.Column('literature_id', db.Integer, db.ForeignKey('literature_meta.id')))
 class Cite(db.Model):
@@ -199,7 +199,7 @@ class Code(db.Model):
 
     description = db.Column(db.Text)
     size = db.Column(db.Float)
-    uri = db.Column(db.String(256))
+    uri = db.Column(db.String(256),nullable=False)
 
     language = db.Column(db.String(64))
 
