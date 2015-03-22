@@ -31,10 +31,10 @@ class Cite(db.Model):
     cite_type_id = db.Column(db.Integer, db.ForeignKey('type.id'), nullable=False)
     type = db.relationship('Type', backref=db.backref('cites', lazy='dynamic'))
 
-    def __init__(self, literature, cited, type):
-        self.literature = literature
-        self.cited = cited
-        self.type = type
+    def __init__(self, literature_id, cited_id, cite_type_id):
+        self.literature_id = literature_id
+        self.cited_id = cited_id
+        self.cite_type_id = cite_type_id
 
 class Literature_meta(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -63,11 +63,11 @@ class Literature_meta(db.Model):
     codes = db.relationship('Code', secondary=code_literature, backref=db.backref('literatures', lazy='dynamic'), lazy='dynamic')
 
 
-    def __init__(self, title, creator, create_time, type, abstract='', author='', published_year=0, key_words='', link='', pages=0, uri='', updater=None, update_time=None):
+    def __init__(self, title, creator_id, create_time, literature_type_id, abstract='', author='', published_year=0, key_words='', link='', pages=0, uri='', updater_id=None, update_time=None):
         self.title = title
-        self.creator = creator
+        self.creator_id = creator_id
         self.create_time = create_time
-        self.type = type
+        self.literature_type_id = literature_type_id
         self.abstract = abstract
         self.author = author
         self.published_year = published_year
@@ -75,7 +75,7 @@ class Literature_meta(db.Model):
         self.link = link
         self.pages = pages
         self.uri = uri
-        self.updater = updater
+        self.updater_id = updater_id
         self.update_time = update_time
 
 class Type(db.Model):
@@ -107,12 +107,12 @@ class Video(db.Model):
     size = db.Column(db.Float)
     uri = db.Column(db.String(256))
 
-    def __init__(self, title, creator, create_time, literature=None, updater=None, update_time=None, description='', size=0, uri=''):
+    def __init__(self, title, creator_id, create_time, literature_id, updater_id=None, update_time=None, description='', size=0, uri=''):
         self.title = title
-        self.creator = creator
+        self.creator_id = creator_id
         self.create_time = create_time
-        self.literature = literature
-        self.updater = updater
+        self.literature_id = literature_id
+        self.updater_id = updater_id
         self.update_time = update_time
         self.description = description
         self.size = size
@@ -140,12 +140,12 @@ class Ppt(db.Model):
 
     pages = db.Column(db.Integer)
 
-    def __init__(self, title, creator, create_time, literature=None, updater=None, update_time=None, description='', size=0, uri='', pages=0):
+    def __init__(self, title, creator_id, create_time, literature_id, updater_id=None, update_time=None, description='', size=0, uri='', pages=0):
         self.title = title
-        self.creator = creator
+        self.creator_id = creator_id
         self.create_time = create_time
-        self.literature = literature
-        self.updater = updater
+        self.literature_id = literature_id
+        self.updater_id = updater_id
         self.update_time = update_time
         self.description = description
         self.size = size
@@ -173,12 +173,12 @@ class Data_set(db.Model):
     type = db.relationship('Type', backref=db.backref('data_sets', lazy='dynamic'))
 
 
-    def __init__(self, title, creator, create_time, type, updater=None, update_time=None, description='', size=0, uri=''):
+    def __init__(self, title, creator_id, create_time, data_set_type_id, updater_id=None, update_time=None, description='', size=0, uri=''):
         self.title = title
-        self.creator = creator
+        self.creator_id = creator_id
         self.create_time = create_time
-        self.type = type
-        self.updater = updater
+        self.data_set_type_id = data_set_type_id
+        self.updater_id = updater_id
         self.update_time = update_time
         self.description = description
         self.size = size
@@ -203,12 +203,12 @@ class Code(db.Model):
 
     language = db.Column(db.String(64))
 
-    def __init__(self, title, creator, create_time, literature=None, updater=None, update_time=None, description='', size=0, uri='', language=''):
+    def __init__(self, title, creator_id, create_time, literature_id=None, updater_id=None, update_time=None, description='', size=0, uri='', language=''):
         self.title = title
-        self.creator = creator
+        self.creator_id = creator_id
         self.create_time = create_time
-        self.literature = literature
-        self.updater = updater
+        self.literature_id = literature_id
+        self.updater_id = updater_id
         self.update_time = update_time
         self.description = description
         self.size = size
@@ -228,8 +228,8 @@ class Comment(db.Model):
     star = db.Column(db.Integer, nullable=False)
     comment_time = db.Column(db.DateTime, nullable=False)
 
-    def __init__(self, commenter, comment_time, star, resource_id, type, content=''):
-        self.commenter = commenter
+    def __init__(self, commenter_id, comment_time, star, resource_id, type, content=''):
+        self.commenter_id = commenter_id
         self.comment_time = comment_time
         self.star = star
         self.resource_id = resource_id
@@ -247,9 +247,9 @@ class Comment_attribute(db.Model):
 
     value = db.Column(db.Text)
 
-    def __init__(self, comment, attribute, value=''):
-        self.comment = comment
-        self.attribute = attribute
+    def __init__(self, comment_id, attribute_id, value=''):
+        self.comment_id = comment_id
+        self.attribute_id = attribute_id
         self.value = value
 
 class Attribute(db.Model):
@@ -277,10 +277,10 @@ class Tag_resource(db.Model):
     tag_id = db.Column(db.Integer, db.ForeignKey('tag.id'), nullable=False)
     tag = db.relationship('Tag', backref=db.backref('resources', lazy='dynamic'))
 
-    def __init__(self, resource_id, type, tag):
+    def __init__(self, resource_id, type, tag_id):
         self.resource_id = resource_id
         self.type = type
-        self.tag = tag
+        self.tag_id = tag_id
 
 class Favorite(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -290,8 +290,8 @@ class Favorite(db.Model):
 
     name = db.Column(db.String(64), nullable=False)
 
-    def __init__(self, user, name):
-        self.user = user
+    def __init__(self, user_id, name):
+        self.user_id = user_id
         self.name = name
 
 class Favorite_resource(db.Model):
@@ -303,7 +303,7 @@ class Favorite_resource(db.Model):
     favorite_id = db.Column(db.Integer, db.ForeignKey('favorite.id'), nullable=False)
     favorite_dir = db.relationship('Favorite', backref=db.backref('resources', lazy='dynamic'))
 
-    def __init__(self, resource_id, type, favorite_dir):
+    def __init__(self, resource_id, type, favorite_id):
         self.resource_id = resource_id
         self.type = type
-        self.favorite_dir = favorite_dir
+        self.favorite_id = favorite_id
