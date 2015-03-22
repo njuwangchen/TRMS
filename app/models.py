@@ -203,7 +203,7 @@ class Code(db.Model):
 
     language = db.Column(db.String(64))
 
-    def __init__(self, title, creator_id, create_time, literature_id=None, updater_id=None, update_time=None, description='', size=0, uri='', language=''):
+    def __init__(self, title, creator_id, create_time, updater_id=None, update_time=None, description='', size=0, uri='', language=''):
         self.title = title
         self.creator_id = creator_id
         self.create_time = create_time
