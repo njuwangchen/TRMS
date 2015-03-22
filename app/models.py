@@ -28,7 +28,7 @@ class Cite(db.Model):
     cited_id = db.Column(db.Integer, db.ForeignKey('literature_meta.id'), nullable=False)
     cited = db.relationship('Literature_meta', primaryjoin='Cite.cited_id==Literature_meta.id',
                             backref=db.backref('cited_set', lazy='dynamic'))
-    cite_type_id = db.Column(db.Integer, nullable=False)
+    cite_type_id = db.Column(db.Integer, db.ForeignKey('type.id'), nullable=False)
     type = db.relationship('Type', backref=db.backref('cites', lazy='dynamic'))
 
     def __init__(self, literature, cited, type):
@@ -48,10 +48,10 @@ class Literature_meta(db.Model):
     uri = db.Column(db.String(256))
 
     creator_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    creator = db.relationship('User', backref=db.backref('literatures_create', lazy='dynamic'))
+    creator = db.relationship('User', backref=db.backref('literatures_create', lazy='dynamic'), foreign_keys = [creator_id])
 
     updater_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    updater = db.relationship('User', backref=db.backref('literatures_update', lazy='dynamic'))
+    updater = db.relationship('User', backref=db.backref('literatures_update', lazy='dynamic'), foreign_keys = [updater_id])
 
     literature_type_id = db.Column(db.Integer, db.ForeignKey('type.id'), nullable=False)
     type = db.relationship('Type', backref=db.backref('literatures', lazy='dynamic'))
@@ -92,13 +92,13 @@ class Video(db.Model):
     title = db.Column(db.String(256), nullable=False)
 
     literature_id = db.Column(db.Integer, db.ForeignKey('literature_meta.id'))
-    literature = db.relationship('Literature', backref=db.backref('Video', lazy='dynamic'))
+    literature = db.relationship('Literature_meta', backref=db.backref('Video', lazy='dynamic'))
 
     creator_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    creator = db.relationship('User', backref=db.backref('videos_create', lazy='dynamic'))
+    creator = db.relationship('User', backref=db.backref('videos_create', lazy='dynamic'), foreign_keys=[creator_id])
 
     updater_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    updater = db.relationship('User', backref=db.backref('videos_update', lazy='dynamic'))
+    updater = db.relationship('User', backref=db.backref('videos_update', lazy='dynamic'), foreign_keys=[updater_id])
 
     create_time = db.Column(db.DateTime, nullable=False)
     update_time = db.Column(db.DateTime)
@@ -123,13 +123,13 @@ class Ppt(db.Model):
     title = db.Column(db.String(256), nullable=False)
 
     literature_id = db.Column(db.Integer, db.ForeignKey('literature_meta.id'))
-    literature = db.relationship('Literature', backref=db.backref('Ppt', lazy='dynamic'))
+    literature = db.relationship('Literature_meta', backref=db.backref('Ppt', lazy='dynamic'))
 
     creator_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    creator = db.relationship('User', backref=db.backref('ppts_create', lazy='dynamic'))
+    creator = db.relationship('User', backref=db.backref('ppts_create', lazy='dynamic'), foreign_keys=[creator_id])
 
     updater_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    updater = db.relationship('User', backref=db.backref('ppts_update', lazy='dynamic'))
+    updater = db.relationship('User', backref=db.backref('ppts_update', lazy='dynamic'), foreign_keys=[updater_id])
 
     create_time = db.Column(db.DateTime, nullable=False)
     update_time = db.Column(db.DateTime)
@@ -157,10 +157,10 @@ class Data_set(db.Model):
     title = db.Column(db.String(256), nullable=False)
 
     creator_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    creator = db.relationship('User', backref=db.backref('data_sets_create', lazy='dynamic'))
+    creator = db.relationship('User', backref=db.backref('data_sets_create', lazy='dynamic'), foreign_keys=[creator_id])
 
     updater_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    updater = db.relationship('User', backref=db.backref('data_sets_update', lazy='dynamic'))
+    updater = db.relationship('User', backref=db.backref('data_sets_update', lazy='dynamic'), foreign_keys=[updater_id])
 
     create_time = db.Column(db.DateTime, nullable=False)
     update_time = db.Column(db.DateTime)
@@ -189,10 +189,10 @@ class Code(db.Model):
     title = db.Column(db.String(256), nullable=False)
 
     creator_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    creator = db.relationship('User', backref=db.backref('codes_create', lazy='dynamic'))
+    creator = db.relationship('User', backref=db.backref('codes_create', lazy='dynamic'), foreign_keys=[creator_id])
 
     updater_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    updater = db.relationship('User', backref=db.backref('codes_update', lazy='dynamic'))
+    updater = db.relationship('User', backref=db.backref('codes_update', lazy='dynamic'), foreign_keys=[updater_id])
 
     create_time = db.Column(db.DateTime, nullable=False)
     update_time = db.Column(db.DateTime)
@@ -285,7 +285,7 @@ class Tag_resource(db.Model):
 class Favorite(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
-    user_id = db.Column(db.Integer, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user = db.relationship('User', backref=db.backref('favorite_dirs', lazy='dynamic'))
 
     name = db.Column(db.String(64), nullable=False)
