@@ -207,7 +207,6 @@ class Code(db.Model):
         self.title = title
         self.creator_id = creator_id
         self.create_time = create_time
-        self.literature_id = literature_id
         self.updater_id = updater_id
         self.update_time = update_time
         self.description = description
