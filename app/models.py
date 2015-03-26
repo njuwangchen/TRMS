@@ -14,12 +14,12 @@ class User(db.Model):
         self.privilege = privilege
 
 data_set_literature = db.Table('data_set_literature',
-                               db.Column('data_set_id', db.Integer, db.ForeignKey('data_set.id')),
-                               db.Column('literature_id', db.Integer, db.ForeignKey('literature_meta.id')))
+                               db.Column('data_set_id', db.Integer, db.ForeignKey('data_set.id'), primary_key=True),
+                               db.Column('literature_id', db.Integer, db.ForeignKey('literature_meta.id'), primary_key=True))
 
 code_literature = db.Table('code_literature',
-                               db.Column('code_id', db.Integer, db.ForeignKey('code.id')),
-                               db.Column('literature_id', db.Integer, db.ForeignKey('literature_meta.id')))
+                               db.Column('code_id', db.Integer, db.ForeignKey('code.id'), primary_key=True),
+                               db.Column('literature_id', db.Integer, db.ForeignKey('literature_meta.id'), primary_key=True))
 class Cite(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     literature_id = db.Column(db.Integer, db.ForeignKey('literature_meta.id'), nullable=False)
@@ -227,12 +227,15 @@ class Comment(db.Model):
     star = db.Column(db.Integer, nullable=False)
     comment_time = db.Column(db.DateTime, nullable=False)
 
-    def __init__(self, commenter_id, comment_time, star, resource_id, type, content=''):
+    isSimple = db.Column(db.Integer, nullable=False)
+
+    def __init__(self, commenter_id, comment_time, star, resource_id, type, isSimple, content=''):
         self.commenter_id = commenter_id
         self.comment_time = comment_time
         self.star = star
         self.resource_id = resource_id
         self.type = type
+        self.isSimple = isSimple
         self.content = content
 
 class Attribute(db.Model):
