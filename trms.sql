@@ -11,7 +11,7 @@
  Target Server Version : 50623
  File Encoding         : utf-8
 
- Date: 03/24/2015 21:28:50 PM
+ Date: 03/27/2015 01:48:53 AM
 */
 
 SET NAMES utf8;
@@ -101,13 +101,13 @@ COMMIT;
 -- ----------------------------
 DROP TABLE IF EXISTS `code_literature`;
 CREATE TABLE `code_literature` (
-	`code_id` int(11) DEFAULT NULL,
-	`literature_id` int(11) DEFAULT NULL,
+	`code_id` int(11) NOT NULL DEFAULT 0,
+	`literature_id` int(11) NOT NULL DEFAULT 0,
+	PRIMARY KEY (`code_id`, `literature_id`),
 	CONSTRAINT `code_literature_ibfk_1` FOREIGN KEY (`code_id`) REFERENCES `code` (`id`),
 	CONSTRAINT `code_literature_ibfk_2` FOREIGN KEY (`literature_id`) REFERENCES `literature_meta` (`id`),
-	INDEX `code_id` (`code_id`) comment '',
 	INDEX `literature_id` (`literature_id`) comment ''
-) ENGINE=`InnoDB` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci ROW_FORMAT=COMPACT COMMENT='' CHECKSUM=0 DELAY_KEY_WRITE=0;
+) ENGINE=`InnoDB` DEFAULT CHARACTER SET utf8 COLLATE utf8_bin ROW_FORMAT=COMPACT COMMENT='' CHECKSUM=0 DELAY_KEY_WRITE=0;
 
 -- ----------------------------
 --  Records of `code_literature`
@@ -162,13 +162,13 @@ CREATE TABLE `data_set` (
 	INDEX `creator_id` (`creator_id`) comment '',
 	INDEX `data_set_type_id` (`data_set_type_id`) comment '',
 	INDEX `updater_id` (`updater_id`) comment ''
-) ENGINE=`InnoDB` AUTO_INCREMENT=2 DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci ROW_FORMAT=COMPACT COMMENT='' CHECKSUM=0 DELAY_KEY_WRITE=0;
+) ENGINE=`InnoDB` AUTO_INCREMENT=3 DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci ROW_FORMAT=COMPACT COMMENT='' CHECKSUM=0 DELAY_KEY_WRITE=0;
 
 -- ----------------------------
 --  Records of `data_set`
 -- ----------------------------
 BEGIN;
-INSERT INTO `data_set` VALUES ('1', 'caltch101', '1', '1', '2015-03-24 21:16:52', '2015-03-24 21:16:55', 'image set', '3', 'http://iamcaltech101', '4');
+INSERT INTO `data_set` VALUES ('1', 'caltch101', '1', '1', '2015-03-24 21:16:52', '2015-03-24 21:16:55', 'image set', '3', 'http://iamcaltech101', '4'), ('2', 'nihao', '1', null, '2015-03-09 21:00:20', null, '', '0', '', '1');
 COMMIT;
 
 -- ----------------------------

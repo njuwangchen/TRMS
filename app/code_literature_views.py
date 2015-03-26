@@ -4,7 +4,6 @@ from app import db, api
 from flask.ext.restful import reqparse, abort, Resource, fields, marshal_with, marshal
 from models import *
 from code_views import code_fields
-from flask import jsonify
 
 
 code_literature_fields={

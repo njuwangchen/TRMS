@@ -15,7 +15,7 @@ data_set_literature_fields = {
 class data_set_literatureDel(Resource):
     def __init__(self):
         self.parser = reqparse.RequestParser()
-        self.parser.add_argument('code_id', type=int, required=True,location='json')
+        self.parser.add_argument('data_set_id', type=int, required=True,location='json')
         self.parser.add_argument('literature_id', type=int, required=True, location='json')
         super(data_set_literatureDel, self).__init__()
 
@@ -68,5 +68,5 @@ class data_set_literatureQueryApi(Resource):
         else:
             abort(404, message='No data_set_literature at all')
 
-api.add_resource(data_set_literatureDel, '/api/v1/data_set_literature/', endpoint='data_set_literature')
-api.add_resource(data_set_literatureQueryApi, '/api/v1/data_set_literature/query', endpoint='data_set_literatureQuery')
+api.add_resource(data_set_literatureDel, '/api/v1/data_set_literatures/', endpoint='data_set_literature')
+api.add_resource(data_set_literatureQueryApi, '/api/v1/data_set_literatures/query', endpoint='data_set_literatureQuery')
