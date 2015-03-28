@@ -2,6 +2,7 @@ __author__ = 'ClarkWong'
 
 from app import db
 
+
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20), nullable=False)
@@ -13,13 +14,18 @@ class User(db.Model):
         self.password = password
         self.privilege = privilege
 
+
 data_set_literature = db.Table('data_set_literature',
                                db.Column('data_set_id', db.Integer, db.ForeignKey('data_set.id'), primary_key=True),
-                               db.Column('literature_id', db.Integer, db.ForeignKey('literature_meta.id'), primary_key=True))
+                               db.Column('literature_id', db.Integer, db.ForeignKey('literature_meta.id'),
+                                         primary_key=True))
 
 code_literature = db.Table('code_literature',
-                               db.Column('code_id', db.Integer, db.ForeignKey('code.id'), primary_key=True),
-                               db.Column('literature_id', db.Integer, db.ForeignKey('literature_meta.id'), primary_key=True))
+                           db.Column('code_id', db.Integer, db.ForeignKey('code.id'), primary_key=True),
+                           db.Column('literature_id', db.Integer, db.ForeignKey('literature_meta.id'),
+                                     primary_key=True))
+
+
 class Cite(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     literature_id = db.Column(db.Integer, db.ForeignKey('literature_meta.id'), nullable=False)
@@ -35,6 +41,7 @@ class Cite(db.Model):
         self.literature_id = literature_id
         self.cited_id = cited_id
         self.cite_type_id = cite_type_id
+
 
 class Literature_meta(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -67,10 +74,12 @@ class Literature_meta(db.Model):
     uri = db.Column(db.String(256))
 
     creator_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    creator = db.relationship('User', backref=db.backref('literatures_create', lazy='dynamic'), foreign_keys = [creator_id])
+    creator = db.relationship('User', backref=db.backref('literatures_create', lazy='dynamic'),
+                              foreign_keys=[creator_id])
 
     updater_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    updater = db.relationship('User', backref=db.backref('literatures_update', lazy='dynamic'), foreign_keys = [updater_id])
+    updater = db.relationship('User', backref=db.backref('literatures_update', lazy='dynamic'),
+                              foreign_keys=[updater_id])
 
     literature_type_id = db.Column(db.Integer, db.ForeignKey('type.id'), nullable=False)
     type = db.relationship('Type', backref=db.backref('literatures', lazy='dynamic'))
@@ -78,11 +87,16 @@ class Literature_meta(db.Model):
     create_time = db.Column(db.DateTime, nullable=False)
     update_time = db.Column(db.DateTime)
 
-    data_sets = db.relationship('Data_set', secondary=data_set_literature, backref=db.backref('literatures', lazy='dynamic'), lazy='dynamic')
-    codes = db.relationship('Code', secondary=code_literature, backref=db.backref('literatures', lazy='dynamic'), lazy='dynamic')
+    data_sets = db.relationship('Data_set', secondary=data_set_literature,
+                                backref=db.backref('literatures', lazy='dynamic'), lazy='dynamic')
+    codes = db.relationship('Code', secondary=code_literature, backref=db.backref('literatures', lazy='dynamic'),
+                            lazy='dynamic')
 
 
-    def __init__(self, title, creator_id, create_time, literature_type_id, titleCN='', abstract='', abstractCN='', author='', authorCN='', published_year=0, publisher='', publisherCN='', volume=0, issue=0, location='', institute='', instructor='',  key_words='', key_words_CN='', language='', pages=0, section=0, edition='', press='', editor='', ISBN='', ISSN='', DOI='', uri='', updater_id=None, update_time=None):
+    def __init__(self, title, creator_id, create_time, literature_type_id, titleCN='', abstract='', abstractCN='',
+                 author='', authorCN='', published_year=0, publisher='', publisherCN='', volume=0, issue=0, location='',
+                 institute='', instructor='', key_words='', key_words_CN='', language='', pages=0, section=0,
+                 edition='', press='', editor='', ISBN='', ISSN='', DOI='', uri='', updater_id=None, update_time=None):
         self.title = title
         self.creator_id = creator_id
         self.create_time = create_time
@@ -115,6 +129,7 @@ class Literature_meta(db.Model):
         self.updater_id = updater_id
         self.update_time = update_time
 
+
 class Type(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), nullable=False)
@@ -123,6 +138,7 @@ class Type(db.Model):
     def __init__(self, name, type_id):
         self.name = name
         self.type_id = type_id
+
 
 class Video(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -133,10 +149,11 @@ class Video(db.Model):
     size = db.Column(db.Float)
     uri = db.Column(db.String(256))
 
-    def __init__(self,literature_id, size=0, uri=''):
+    def __init__(self, literature_id, size=0, uri=''):
         self.literature_id = literature_id
         self.size = size
         self.uri = uri
+
 
 class Ppt(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -151,6 +168,7 @@ class Ppt(db.Model):
         self.literature_id = literature_id
         self.size = size
         self.uri = uri
+
 
 class Data_set(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -173,7 +191,8 @@ class Data_set(db.Model):
     type = db.relationship('Type', backref=db.backref('data_sets', lazy='dynamic'))
 
 
-    def __init__(self, title, creator_id, create_time, data_set_type_id, updater_id=None, update_time=None, description='', size=0, uri=''):
+    def __init__(self, title, creator_id, create_time, data_set_type_id, updater_id=None, update_time=None,
+                 description='', size=0, uri=''):
         self.title = title
         self.creator_id = creator_id
         self.create_time = create_time
@@ -183,6 +202,7 @@ class Data_set(db.Model):
         self.description = description
         self.size = size
         self.uri = uri
+
 
 class Code(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -199,11 +219,12 @@ class Code(db.Model):
 
     description = db.Column(db.Text)
     size = db.Column(db.Float)
-    uri = db.Column(db.String(256),nullable=False)
+    uri = db.Column(db.String(256), nullable=False)
 
     language = db.Column(db.String(64))
 
-    def __init__(self, title, creator_id, create_time, updater_id=None, update_time=None, description='', size=0, uri='', language=''):
+    def __init__(self, title, creator_id, create_time, updater_id=None, update_time=None, description='', size=0,
+                 uri='', language=''):
         self.title = title
         self.creator_id = creator_id
         self.create_time = create_time
@@ -213,6 +234,7 @@ class Code(db.Model):
         self.size = size
         self.uri = uri
         self.language = language
+
 
 class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -227,16 +249,14 @@ class Comment(db.Model):
     star = db.Column(db.Integer, nullable=False)
     comment_time = db.Column(db.DateTime, nullable=False)
 
-    isSimple = db.Column(db.Integer, nullable=False)
-
-    def __init__(self, commenter_id, comment_time, star, resource_id, type, isSimple, content=''):
+    def __init__(self, commenter_id, comment_time, star, resource_id, type, content=''):
         self.commenter_id = commenter_id
         self.comment_time = comment_time
         self.star = star
         self.resource_id = resource_id
         self.type = type
-        self.isSimple = isSimple
         self.content = content
+
 
 class Attribute(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -245,12 +265,14 @@ class Attribute(db.Model):
     def __init__(self, name):
         self.name = name
 
+
 class Tag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), nullable=False)
 
     def __init__(self, name):
         self.name = name
+
 
 class Tag_resource(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -266,6 +288,7 @@ class Tag_resource(db.Model):
         self.type = type
         self.tag_id = tag_id
 
+
 class Favorite(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
@@ -277,6 +300,7 @@ class Favorite(db.Model):
     def __init__(self, user_id, name):
         self.user_id = user_id
         self.name = name
+
 
 class Favorite_resource(db.Model):
     id = db.Column(db.Integer, primary_key=True)

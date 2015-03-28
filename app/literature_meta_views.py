@@ -1,4 +1,4 @@
-__author__ = 'ClarkWong, Justsavor'
+__author__ = 'ClarkWong'
 
 from app import db, app
 from flask.ext.restful import reqparse, abort, Api, Resource, fields, marshal_with, marshal

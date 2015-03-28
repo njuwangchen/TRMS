@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="dataSourceStorageLocal">
+    <data-source name="MySQL - TRMS@localhost" uuid="692e33f3-7874-4079-b095-1dc0d10797f3">
+      <secret-storage>master_key</secret-storage>
+      <user-name>root</user-name>
+      <schema-pattern>trms.*</schema-pattern>
+      <default-schemas>trms.*</default-schemas>
+    </data-source>
+  </component>
+</project>
