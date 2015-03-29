@@ -36,4 +36,4 @@ class favorite_resourceApi(Resource):
         db.session.commit()
         return favorite_resource, 201
 
-api.add_resource(favorite_resourceApi, '/api/v1/favorite_resource', endpoint='favorite_resource')
+api.add_resource(favorite_resourceApi, '/api/v1/favorite_resources', endpoint='favorite_resource')
