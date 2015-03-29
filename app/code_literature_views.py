@@ -29,7 +29,7 @@ class code_literatureListApi(Resource):
         code = Code.query.filter_by(id = code_id).first()
         literature.codes.append(code)
         db.session.commit()
-        return "add success" , 201
+        return { 'message' : 'Add code_literature succeed'}, 201
 
 
 class code_literatureQuery(Resource):
@@ -64,7 +64,7 @@ class code_literatureDel(Resource):
         code = Code.query.filter_by(id=args['code_id']).first()
         literature.codes.remove(code)
         db.session.commit()
-        return "delete success" , 201
+        return { 'message' : 'Delete code_literature succeed'}, 201
 
 
 

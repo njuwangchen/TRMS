@@ -23,7 +23,7 @@ class CommentListApi(Resource):
         self.parser.add_argument('commenter_id', type=int,required=True, location='json')
         self.parser.add_argument('resource_id', type=int, required=True,location='json')
         self.parser.add_argument('type', type=int, required=True,location='json')
-        self.parser.add_argument('content', type=str, required=True, location='json')
+        self.parser.add_argument('content', type=str, location='json')
         self.parser.add_argument('star', type=int, required=True, location='json')
         self.parser.add_argument('comment_time',required=True,location='json')
         super(CommentListApi, self).__init__()
