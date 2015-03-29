@@ -140,6 +140,11 @@ class LiteratureListApi(Resource):
         super(LiteratureListApi, self).__init__()
 
     @marshal_with(literature_meta_fields)
+    def get(self):
+        literature_list = Literature_meta.query.all()
+        return literature_list, 201
+
+    @marshal_with(literature_meta_fields)
     def post(self):
         args = self.parser.parse_args()
         title = args['title']
