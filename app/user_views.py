@@ -79,5 +79,24 @@ class UserListApi(Resource):
         db.session.commit()
         return user, 201
 
+class UserLoginApi(Resource):
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('username', type=str, required=True, location='json')
+        self.parser.add_argument('password', type=str, required=True, location='json')
+        super(UserLoginApi,self).__init__()
+
+    def post(self):
+        args = self.parser.parse_args()
+        q = User.query.filter_by(name=args['username']).first()
+        if q:
+            if q.password == args['password']:
+                return 'TRUE'
+            else:
+                return 'FALSE'
+        else:
+            return 'FALSE'
+
 api.add_resource(UserListApi, '/api/v1/users', endpoint='userList')
 api.add_resource(UserApi, '/api/v1/users/<user_id>', endpoint='user')
+api.add_resource(UserLoginApi,'/api/v1/users/login', endpoint='userLogin')
