@@ -11,8 +11,8 @@ data_set_fields={
     'creator_id': fields.Integer,
     'updater_id': fields.Integer,
     'data_set_type_id': fields.Integer,
-    'create_time': fields.DateTime,
-    'update_time': fields.DateTime,
+    'create_time': fields.String,
+    'update_time': fields.String,
     'description': fields.String,
     'size': fields.Float,
     'uri': fields.String

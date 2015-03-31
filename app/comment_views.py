@@ -13,7 +13,7 @@ comment_fields={
     'type' : fields.Integer,
     'content' : fields.String,
     'star' : fields.Integer,
-    'comment_time' : fields.DateTime
+    'comment_time' : fields.String
 }
 
 class CommentListApi(Resource):
