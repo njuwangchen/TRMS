@@ -37,8 +37,8 @@ literature_meta_fields = {
     'creator_id': fields.Integer,
     'updater_id': fields.Integer,
     'literature_type_id': fields.Integer,
-    'create_time': fields.DateTime,
-    'update_time': fields.DateTime
+    'create_time': fields.DateTime(dt_format='iso8601'),
+    'update_time': fields.DateTime(dt_format='iso8601')
 }
 
 class LiteratureApi(Resource):
@@ -74,8 +74,8 @@ class LiteratureApi(Resource):
         self.parser.add_argument('ISSN', type=str, location='json')
         self.parser.add_argument('DOI', type=str, location='json')
         self.parser.add_argument('uri', type=str, location='json')
-        self.parser.add_argument('updater_id', type=int, required=True, location='json')
-        self.parser.add_argument('update_time', required=True, location='json')
+        self.parser.add_argument('updater_id', type=int, location='json')
+        self.parser.add_argument('update_time', location='json')
 
         super(LiteratureApi, self).__init__()
 
@@ -83,6 +83,10 @@ class LiteratureApi(Resource):
     def get(self, literature_id):
         literature_meta = Literature_meta.query.filter_by(id=literature_id).first()
         if literature_meta:
+            '''if literature_meta.create_time:
+                literature_meta.create_time = literature_meta.create_time.strftime('%Y-%m-%d %H:%M:%S')
+            if literature_meta.update_time:
+                literature_meta.update_time = literature_meta.update_time.strftime('%Y-%m-%d %H:%M:%S')'''
             return literature_meta, 201
         else:
             abort(404, message='Literature_meta {} not found'.format(literature_id))
@@ -93,6 +97,7 @@ class LiteratureApi(Resource):
 
         if literature_meta:
             args = self.parser.parse_args()
+            args['create_time']= dateutil.parser.parse(args['create_time'])
             args['update_time']= dateutil.parser.parse(args['update_time'])
             for k,v in args.iteritems():
                 if v!= None:
