@@ -16,8 +16,8 @@ class UserApi(Resource):
 
     def __init__(self):
         self.parser = reqparse.RequestParser()
-        self.parser.add_argument('name', type=str, location='json')
-        self.parser.add_argument('password', type=str, location='json')
+        self.parser.add_argument('name', type=unicode, location='json')
+        self.parser.add_argument('password', type=unicode, location='json')
         self.parser.add_argument('privilege', type=int, location='json')
         super(UserApi, self).__init__()
 
@@ -56,8 +56,8 @@ class UserListApi(Resource):
 
     def __init__(self):
         self.parser = reqparse.RequestParser()
-        self.parser.add_argument('name', type=str, required=True, location='json')
-        self.parser.add_argument('password', type=str, required=True, location='json')
+        self.parser.add_argument('name', type=unicode, required=True, location='json')
+        self.parser.add_argument('password', type=unicode, required=True, location='json')
         self.parser.add_argument('privilege', type=int, required=True, location='json')
         super(UserListApi, self).__init__()
 
@@ -82,8 +82,8 @@ class UserListApi(Resource):
 class UserLoginApi(Resource):
     def __init__(self):
         self.parser = reqparse.RequestParser()
-        self.parser.add_argument('username', type=str, required=True, location='json')
-        self.parser.add_argument('password', type=str, required=True, location='json')
+        self.parser.add_argument('username', type=unicode, required=True, location='json')
+        self.parser.add_argument('password', type=unicode, required=True, location='json')
         super(UserLoginApi,self).__init__()
 
     def post(self):

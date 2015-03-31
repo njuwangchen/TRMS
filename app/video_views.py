@@ -18,7 +18,7 @@ class VideoApi(Resource):
         self.parser = reqparse.RequestParser()
         self.parser.add_argument('literature_id', type=int, required=True, location='json')
         self.parser.add_argument('size', type=float, location='json')
-        self.parser.add_argument('url', type=str, location='json')
+        self.parser.add_argument('url', type=unicode, location='json')
         super(VideoApi, self).__init__()
 
 
@@ -38,7 +38,7 @@ class VideoListApi(Resource):
         self.parser = reqparse.RequestParser()
         self.parser.add_argument('literature_id', type=int, required=True, location='json')
         self.parser.add_argument('size', type=float, location='json')
-        self.parser.add_argument('uri', type=str, location='json')
+        self.parser.add_argument('uri', type=unicode, location='json')
         super(VideoListApi, self).__init__()
 
 
@@ -59,7 +59,7 @@ class VideoQueryApi(Resource):
         self.parser = reqparse.RequestParser()
         self.parser.add_argument('literature_id', type=int, required=True, location='json')
         self.parser.add_argument('size', type=float,  location='json')
-        self.parser.add_argument('uri', type=str, location='json')
+        self.parser.add_argument('uri', type=unicode, location='json')
         super(VideoQueryApi, self).__init__()
 
      def post(self):
