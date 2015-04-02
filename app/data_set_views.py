@@ -77,12 +77,12 @@ class Data_setListApi(Resource):
         self.parser.add_argument('uri', type=str,location='json')
         super(Data_setListApi, self).__init__()
 
-    # def get(self):
-    #     data_setList = Data_set.query.all()
-    #     if data_setList:
-    #         return [marshal(data_set, data_set_fields) for data_set in data_setList]
-    #     else:
-    #         abort(404, message='No Data_set at all')
+    def get(self):
+        data_setList = Data_set.query.all()
+        if data_setList:
+            return [marshal(data_set, data_set_fields) for data_set in data_setList]
+        else:
+            abort(404, message='No Data_set at all')
 
     @marshal_with(data_set_fields)
     def post(self):
