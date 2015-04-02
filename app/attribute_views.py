@@ -14,7 +14,7 @@ class AttributeApi(Resource):
 
     def __init__(self):
         self.parser = reqparse.RequestParser()
-        self.parser.add_argument('name',self,type=str,location="json")
+        self.parser.add_argument('name',self,type=unicode,location="json")
         self.parser.add_argument('type',self,type=int,location="json")
         super(AttributeApi,self).__init__()
 
@@ -52,7 +52,7 @@ class AttributeListApi(Resource):
     
     def __init__(self):
         self.parser = reqparse.RequestParser()
-        self.parser.add_argument('name',self,type=str,location="json")
+        self.parser.add_argument('name',self,type=unicode,location="json")
         self.parser.add_argument('type',self,type=int,location="json")
         super(AttributeListApi,self).__init__()
     
@@ -77,7 +77,7 @@ class AttributeListApi(Resource):
 class AttributeQuery(Resource):
     def __init__(self):
         self.parser = reqparse.RequestParser()
-        self.parser.add_argument('name',self,type=str,location="json")
+        self.parser.add_argument('name',self,type=unicode,location="json")
         self.parser.add_argument('type',self,type=int,location="json")
         super(AttributeListApi,self).__init__()
         

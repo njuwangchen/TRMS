@@ -17,7 +17,7 @@ class favoriteListApi(Resource):
     def __init__(self):
         self.parser = reqparse.RequestParser()
         self.parser.add_argument('user_id', type=int, required=True, location='json')
-        self.parser.add_argument('name', type=str, required=True, location='json')
+        self.parser.add_argument('name', type=unicode, required=True, location='json')
         super(favoriteListApi, self).__init__()
 
     # add a new favorite

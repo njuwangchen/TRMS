@@ -22,15 +22,15 @@ class CodeApi(Resource):
 
     def __init__(self):
         self.parser = reqparse.RequestParser()
-        self.parser.add_argument('title', type=str,required=True,location='json')
+        self.parser.add_argument('title', type=unicode,required=True,location='json')
         self.parser.add_argument('creator_id', type=int,required=True,location='json')
         self.parser.add_argument('updater_id', type=int,location='json')
         self.parser.add_argument('create_time',required=True,location='json')
         self.parser.add_argument('update_time', location='json')
-        self.parser.add_argument('description', type=str,location='json')
+        self.parser.add_argument('description', type=unicode,location='json')
         self.parser.add_argument('size', type=float,location='json')
-        self.parser.add_argument('uri', type=str,location='json')
-        self.parser.add_argument('language', type=str,location='json')
+        self.parser.add_argument('uri', type=unicode,location='json')
+        self.parser.add_argument('language', type=unicode,location='json')
         super(CodeApi, self).__init__()
 
     # @marshal_with(code_fields)
@@ -67,15 +67,15 @@ class CodeListApi(Resource):
 
     def __init__(self):
         self.parser = reqparse.RequestParser()
-        self.parser.add_argument('title', type=str,required=True,location='json')
+        self.parser.add_argument('title', type=unicode,required=True,location='json')
         self.parser.add_argument('creator_id', type=int,required=True,location='json')
         self.parser.add_argument('updater_id', type=int,location='json')
         self.parser.add_argument('create_time',required=True,location='json')
         self.parser.add_argument('update_time', location='json')
-        self.parser.add_argument('description', type=str,location='json')
+        self.parser.add_argument('description', type=unicode,location='json')
         self.parser.add_argument('size', type=float,location='json')
-        self.parser.add_argument('uri', type=str,location='json')
-        self.parser.add_argument('language', type=str,location='json')
+        self.parser.add_argument('uri', type=unicode,location='json')
+        self.parser.add_argument('language', type=unicode,location='json')
         super(CodeListApi, self).__init__()
 
     # def get(self):

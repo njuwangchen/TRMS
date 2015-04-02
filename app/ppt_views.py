@@ -18,7 +18,7 @@ class PptApi(Resource):
         self.parser = reqparse.RequestParser()
         self.parser.add_argument('literature_id', type=int, required=True, location='json')
         self.parser.add_argument('size', type=float, location='json')
-        self.parser.add_argument('uri', type=str, location='json')
+        self.parser.add_argument('uri', type=unicode, location='json')
         super(PptApi, self).__init__()
 
     def delete(self, ppt_id):
@@ -37,7 +37,7 @@ class PptListApi(Resource):
         self.parser = reqparse.RequestParser()
         self.parser.add_argument('literature_id', type=int, required=True, location='json')
         self.parser.add_argument('size', type=float, location='json')
-        self.parser.add_argument('uri', type=str, location='json')
+        self.parser.add_argument('uri', type=unicode, location='json')
         super(PptListApi, self).__init__()
 
     def get(self):
@@ -63,7 +63,7 @@ class PptQueryApi(Resource):
         self.parser = reqparse.RequestParser()
         self.parser.add_argument('literature_id', type=int, required=True,location='json')
         self.parser.add_argument('size', type=float, location='json')
-        self.parser.add_argument('uri', type=str, location='json')
+        self.parser.add_argument('uri', type=unicode, location='json')
         super(PptQueryApi, self).__init__()
 
      def post(self):
