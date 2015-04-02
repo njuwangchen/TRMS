@@ -32,13 +32,13 @@ class Data_setApi(Resource):
         self.parser.add_argument('uri', type=unicode,location='json')
         super(Data_setApi, self).__init__()
 
-    # @marshal_with(data_set_fields)
-    # def get(self, data_set_id):
-    #     data_set = Data_set.query.filter_by(id=data_set_id).first()
-    #     if data_set:
-    #         return data_set, 201
-    #     else:
-    #         abort(404, message='Data_set {} not found'.format(data_set_id))
+    @marshal_with(data_set_fields)
+    def get(self, data_set_id):
+        data_set = Data_set.query.filter_by(id=data_set_id).first()
+        if data_set:
+            return data_set, 201
+        else:
+            abort(404, message='Data_set {} not found'.format(data_set_id))
 
     def delete(self, data_set_id):
         data_set = Data_set.query.filter_by(id=data_set_id).first()
