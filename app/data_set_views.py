@@ -11,8 +11,8 @@ data_set_fields={
     'creator_id': fields.Integer,
     'updater_id': fields.Integer,
     'data_set_type_id': fields.Integer,
-    'create_time': fields.DateTime,
-    'update_time': fields.DateTime,
+    'create_time': fields.String,
+    'update_time': fields.String,
     'description': fields.String,
     'size': fields.Float,
     'uri': fields.String
@@ -21,24 +21,24 @@ data_set_fields={
 class Data_setApi(Resource):
     def __init__(self):
         self.parser = reqparse.RequestParser()
-        self.parser.add_argument('title', required=True, type=str,location='json')
+        self.parser.add_argument('title', required=True, type=unicode,location='json')
         self.parser.add_argument('creator_id', type=int,required=True,location='json')
         self.parser.add_argument('data_set_type_id', type=int,required=True,location='json')
         self.parser.add_argument('updater_id', type=int,location='json')
         self.parser.add_argument('create_time',required=True,location='json')
         self.parser.add_argument('update_time', location='json')
-        self.parser.add_argument('description', type=str,location='json')
+        self.parser.add_argument('description', type=unicode,location='json')
         self.parser.add_argument('size', type=float,location='json')
-        self.parser.add_argument('uri', type=str,location='json')
+        self.parser.add_argument('uri', type=unicode,location='json')
         super(Data_setApi, self).__init__()
 
-    # @marshal_with(data_set_fields)
-    # def get(self, data_set_id):
-    #     data_set = Data_set.query.filter_by(id=data_set_id).first()
-    #     if data_set:
-    #         return data_set, 201
-    #     else:
-    #         abort(404, message='Data_set {} not found'.format(data_set_id))
+    @marshal_with(data_set_fields)
+    def get(self, data_set_id):
+        data_set = Data_set.query.filter_by(id=data_set_id).first()
+        if data_set:
+            return data_set, 201
+        else:
+            abort(404, message='Data_set {} not found'.format(data_set_id))
 
     def delete(self, data_set_id):
         data_set = Data_set.query.filter_by(id=data_set_id).first()
@@ -66,23 +66,23 @@ class Data_setListApi(Resource):
 
     def __init__(self):
         self.parser = reqparse.RequestParser()
-        self.parser.add_argument('title', type=str,required=True,location='json')
+        self.parser.add_argument('title', type=unicode,required=True,location='json')
         self.parser.add_argument('creator_id', type=int,required=True,location='json')
         self.parser.add_argument('data_set_type_id', type=int,required=True,location='json')
         self.parser.add_argument('updater_id', type=int,location='json')
         self.parser.add_argument('create_time',required=True,location='json')
         self.parser.add_argument('update_time', location='json')
-        self.parser.add_argument('description', type=str,location='json')
+        self.parser.add_argument('description', type=unicode,location='json')
         self.parser.add_argument('size', type=float,location='json')
-        self.parser.add_argument('uri', type=str,location='json')
+        self.parser.add_argument('uri', type=unicode,location='json')
         super(Data_setListApi, self).__init__()
 
-    # def get(self):
-    #     data_setList = Data_set.query.all()
-    #     if data_setList:
-    #         return [marshal(data_set, data_set_fields) for data_set in data_setList]
-    #     else:
-    #         abort(404, message='No Data_set at all')
+    def get(self):
+        data_setList = Data_set.query.all()
+        if data_setList:
+            return [marshal(data_set, data_set_fields) for data_set in data_setList]
+        else:
+            abort(404, message='No Data_set at all')
 
     @marshal_with(data_set_fields)
     def post(self):

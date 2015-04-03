@@ -15,7 +15,7 @@ class TypeApi(Resource):
 
     def __init__(self):
         self.parser = reqparse.RequestParser()
-        self.parser.add_argument('name', type=str, required=True, location='json')
+        self.parser.add_argument('name', type=unicode, required=True, location='json')
         self.parser.add_argument('type_id', type=int, required=True, location='json')
         super(TypeApi, self).__init__()
 
@@ -52,7 +52,7 @@ class TypeListApi(Resource):
 
     def __init__(self):
         self.parser = reqparse.RequestParser()
-        self.parser.add_argument('name', type=str, required=True, location='json')
+        self.parser.add_argument('name', type=unicode, required=True, location='json')
         self.parser.add_argument('type_id', type=int, required=True, location='json')
         super(TypeListApi, self).__init__()
 
@@ -76,7 +76,7 @@ class TypeListApi(Resource):
 class TypeQueryApi(Resource):
      def __init__(self):
         self.parser = reqparse.RequestParser()
-        self.parser.add_argument('name', type=str, required=True, location='json')
+        self.parser.add_argument('name', type=unicode, required=True, location='json')
         self.parser.add_argument('type_id', type=int, required=True, location='json')
         super(TypeQueryApi, self).__init__()
 
