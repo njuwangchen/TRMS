@@ -2,6 +2,7 @@ __author__ = 'ClarkWong'
 
 from app import db, app
 from flask import request, send_from_directory, url_for
+from models import Literature_meta
 import os
 import json
 import werkzeug
@@ -11,9 +12,9 @@ UPLOAD_FOLDER = os.getcwd() + '/upload/'
 
 @app.route('/upload', methods=['POST'])
 def upload():
-    saved_files = []
+    saved_file_url = ''
     file = request.files['file']
-    id = request.form['literature_id']
+    literature_id = request.form['literature_id']
     print(id)
     if file:
         filename = werkzeug.secure_filename(file.filename)
@@ -22,8 +23,12 @@ def upload():
         timestamp = long(time.time()*1000)
         fileToSaveName = filename[0] + str(timestamp) + '.'+ filename[1]
         file.save(os.path.join(UPLOAD_FOLDER, fileToSaveName))
-        saved_files.append(url_for('get_uploaded', filename = fileToSaveName))
-    return json.dumps(saved_files)
+        saved_file_url = url_for('get_uploaded', filename = fileToSaveName)
+        #add this url to database
+        literature = Literature_meta.query.filter_by(id=literature_id).first()
+        literature.uri = saved_file_url
+        db.session.commit()
+    return json.dumps(saved_file_url)
 
 @app.route('/uploaded/<filename>', methods=['GET', 'POST'])
 def get_uploaded(filename):
