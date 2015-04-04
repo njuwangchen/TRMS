@@ -32,13 +32,13 @@ class Data_setApi(Resource):
         self.parser.add_argument('uri', type=unicode,location='json')
         super(Data_setApi, self).__init__()
 
-    # @marshal_with(data_set_fields)
-    # def get(self, data_set_id):
-    #     data_set = Data_set.query.filter_by(id=data_set_id).first()
-    #     if data_set:
-    #         return data_set, 201
-    #     else:
-    #         abort(404, message='Data_set {} not found'.format(data_set_id))
+    @marshal_with(data_set_fields)
+    def get(self, data_set_id):
+        data_set = Data_set.query.filter_by(id=data_set_id).first()
+        if data_set:
+            return data_set, 201
+        else:
+            abort(404, message='Data_set {} not found'.format(data_set_id))
 
     def delete(self, data_set_id):
         data_set = Data_set.query.filter_by(id=data_set_id).first()
@@ -77,12 +77,12 @@ class Data_setListApi(Resource):
         self.parser.add_argument('uri', type=unicode,location='json')
         super(Data_setListApi, self).__init__()
 
-    # def get(self):
-    #     data_setList = Data_set.query.all()
-    #     if data_setList:
-    #         return [marshal(data_set, data_set_fields) for data_set in data_setList]
-    #     else:
-    #         abort(404, message='No Data_set at all')
+    def get(self):
+        data_setList = Data_set.query.all()
+        if data_setList:
+            return [marshal(data_set, data_set_fields) for data_set in data_setList]
+        else:
+            abort(404, message='No Data_set at all')
 
     @marshal_with(data_set_fields)
     def post(self):
