@@ -2,7 +2,7 @@ __author__ = 'ClarkWong'
 
 from app import db, app
 from flask import request, send_from_directory, url_for
-from models import Literature_meta, Video, Ppt
+from models import Literature_meta, Video, Ppt, Code
 import os
 import json
 import werkzeug
@@ -10,6 +10,7 @@ import werkzeug
 UPLOAD_FOLDER = os.getcwd() + '/upload/'
 UPLOAD_FOLDER_VIDEO = os.getcwd() + '/uploadVideo/'
 UPLOAD_FOLDER_PPT = os.getcwd() + '/uploadPpt/'
+UPLOAD_FOLDER_CODE = os.getcwd() + '/uploadCode/'
 
 
 @app.route('/upload', methods=['POST'])
@@ -100,3 +101,30 @@ def uploadPpt():
 def get_uploadedPpt(pptName):
     return send_from_directory(UPLOAD_FOLDER_PPT, pptName)
 
+@app.route('/uploadCode', methods=['POST'])
+def uploadCode():
+    code = request.files['file']
+    code_id = request.form['code_id']
+    if 'chunk' in request.form:
+        chunk = int(request.form['chunk'])
+        chunks = int(request.form['chunks'])
+    else:
+        chunk = 0
+        chunks = 1
+    codename = request.form['name']
+    codename = werkzeug.secure_filename(codename)
+    codePath = os.path.join(UPLOAD_FOLDER_CODE, codename)
+    with open(codePath, 'ab+') as f:
+        code.save(f)
+    saved_code_url = url_for('get_uploadedCode', codename=codename)
+
+    if chunk == (chunks-1):
+        code = Code.query.filter_by(id=code_id).first()
+        code.uri = saved_code_url
+        db.session.commit()
+    return json.dumps(saved_code_url)
+
+
+@app.route('/uploadedCode/<codename>', methods=['GET', 'POST'])
+def get_uploadedCode(codename):
+    return send_from_directory(UPLOAD_FOLDER_CODE, codename)
