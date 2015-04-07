@@ -33,13 +33,13 @@ class CodeApi(Resource):
         self.parser.add_argument('language', type=unicode,location='json')
         super(CodeApi, self).__init__()
 
-    # @marshal_with(code_fields)
-    # def get(self, code_id):
-    #     code = Code.query.filter_by(id=code_id).first()
-    #     if code:
-    #         return code, 201
-    #     else:
-    #         abort(404, message='Code {} not found'.format(code_id))
+    @marshal_with(code_fields)
+    def get(self, code_id):
+        code = Code.query.filter_by(id=code_id).first()
+        if code:
+            return code, 201
+        else:
+            abort(404, message='Code {} not found'.format(code_id))
 
     def delete(self, code_id):
         code = Code.query.filter_by(id=code_id).first()
@@ -50,18 +50,18 @@ class CodeApi(Resource):
         else:
             abort(404, message='Code {} not found'.format(code_id))
 
-    # @marshal_with(code_fields)
-    # def put(self, code_id):
-    #     code = Code.query.filter_by(id=code_id).first()
-    #     if code:
-    #         args = self.parser.parse_args()
-    #         for k,v in args.iteritems():
-    #             if v!= None:
-    #                 setattr(code, k, v)
-    #         db.session.commit()
-    #         return code, 201
-    #     else:
-    #         abort(404, message='Code {} not found'.format(code_id))
+    @marshal_with(code_fields)
+    def put(self, code_id):
+        code = Code.query.filter_by(id=code_id).first()
+        if code:
+            args = self.parser.parse_args()
+            for k,v in args.iteritems():
+                if v!= None:
+                    setattr(code, k, v)
+            db.session.commit()
+            return code, 201
+        else:
+            abort(404, message='Code {} not found'.format(code_id))
 
 class CodeListApi(Resource):
 
@@ -78,12 +78,12 @@ class CodeListApi(Resource):
         self.parser.add_argument('language', type=unicode,location='json')
         super(CodeListApi, self).__init__()
 
-    # def get(self):
-    #     codeList = Code.query.all()
-    #     if codeList:
-    #         return [marshal(code, code_fields) for code in codeList]
-    #     else:
-    #         abort(404, message='No Code at all')
+    def get(self):
+        codeList = Code.query.all()
+        if codeList:
+            return [marshal(code, code_fields) for code in codeList]
+        else:
+            abort(404, message='No Code at all')
 
     @marshal_with(code_fields)
     def post(self):
@@ -107,15 +107,15 @@ class CodeQuery(Resource):
         super(CodeQuery, self).__init__()
 
 
-    # def post(self):
-    #     args = self.parser.parse_args()
-    #     creator_id = args['creator_id']
-    #     update_id = args['update_id']
-    #     codeList = Code.query.filter_by(update_id=update_id,creator_id=creator_id)
-    #     if codeList:
-    #         return [marshal(code, code_fields) for code in codeList]
-    #     else:
-    #         abort(404, message='No code at all')
+    def post(self):
+        args = self.parser.parse_args()
+        creator_id = args['creator_id']
+        update_id = args['update_id']
+        codeList = Code.query.filter_by(update_id=update_id,creator_id=creator_id)
+        if codeList:
+            return [marshal(code, code_fields) for code in codeList]
+        else:
+            abort(404, message='No code at all')
 
 
 api.add_resource(CodeQuery, '/api/v1/codes/query', endpoint='codequery')
