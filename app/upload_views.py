@@ -2,7 +2,7 @@ __author__ = 'ClarkWong'
 
 from app import db, app
 from flask import request, send_from_directory, url_for
-from models import Literature_meta, Video, Ppt, Code
+from models import Literature_meta, Video, Ppt, Code, Data_set
 import os
 import json
 import werkzeug
@@ -11,6 +11,7 @@ UPLOAD_FOLDER = os.getcwd() + '/upload/'
 UPLOAD_FOLDER_VIDEO = os.getcwd() + '/uploadVideo/'
 UPLOAD_FOLDER_PPT = os.getcwd() + '/uploadPpt/'
 UPLOAD_FOLDER_CODE = os.getcwd() + '/uploadCode/'
+UPLOAD_FOLDER_DATA_SET = os.getcwd() + '/uploadDataset/'
 
 
 @app.route('/upload', methods=['POST'])
@@ -97,9 +98,11 @@ def uploadPpt():
         db.session.commit()
     return json.dumps(saved_ppt_url)
 
+
 @app.route('/uploadedPpt/<pptName>', methods=['GET', 'POST'])
 def get_uploadedPpt(pptName):
     return send_from_directory(UPLOAD_FOLDER_PPT, pptName)
+
 
 @app.route('/uploadCode', methods=['POST'])
 def uploadCode():
@@ -128,3 +131,31 @@ def uploadCode():
 @app.route('/uploadedCode/<codename>', methods=['GET', 'POST'])
 def get_uploadedCode(codename):
     return send_from_directory(UPLOAD_FOLDER_CODE, codename)
+
+@app.route('/uploadDataset', methods=['POST'])
+def uploadDataset():
+    data_set = request.files['file']
+    data_set_id = request.form['data_set_id']
+    if 'chunk' in request.form:
+        chunk = int(request.form['chunk'])
+        chunks = int(request.form['chunks'])
+    else:
+        chunk = 0
+        chunks = 1
+    data_set_name = request.form['name']
+    data_set_name = werkzeug.secure_filename(data_set_name)
+    data_set_Path = os.path.join(UPLOAD_FOLDER_DATA_SET, data_set_name)
+    with open(data_set_Path, 'ab+') as f:
+        data_set.save(f)
+    saved_data_set_url = url_for('get_uploadedDataset', datasetname=data_set_name)
+
+    if chunk == (chunks-1):
+        data_set = Data_set.query.filter_by(id=data_set_id).first()
+        data_set.uri = saved_data_set_url
+        db.session.commit()
+    return json.dumps(saved_data_set_url)
+
+
+@app.route('/uploadedDataset/<data_set_name>', methods=['GET', 'POST'])
+def get_uploadedDataset(data_set_name):
+    return send_from_directory(UPLOAD_FOLDER_DATA_SET, data_set_name)
