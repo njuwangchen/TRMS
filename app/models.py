@@ -2,7 +2,6 @@ __author__ = 'ClarkWong'
 
 from app import db
 
-
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20), nullable=False)
@@ -25,6 +24,21 @@ code_literature = db.Table('code_literature',
                            db.Column('literature_id', db.Integer, db.ForeignKey('literature_meta.id'),
                                      primary_key=True))
 
+report_literature = db.Table('report_literature',
+                             db.Column('report_id', db.Integer, db.ForeignKey('report.id'), primary_key=True),
+                             db.Column('literature_id', db.Integer, db.ForeignKey('literature_meta.id'),
+                                       primary_key=True))
+
+report_data_set = db.Table('report_data_set',
+                             db.Column('report_id', db.Integer, db.ForeignKey('report.id'), primary_key=True),
+                             db.Column('data_set_id', db.Integer, db.ForeignKey('data_set.id'),
+                                       primary_key=True))
+
+report_code = db.Table('report_code',
+                             db.Column('report_id', db.Integer, db.ForeignKey('report.id'), primary_key=True),
+                             db.Column('code_id', db.Integer, db.ForeignKey('code.id'),
+                                       primary_key=True))
+
 
 class Cite(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -42,6 +56,77 @@ class Cite(db.Model):
         self.cited_id = cited_id
         self.cite_type_id = cite_type_id
 
+
+class Report(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(256), nullable=False)
+    report_date = db.Column(db.String(256))
+    reporter = db.Column(db.String(256))
+    company = db.Column(db.String(256))
+    reporter_title = db.Column(db.String(256))
+    location = db.Column(db.String(256))
+
+    creator_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    creator = db.relationship('User', backref=db.backref('reports_create', lazy='dynamic'),
+                              foreign_keys=[creator_id])
+
+    updater_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    updater = db.relationship('User', backref=db.backref('reports_update', lazy='dynamic'),
+                              foreign_keys=[updater_id])
+
+    create_time = db.Column(db.DateTime, nullable=False)
+    update_time = db.Column(db.DateTime)
+
+    total_rank = db.Column(db.Integer)
+    rank_num = db.Column(db.Integer)
+
+    data_sets = db.relationship('Data_set', secondary=report_data_set,
+                                backref=db.backref('reports', lazy='dynamic'), lazy='dynamic')
+    codes = db.relationship('Code', secondary=report_code, backref=db.backref('reports', lazy='dynamic'),
+                            lazy='dynamic')
+    literatures = db.relationship('Literature_meta', secondary=report_literature, backref=db.backref('reports', lazy='dynamic'), lazy='dynamic')
+
+
+    def __init__(self, title, creator_id, create_time, report_date=None, reporter='', company='', reporter_title='', location='', updater_id=None,
+                 update_time=None, total_rank=0, rank_num=0):
+        self.title = title
+        self.creator_id = creator_id
+        self.create_time = create_time
+        self.report_date = report_date
+        self.reporter = reporter
+        self.company = company
+        self.reporter_title = reporter_title
+        self.location = location
+        self.updater_id = updater_id
+        self.update_time = update_time
+        self.total_rank = total_rank
+        self.rank_num = rank_num
+
+class Report_attachment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    report_id = db.Column(db.Integer, db.ForeignKey('report.id'))
+    report = db.relationship('report', backref=db.backref('attachments', lazy='dynamic'))
+
+    uri = db.Column(db.String(256))
+    attachment_name = db.Column(db.String(256))
+
+    def __init__(self, report_id, uri='', attachment_name=''):
+        self.report_id=report_id
+        self.uri=uri
+        self.attachment_name=attachment_name
+
+class Report_recording(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    report_id = db.Column(db.Integer, db.ForeignKey('report.id'))
+    report = db.relationship('report', backref=db.backref('recordings', lazy='dynamic'))
+
+    uri = db.Column(db.String(256))
+    recording_name = db.Column(db.String(256))
+
+    def __init__(self, report_id, uri='', recording_name=''):
+        self.report_id=report_id
+        self.uri=uri
+        self.recording_name=recording_name
 
 class Literature_meta(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -92,11 +177,15 @@ class Literature_meta(db.Model):
     codes = db.relationship('Code', secondary=code_literature, backref=db.backref('literatures', lazy='dynamic'),
                             lazy='dynamic')
 
+    total_rank = db.Column(db.Integer)
+    rank_num = db.Column(db.Integer)
+    file_name = db.Column(db.String(256))
+
 
     def __init__(self, title, creator_id, create_time, literature_type_id, titleCN='', abstract='', abstractCN='',
                  author='', authorCN='', published_year=0, publisher='', publisherCN='', volume=0, issue=0, location='',
                  institute='', instructor='', key_words='', key_words_CN='', language='', pages=0, section=0,
-                 edition='', press='', editor='', ISBN='', ISSN='', DOI='', uri='', updater_id=None, update_time=None):
+                 edition='', press='', editor='', ISBN='', ISSN='', DOI='', uri='', updater_id=None, update_time=None, total_rank=0, rank_num=0, file_name=''):
         self.title = title
         self.creator_id = creator_id
         self.create_time = create_time
@@ -128,6 +217,9 @@ class Literature_meta(db.Model):
         self.uri = uri
         self.updater_id = updater_id
         self.update_time = update_time
+        self.total_rank = total_rank
+        self.rank_num = rank_num
+        self.file_name = file_name
 
 
 class Type(db.Model):
@@ -149,10 +241,13 @@ class Video(db.Model):
     size = db.Column(db.Float)
     uri = db.Column(db.String(256))
 
-    def __init__(self, literature_id, size=0, uri=''):
+    video_name = db.Column(db.String(256))
+
+    def __init__(self, literature_id, size=0, uri='', video_name=''):
         self.literature_id = literature_id
         self.size = size
         self.uri = uri
+        self.video_name = video_name
 
 
 class Ppt(db.Model):
@@ -164,10 +259,13 @@ class Ppt(db.Model):
     size = db.Column(db.Float)
     uri = db.Column(db.String(256))
 
-    def __init__(self, literature_id, size=0, uri=''):
+    ppt_name = db.Column(db.String(256))
+
+    def __init__(self, literature_id, size=0, uri='', ppt_name=''):
         self.literature_id = literature_id
         self.size = size
         self.uri = uri
+        self.ppt_name = ppt_name
 
 
 class Data_set(db.Model):
@@ -190,9 +288,13 @@ class Data_set(db.Model):
     data_set_type_id = db.Column(db.Integer, db.ForeignKey('type.id'), nullable=False)
     type = db.relationship('Type', backref=db.backref('data_sets', lazy='dynamic'))
 
+    total_rank = db.Column(db.Integer)
+    rank_num = db.Column(db.Integer)
+    file_name = db.Column(db.String(256))
+
 
     def __init__(self, title, creator_id, create_time, data_set_type_id, updater_id=None, update_time=None,
-                 description='', size=0, uri=''):
+                 description='', size=0, uri='', total_rank=0, rank_num=0, file_name=''):
         self.title = title
         self.creator_id = creator_id
         self.create_time = create_time
@@ -202,6 +304,9 @@ class Data_set(db.Model):
         self.description = description
         self.size = size
         self.uri = uri
+        self.total_rank = total_rank
+        self.rank_num = rank_num
+        self.file_name = file_name
 
 
 class Code(db.Model):
@@ -223,8 +328,12 @@ class Code(db.Model):
 
     language = db.Column(db.String(64))
 
+    total_rank = db.Column(db.Integer)
+    rank_num = db.Column(db.Integer)
+    file_name = db.Column(db.String(256))
+
     def __init__(self, title, creator_id, create_time, updater_id=None, update_time=None, description='', size=0,
-                 uri='', language=''):
+                 uri='', language='', total_rank=0, rank_num=0, file_name=''):
         self.title = title
         self.creator_id = creator_id
         self.create_time = create_time
@@ -234,6 +343,9 @@ class Code(db.Model):
         self.size = size
         self.uri = uri
         self.language = language
+        self.total_rank = total_rank
+        self.rank_num = rank_num
+        self.file_name = file_name
 
 
 class Comment(db.Model):
@@ -311,7 +423,10 @@ class Favorite_resource(db.Model):
     favorite_id = db.Column(db.Integer, db.ForeignKey('favorite.id'), nullable=False)
     favorite_dir = db.relationship('Favorite', backref=db.backref('resources', lazy='dynamic'))
 
-    def __init__(self, resource_id, type, favorite_id):
+    favorite_time = db.Column(db.DateTime, nullable=False)
+
+    def __init__(self, resource_id, type, favorite_id, favorite_time):
         self.resource_id = resource_id
         self.type = type
         self.favorite_id = favorite_id
+        self.favorite_time = favorite_time

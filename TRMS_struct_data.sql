@@ -11,7 +11,7 @@
  Target Server Version : 50614
  File Encoding         : utf-8
 
- Date: 04/07/2015 16:58:50 PM
+ Date: 04/08/2015 10:34:09 AM
 */
 
 SET NAMES utf8;
@@ -22,14 +22,14 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 DROP TABLE IF EXISTS `alembic_version`;
 CREATE TABLE `alembic_version` (
-  `version_num` varchar(32) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
+  `version_num` varchar(32) COLLATE utf8_bin NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- ----------------------------
 --  Records of `alembic_version`
 -- ----------------------------
 BEGIN;
-INSERT INTO `alembic_version` VALUES ('2a1716dd9363');
+INSERT INTO `alembic_version` VALUES ('2a80c9b52e8d');
 COMMIT;
 
 -- ----------------------------
@@ -38,9 +38,9 @@ COMMIT;
 DROP TABLE IF EXISTS `attribute`;
 CREATE TABLE `attribute` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(64) NOT NULL,
+  `name` varchar(64) COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- ----------------------------
 --  Table structure for `cite`
@@ -52,20 +52,13 @@ CREATE TABLE `cite` (
   `cited_id` int(11) NOT NULL,
   `cite_type_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
+  KEY `cite_type_id` (`cite_type_id`),
   KEY `cited_id` (`cited_id`),
   KEY `literature_id` (`literature_id`),
-  KEY `cite_type_id` (`cite_type_id`),
-  CONSTRAINT `cite_ibfk_1` FOREIGN KEY (`cited_id`) REFERENCES `literature_meta` (`id`),
-  CONSTRAINT `cite_ibfk_2` FOREIGN KEY (`literature_id`) REFERENCES `literature_meta` (`id`),
-  CONSTRAINT `cite_ibfk_3` FOREIGN KEY (`cite_type_id`) REFERENCES `type` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
-
--- ----------------------------
---  Records of `cite`
--- ----------------------------
-BEGIN;
-INSERT INTO `cite` VALUES ('1', '1', '2', '3');
-COMMIT;
+  CONSTRAINT `cite_ibfk_1` FOREIGN KEY (`cite_type_id`) REFERENCES `type` (`id`),
+  CONSTRAINT `cite_ibfk_2` FOREIGN KEY (`cited_id`) REFERENCES `literature_meta` (`id`),
+  CONSTRAINT `cite_ibfk_3` FOREIGN KEY (`literature_id`) REFERENCES `literature_meta` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- ----------------------------
 --  Table structure for `code`
@@ -73,27 +66,30 @@ COMMIT;
 DROP TABLE IF EXISTS `code`;
 CREATE TABLE `code` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `title` varchar(256) NOT NULL,
+  `title` varchar(256) COLLATE utf8_bin NOT NULL,
   `creator_id` int(11) NOT NULL,
   `updater_id` int(11) DEFAULT NULL,
   `create_time` datetime NOT NULL,
   `update_time` datetime DEFAULT NULL,
-  `description` mediumtext,
+  `description` text COLLATE utf8_bin,
   `size` float DEFAULT NULL,
-  `uri` varchar(256) NOT NULL,
-  `language` varchar(64) DEFAULT NULL,
+  `uri` varchar(256) COLLATE utf8_bin NOT NULL,
+  `language` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `file_name` varchar(256) COLLATE utf8_bin DEFAULT NULL,
+  `rank_num` int(11) DEFAULT NULL,
+  `total_rank` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `creator_id` (`creator_id`),
   KEY `updater_id` (`updater_id`),
   CONSTRAINT `code_ibfk_1` FOREIGN KEY (`creator_id`) REFERENCES `user` (`id`),
   CONSTRAINT `code_ibfk_2` FOREIGN KEY (`updater_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- ----------------------------
 --  Records of `code`
 -- ----------------------------
 BEGIN;
-INSERT INTO `code` VALUES ('1', 'Datamining with R', '1', '1', '2015-03-09 21:00:20', '2015-03-24 21:00:25', 'sample code implemention for frequent pattern mining', '20', 'http://iamcode', 'R');
+INSERT INTO `code` VALUES ('1', 'first code', '1', null, '2015-04-07 21:07:40', null, 'lalalla', '0', '', '', null, null, null);
 COMMIT;
 
 -- ----------------------------
@@ -101,20 +97,13 @@ COMMIT;
 -- ----------------------------
 DROP TABLE IF EXISTS `code_literature`;
 CREATE TABLE `code_literature` (
-  `code_id` int(11) NOT NULL DEFAULT '0',
-  `literature_id` int(11) NOT NULL DEFAULT '0',
+  `code_id` int(11) NOT NULL,
+  `literature_id` int(11) NOT NULL,
   PRIMARY KEY (`code_id`,`literature_id`),
   KEY `literature_id` (`literature_id`),
   CONSTRAINT `code_literature_ibfk_1` FOREIGN KEY (`code_id`) REFERENCES `code` (`id`),
   CONSTRAINT `code_literature_ibfk_2` FOREIGN KEY (`literature_id`) REFERENCES `literature_meta` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin ROW_FORMAT=COMPACT;
-
--- ----------------------------
---  Records of `code_literature`
--- ----------------------------
-BEGIN;
-INSERT INTO `code_literature` VALUES ('1', '1');
-COMMIT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- ----------------------------
 --  Table structure for `comment`
@@ -125,20 +114,13 @@ CREATE TABLE `comment` (
   `commenter_id` int(11) NOT NULL,
   `resource_id` int(11) NOT NULL,
   `type` int(11) NOT NULL,
-  `content` mediumtext,
+  `content` text COLLATE utf8_bin,
   `star` int(11) NOT NULL,
   `comment_time` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `commenter_id` (`commenter_id`),
   CONSTRAINT `comment_ibfk_1` FOREIGN KEY (`commenter_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
-
--- ----------------------------
---  Records of `comment`
--- ----------------------------
-BEGIN;
-INSERT INTO `comment` VALUES ('1', '1', '1', '1', 'good paper', '4', '2015-03-24 21:21:10');
-COMMIT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- ----------------------------
 --  Table structure for `data_set`
@@ -146,15 +128,18 @@ COMMIT;
 DROP TABLE IF EXISTS `data_set`;
 CREATE TABLE `data_set` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `title` varchar(256) NOT NULL,
+  `title` varchar(256) COLLATE utf8_bin NOT NULL,
   `creator_id` int(11) NOT NULL,
   `updater_id` int(11) DEFAULT NULL,
   `create_time` datetime NOT NULL,
   `update_time` datetime DEFAULT NULL,
-  `description` mediumtext,
+  `description` text COLLATE utf8_bin,
   `size` float DEFAULT NULL,
-  `uri` varchar(256) DEFAULT NULL,
+  `uri` varchar(256) COLLATE utf8_bin DEFAULT NULL,
   `data_set_type_id` int(11) NOT NULL,
+  `file_name` varchar(256) COLLATE utf8_bin DEFAULT NULL,
+  `rank_num` int(11) DEFAULT NULL,
+  `total_rank` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `creator_id` (`creator_id`),
   KEY `data_set_type_id` (`data_set_type_id`),
@@ -162,13 +147,13 @@ CREATE TABLE `data_set` (
   CONSTRAINT `data_set_ibfk_1` FOREIGN KEY (`creator_id`) REFERENCES `user` (`id`),
   CONSTRAINT `data_set_ibfk_2` FOREIGN KEY (`data_set_type_id`) REFERENCES `type` (`id`),
   CONSTRAINT `data_set_ibfk_3` FOREIGN KEY (`updater_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- ----------------------------
 --  Records of `data_set`
 -- ----------------------------
 BEGIN;
-INSERT INTO `data_set` VALUES ('1', 'caltch101', '1', '1', '2015-03-24 21:16:52', '2015-03-24 21:16:55', 'image set', '3', 'http://iamcaltech101', '4'), ('2', 'nihao', '1', null, '2015-03-09 21:00:20', null, '', '0', '', '1');
+INSERT INTO `data_set` VALUES ('1', 'great pic', '1', null, '2015-04-07 21:26:50', null, '', '2000', '', '3', null, null, null);
 COMMIT;
 
 -- ----------------------------
@@ -176,20 +161,13 @@ COMMIT;
 -- ----------------------------
 DROP TABLE IF EXISTS `data_set_literature`;
 CREATE TABLE `data_set_literature` (
-  `data_set_id` int(11) DEFAULT NULL,
-  `literature_id` int(11) DEFAULT NULL,
-  KEY `data_set_id` (`data_set_id`),
+  `data_set_id` int(11) NOT NULL,
+  `literature_id` int(11) NOT NULL,
+  PRIMARY KEY (`data_set_id`,`literature_id`),
   KEY `literature_id` (`literature_id`),
   CONSTRAINT `data_set_literature_ibfk_1` FOREIGN KEY (`data_set_id`) REFERENCES `data_set` (`id`),
   CONSTRAINT `data_set_literature_ibfk_2` FOREIGN KEY (`literature_id`) REFERENCES `literature_meta` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
-
--- ----------------------------
---  Records of `data_set_literature`
--- ----------------------------
-BEGIN;
-INSERT INTO `data_set_literature` VALUES ('1', '1');
-COMMIT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- ----------------------------
 --  Table structure for `favorite`
@@ -198,18 +176,11 @@ DROP TABLE IF EXISTS `favorite`;
 CREATE TABLE `favorite` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
-  `name` varchar(64) NOT NULL,
+  `name` varchar(64) COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `favorite_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
-
--- ----------------------------
---  Records of `favorite`
--- ----------------------------
-BEGIN;
-INSERT INTO `favorite` VALUES ('1', '1', 'default');
-COMMIT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- ----------------------------
 --  Table structure for `favorite_resource`
@@ -220,17 +191,11 @@ CREATE TABLE `favorite_resource` (
   `resource_id` int(11) NOT NULL,
   `type` int(11) NOT NULL,
   `favorite_id` int(11) NOT NULL,
+  `favorite_time` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `favorite_id` (`favorite_id`),
   CONSTRAINT `favorite_resource_ibfk_1` FOREIGN KEY (`favorite_id`) REFERENCES `favorite` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
-
--- ----------------------------
---  Records of `favorite_resource`
--- ----------------------------
-BEGIN;
-INSERT INTO `favorite_resource` VALUES ('1', '1', '1', '1');
-COMMIT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- ----------------------------
 --  Table structure for `literature_meta`
@@ -238,37 +203,40 @@ COMMIT;
 DROP TABLE IF EXISTS `literature_meta`;
 CREATE TABLE `literature_meta` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `title` varchar(256) NOT NULL,
-  `abstract` mediumtext,
-  `author` varchar(256) DEFAULT NULL,
+  `title` varchar(256) COLLATE utf8_bin NOT NULL,
+  `titleCN` varchar(256) COLLATE utf8_bin DEFAULT NULL,
+  `abstract` text COLLATE utf8_bin,
+  `abstractCN` text COLLATE utf8_bin,
+  `author` varchar(256) COLLATE utf8_bin DEFAULT NULL,
+  `authorCN` varchar(256) COLLATE utf8_bin DEFAULT NULL,
   `published_year` int(11) DEFAULT NULL,
-  `key_words` varchar(256) DEFAULT NULL,
+  `publisher` varchar(256) COLLATE utf8_bin DEFAULT NULL,
+  `publisherCN` varchar(256) COLLATE utf8_bin DEFAULT NULL,
+  `key_words` varchar(256) COLLATE utf8_bin DEFAULT NULL,
+  `key_words_CN` varchar(256) COLLATE utf8_bin DEFAULT NULL,
+  `location` varchar(256) COLLATE utf8_bin DEFAULT NULL,
+  `institute` varchar(256) COLLATE utf8_bin DEFAULT NULL,
+  `instructor` varchar(256) COLLATE utf8_bin DEFAULT NULL,
+  `language` varchar(256) COLLATE utf8_bin DEFAULT NULL,
   `pages` int(11) DEFAULT NULL,
-  `uri` varchar(256) DEFAULT NULL,
+  `volume` int(11) DEFAULT NULL,
+  `issue` int(11) DEFAULT NULL,
+  `section` int(11) DEFAULT NULL,
+  `edition` varchar(256) COLLATE utf8_bin DEFAULT NULL,
+  `press` varchar(256) COLLATE utf8_bin DEFAULT NULL,
+  `editor` varchar(256) COLLATE utf8_bin DEFAULT NULL,
+  `ISBN` varchar(256) COLLATE utf8_bin DEFAULT NULL,
+  `ISSN` varchar(256) COLLATE utf8_bin DEFAULT NULL,
+  `DOI` varchar(256) COLLATE utf8_bin DEFAULT NULL,
+  `uri` varchar(256) COLLATE utf8_bin DEFAULT NULL,
   `creator_id` int(11) NOT NULL,
   `updater_id` int(11) DEFAULT NULL,
   `literature_type_id` int(11) NOT NULL,
   `create_time` datetime NOT NULL,
   `update_time` datetime DEFAULT NULL,
-  `DOI` varchar(256) DEFAULT NULL,
-  `ISBN` varchar(256) DEFAULT NULL,
-  `ISSN` varchar(256) DEFAULT NULL,
-  `abstractCN` mediumtext,
-  `authorCN` varchar(256) DEFAULT NULL,
-  `edition` varchar(256) DEFAULT NULL,
-  `editor` varchar(256) DEFAULT NULL,
-  `institute` varchar(256) DEFAULT NULL,
-  `instructor` varchar(256) DEFAULT NULL,
-  `issue` int(11) DEFAULT NULL,
-  `key_words_CN` varchar(256) DEFAULT NULL,
-  `language` varchar(256) DEFAULT NULL,
-  `location` varchar(256) DEFAULT NULL,
-  `press` varchar(256) DEFAULT NULL,
-  `publisher` varchar(256) DEFAULT NULL,
-  `publisherCN` varchar(256) DEFAULT NULL,
-  `section` int(11) DEFAULT NULL,
-  `titleCN` varchar(256) DEFAULT NULL,
-  `volume` int(11) DEFAULT NULL,
+  `file_name` varchar(256) COLLATE utf8_bin DEFAULT NULL,
+  `rank_num` int(11) DEFAULT NULL,
+  `total_rank` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `creator_id` (`creator_id`),
   KEY `literature_type_id` (`literature_type_id`),
@@ -276,13 +244,13 @@ CREATE TABLE `literature_meta` (
   CONSTRAINT `literature_meta_ibfk_1` FOREIGN KEY (`creator_id`) REFERENCES `user` (`id`),
   CONSTRAINT `literature_meta_ibfk_2` FOREIGN KEY (`literature_type_id`) REFERENCES `type` (`id`),
   CONSTRAINT `literature_meta_ibfk_3` FOREIGN KEY (`updater_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- ----------------------------
 --  Records of `literature_meta`
 -- ----------------------------
 BEGIN;
-INSERT INTO `literature_meta` VALUES ('1', 'Frequent Pattern Mining', 'Frequent pattern mining has been a focused theme in data mining research for over a decade. Abundant literature has been dedicated to this research and tremendous progress has been made, ranging from efficient and scalable algorithms for frequent itemset mining in transaction databases to numerous research frontiers, such as sequential pattern mining, structured pattern mining, correlation mining, associative classification, and frequent pattern-based clustering, as well as their broad applications. In this article, we provide a brief overview of the current status of frequent pattern mining and discuss a few promising research directions. We believe that frequent pattern mining research has substantially broadened the scope of data analysis and will have deep impact on data mining methodologies and applications in the long run. However, there are still some challenging research issues that need to be solved before frequent pattern mining can claim a cornerstone approach in data mining applications.', 'Jiawei HAN', '2008', 'Frequent pattern mining', '20', '/uploaded/p19i791duh1radqa41csgtmm9e07.pdf', '1', '1', '1', '2015-03-24 20:57:18', '2015-04-07 13:41:24', 'jsldkjf89s8d9f9s8d9f8', '120120102012032', '123jk1j2k31k2312', '这是一段我胡乱写的中文摘要呼呼><', '韩家伟', '1.0', 'Tom Lee', 'University of Illinois - Urbana Shampane', null, '2', '模式识别，数据挖掘', 'English', 'USA', '南大', 'xxx', 'xx出版商', '3', '频繁模式挖掘', '1'), ('2', 'I am cited', 'cited.....', 'Jiawei Han', '2005', 'cited', '15', '/uploaded/gSpan1428150430515.pdf', '1', '1', '1', '2015-03-24 21:03:31', '2015-03-24 21:03:33', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null), ('3', 'testchin', 'testchin', 'a', null, null, null, null, '1', null, '2', '2015-03-31 14:41:35', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null), ('4', 'This is for testing add..', '', 'chen wong', '0', '', '0', '/uploaded/graph_mining1428151618800.pdf', '1', null, '1', '2015-03-31 16:43:35', null, '', '', '', '', '', '', '', '', '', '0', '', '', '', '', '', '', '0', '', '0'), ('5', 'Time consuming operation', '', 'Penny Lee', '0', '', '0', '', '1', null, '1', '2015-03-31 18:53:37', null, '', '', '', '', '', '', '', '', '', '0', '', '', '', '', '', '', '0', '', '0'), ('6', 'I want to go through the whole process', 'huhuhuh', 'Chen Wang', '2015', '', '0', '/uploaded/p19i7bth1c7s1lr9g9s10p5bscj.pdf', '1', null, '1', '2015-04-06 20:35:50', null, '', '', '', '呼呼噜噜', '王晨', '', '', '', '', '0', '', '', '', '', '', '', '0', '我想走一遍完整的流程', '0'), ('13', 'I do not know why', '', '', '0', '', '0', '', '1', null, '1', '2015-04-06 20:50:32', null, '', '', '', '', '', '', '', '', '', '0', '', '', '', '', '', '', '0', '', '0'), ('14', 'jkjkjkjkj', '', '', '0', '', '0', '', '1', null, '1', '2015-04-06 20:50:32', null, '', '', '', '', '', '', '', '', '', '0', '', '', '', '', '', '', '0', '', '0'), ('15', 'test for test', '', '', '0', '', '0', '', '1', null, '1', '2015-04-06 20:57:38', null, '', '', '', '', '', '', '', '', '', '0', '', '', '', '', '', '', '0', '', '0'), ('16', 'jkjljkjljkjlkjlkjljk', '', '', '0', '', '0', '', '1', null, '1', '2015-04-06 20:57:38', null, '', '', '', '', '', '', '', '', '', '0', '', '', '', '', '', '', '0', '', '0'), ('17', 'test scroll to top', '', '', '0', '', '0', '', '1', null, '1', '2015-04-06 21:34:02', null, '', '', '', '', '', '', '', '', '', '0', '', '', '', '', '', '', '0', '呵呵测试一下', '22'), ('18', 'let me try', '', 'chen', '0', '', '0', '', '1', '1', '1', '2015-04-06 21:39:25', '2015-04-06 21:47:17', '', '', '', '', '', '', '', '', '', '0', '', '', '', '', '', '', '0', '', '0');
+INSERT INTO `literature_meta` VALUES ('2', 'My very first article', '我的第一篇文章', 'This is the first article', 'C.Wang的第一篇文章', 'C.Wang', '王晨', '2014', 'Nanjing University', '南京大学', '', '', '', '', '', '', '0', '0', '0', '0', '', '', '', '', '', '', '/uploaded/p19i9iisutm33vr2ne8jrq1m707.pdf', '1', '1', '1', '2015-04-07 17:08:36', '2015-04-07 17:08:36', null, null, null);
 COMMIT;
 
 -- ----------------------------
@@ -293,18 +261,111 @@ CREATE TABLE `ppt` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `literature_id` int(11) DEFAULT NULL,
   `size` float DEFAULT NULL,
-  `uri` varchar(256) DEFAULT NULL,
+  `uri` varchar(256) COLLATE utf8_bin DEFAULT NULL,
+  `ppt_name` varchar(256) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `literature_id` (`literature_id`),
-  CONSTRAINT `ppt_ibfk_2` FOREIGN KEY (`literature_id`) REFERENCES `literature_meta` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+  CONSTRAINT `ppt_ibfk_1` FOREIGN KEY (`literature_id`) REFERENCES `literature_meta` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- ----------------------------
 --  Records of `ppt`
 -- ----------------------------
 BEGIN;
-INSERT INTO `ppt` VALUES ('2', '1', '2293960', '/uploadedPpt/p19i7b76181rhs18ov1nl6131k3nk7.ppt'), ('3', '6', '1088530', '/uploadedPpt/p19i7bv5k5mrd1cr81udr1v4p1c271f.ppt');
+INSERT INTO `ppt` VALUES ('1', '2', '4335810', '/uploadedPpt/p19i9ikdbkgg41lpv1jtgnhvff13.ppt', null);
 COMMIT;
+
+-- ----------------------------
+--  Table structure for `report`
+-- ----------------------------
+DROP TABLE IF EXISTS `report`;
+CREATE TABLE `report` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(256) COLLATE utf8_bin NOT NULL,
+  `report_date` varchar(256) COLLATE utf8_bin DEFAULT NULL,
+  `reporter` varchar(256) COLLATE utf8_bin DEFAULT NULL,
+  `company` varchar(256) COLLATE utf8_bin DEFAULT NULL,
+  `reporter_title` varchar(256) COLLATE utf8_bin DEFAULT NULL,
+  `location` varchar(256) COLLATE utf8_bin DEFAULT NULL,
+  `creator_id` int(11) NOT NULL,
+  `updater_id` int(11) DEFAULT NULL,
+  `create_time` datetime NOT NULL,
+  `update_time` datetime DEFAULT NULL,
+  `total_rank` int(11) DEFAULT NULL,
+  `rank_num` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `creator_id` (`creator_id`),
+  KEY `updater_id` (`updater_id`),
+  CONSTRAINT `report_ibfk_1` FOREIGN KEY (`creator_id`) REFERENCES `user` (`id`),
+  CONSTRAINT `report_ibfk_2` FOREIGN KEY (`updater_id`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ----------------------------
+--  Table structure for `report_attachment`
+-- ----------------------------
+DROP TABLE IF EXISTS `report_attachment`;
+CREATE TABLE `report_attachment` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `report_id` int(11) DEFAULT NULL,
+  `uri` varchar(256) COLLATE utf8_bin DEFAULT NULL,
+  `attachment_name` varchar(256) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `report_id` (`report_id`),
+  CONSTRAINT `report_attachment_ibfk_1` FOREIGN KEY (`report_id`) REFERENCES `report` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ----------------------------
+--  Table structure for `report_code`
+-- ----------------------------
+DROP TABLE IF EXISTS `report_code`;
+CREATE TABLE `report_code` (
+  `report_id` int(11) NOT NULL,
+  `code_id` int(11) NOT NULL,
+  PRIMARY KEY (`report_id`,`code_id`),
+  KEY `code_id` (`code_id`),
+  CONSTRAINT `report_code_ibfk_1` FOREIGN KEY (`code_id`) REFERENCES `code` (`id`),
+  CONSTRAINT `report_code_ibfk_2` FOREIGN KEY (`report_id`) REFERENCES `report` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ----------------------------
+--  Table structure for `report_data_set`
+-- ----------------------------
+DROP TABLE IF EXISTS `report_data_set`;
+CREATE TABLE `report_data_set` (
+  `report_id` int(11) NOT NULL,
+  `data_set_id` int(11) NOT NULL,
+  PRIMARY KEY (`report_id`,`data_set_id`),
+  KEY `data_set_id` (`data_set_id`),
+  CONSTRAINT `report_data_set_ibfk_1` FOREIGN KEY (`data_set_id`) REFERENCES `data_set` (`id`),
+  CONSTRAINT `report_data_set_ibfk_2` FOREIGN KEY (`report_id`) REFERENCES `report` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ----------------------------
+--  Table structure for `report_literature`
+-- ----------------------------
+DROP TABLE IF EXISTS `report_literature`;
+CREATE TABLE `report_literature` (
+  `report_id` int(11) NOT NULL,
+  `literature_id` int(11) NOT NULL,
+  PRIMARY KEY (`report_id`,`literature_id`),
+  KEY `literature_id` (`literature_id`),
+  CONSTRAINT `report_literature_ibfk_1` FOREIGN KEY (`literature_id`) REFERENCES `literature_meta` (`id`),
+  CONSTRAINT `report_literature_ibfk_2` FOREIGN KEY (`report_id`) REFERENCES `report` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ----------------------------
+--  Table structure for `report_recording`
+-- ----------------------------
+DROP TABLE IF EXISTS `report_recording`;
+CREATE TABLE `report_recording` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `report_id` int(11) DEFAULT NULL,
+  `uri` varchar(256) COLLATE utf8_bin DEFAULT NULL,
+  `recording_name` varchar(256) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `report_id` (`report_id`),
+  CONSTRAINT `report_recording_ibfk_1` FOREIGN KEY (`report_id`) REFERENCES `report` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- ----------------------------
 --  Table structure for `tag`
@@ -312,16 +373,9 @@ COMMIT;
 DROP TABLE IF EXISTS `tag`;
 CREATE TABLE `tag` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(64) NOT NULL,
+  `name` varchar(64) COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
-
--- ----------------------------
---  Records of `tag`
--- ----------------------------
-BEGIN;
-INSERT INTO `tag` VALUES ('1', 'like it'), ('2', 'pretty like it'), ('3', 'couldn\'t like it more');
-COMMIT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- ----------------------------
 --  Table structure for `tag_resource`
@@ -335,14 +389,7 @@ CREATE TABLE `tag_resource` (
   PRIMARY KEY (`id`),
   KEY `tag_id` (`tag_id`),
   CONSTRAINT `tag_resource_ibfk_1` FOREIGN KEY (`tag_id`) REFERENCES `tag` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
-
--- ----------------------------
---  Records of `tag_resource`
--- ----------------------------
-BEGIN;
-INSERT INTO `tag_resource` VALUES ('1', '1', '3', '1');
-COMMIT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- ----------------------------
 --  Table structure for `type`
@@ -350,16 +397,16 @@ COMMIT;
 DROP TABLE IF EXISTS `type`;
 CREATE TABLE `type` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(64) NOT NULL,
+  `name` varchar(64) COLLATE utf8_bin NOT NULL,
   `type_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- ----------------------------
 --  Records of `type`
 -- ----------------------------
 BEGIN;
-INSERT INTO `type` VALUES ('1', 'paper', '1'), ('2', 'book', '1'), ('3', 'mention', '3'), ('4', 'image', '2');
+INSERT INTO `type` VALUES ('1', '期刊', '1'), ('2', '会议', '1'), ('3', '图片', '2'), ('4', '数据', '2');
 COMMIT;
 
 -- ----------------------------
@@ -368,17 +415,17 @@ COMMIT;
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(20) NOT NULL,
-  `password` varchar(32) NOT NULL,
+  `name` varchar(20) COLLATE utf8_bin NOT NULL,
+  `password` varchar(32) COLLATE utf8_bin NOT NULL,
   `privilege` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- ----------------------------
 --  Records of `user`
 -- ----------------------------
 BEGIN;
-INSERT INTO `user` VALUES ('1', 'test', '1111', '1');
+INSERT INTO `user` VALUES ('1', 'chen', '123', '0');
 COMMIT;
 
 -- ----------------------------
@@ -389,17 +436,18 @@ CREATE TABLE `video` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `literature_id` int(11) DEFAULT NULL,
   `size` float DEFAULT NULL,
-  `uri` varchar(256) DEFAULT NULL,
+  `uri` varchar(256) COLLATE utf8_bin DEFAULT NULL,
+  `video_name` varchar(256) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `literature_id` (`literature_id`),
-  CONSTRAINT `video_ibfk_2` FOREIGN KEY (`literature_id`) REFERENCES `literature_meta` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+  CONSTRAINT `video_ibfk_1` FOREIGN KEY (`literature_id`) REFERENCES `literature_meta` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- ----------------------------
 --  Records of `video`
 -- ----------------------------
 BEGIN;
-INSERT INTO `video` VALUES ('3', '1', '751105000', '/uploadedVideo/Rouge.1988.BDRip.x264.2AAC.MiniSD-Dream.mkv'), ('4', '1', '59947200', '/uploadedVideo/p19i79s1l5rgm11uko571uco17mc7.mp4'), ('5', '6', '26618700', '/uploadedVideo/p19i7bu5siqvn25c10l81f2g13mfl.MP4'), ('6', '1', '61581300', '/uploadedVideo/p19i97t8i81goi1eh11k371o5kstmd.mp4');
+INSERT INTO `video` VALUES ('1', '2', '26618700', '/uploadedVideo/p19i9ijmaqedd1bn18jb2921t989.MP4', null);
 COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;
