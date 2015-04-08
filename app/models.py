@@ -105,7 +105,7 @@ class Report(db.Model):
 class Report_attachment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     report_id = db.Column(db.Integer, db.ForeignKey('report.id'))
-    report = db.relationship('report', backref=db.backref('attachments', lazy='dynamic'))
+    report = db.relationship('Report', backref=db.backref('attachments', lazy='dynamic'))
 
     uri = db.Column(db.String(256))
     attachment_name = db.Column(db.String(256))
@@ -118,7 +118,7 @@ class Report_attachment(db.Model):
 class Report_recording(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     report_id = db.Column(db.Integer, db.ForeignKey('report.id'))
-    report = db.relationship('report', backref=db.backref('recordings', lazy='dynamic'))
+    report = db.relationship('Report', backref=db.backref('recordings', lazy='dynamic'))
 
     uri = db.Column(db.String(256))
     recording_name = db.Column(db.String(256))
