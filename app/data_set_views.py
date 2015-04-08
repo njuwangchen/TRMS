@@ -2,7 +2,8 @@ __author__ = 'ClarkWong'
 
 from app import db, api
 from flask.ext.restful import reqparse, abort, Resource, fields, marshal_with, marshal
-from models import Data_set
+from models import Data_set, Type
+import dateutil.parser
 
 
 data_set_fields={
@@ -15,7 +16,8 @@ data_set_fields={
     'update_time': fields.String,
     'description': fields.String,
     'size': fields.Float,
-    'uri': fields.String
+    'uri': fields.String,
+    'type_name': fields.String
 }
 
 class Data_setApi(Resource):
@@ -30,12 +32,14 @@ class Data_setApi(Resource):
         self.parser.add_argument('description', type=unicode,location='json')
         self.parser.add_argument('size', type=float,location='json')
         self.parser.add_argument('uri', type=unicode,location='json')
+        self.parser.add_argument('type_name', type=unicode, location='json')
         super(Data_setApi, self).__init__()
 
     @marshal_with(data_set_fields)
     def get(self, data_set_id):
         data_set = Data_set.query.filter_by(id=data_set_id).first()
         if data_set:
+            data_set.type_name = data_set.type.name
             return data_set, 201
         else:
             abort(404, message='Data_set {} not found'.format(data_set_id))
@@ -49,18 +53,20 @@ class Data_setApi(Resource):
         else:
             abort(404, message='Data_set {} not found'.format(data_set_id))
 
-    # @marshal_with(data_set_fields)
-    # def put(self, data_set_id):
-    #     data_set = Data_set.query.filter_by(id=data_set_id).first()
-    #     if data_set:
-    #         args = self.parser.parse_args()
-    #         for k,v in args.iteritems():
-    #             if v!= None:
-    #                 setattr(data_set, k, v)
-    #         db.session.commit()
-    #         return data_set, 201
-    #     else:
-    #         abort(404, message='Data_set {} not found'.format(data_set_id))
+    @marshal_with(data_set_fields)
+    def put(self, data_set_id):
+        data_set = Data_set.query.filter_by(id=data_set_id).first()
+        if data_set:
+            args = self.parser.parse_args()
+            args['create_time']= dateutil.parser.parse(args['create_time'])
+            args['update_time']= dateutil.parser.parse(args['update_time'])
+            for k,v in args.iteritems():
+                if v!= None:
+                    setattr(data_set, k, v)
+            db.session.commit()
+            return data_set, 201
+        else:
+            abort(404, message='Data_set {} not found'.format(data_set_id))
 
 class Data_setListApi(Resource):
 
@@ -75,10 +81,13 @@ class Data_setListApi(Resource):
         self.parser.add_argument('description', type=unicode,location='json')
         self.parser.add_argument('size', type=float,location='json')
         self.parser.add_argument('uri', type=unicode,location='json')
+        self.parser.add_argument('type_name', type=unicode, location='json')
         super(Data_setListApi, self).__init__()
 
     def get(self):
         data_setList = Data_set.query.all()
+        for data_set in data_setList:
+            data_set.type_name = data_set.type.name
         if data_setList:
             return [marshal(data_set, data_set_fields) for data_set in data_setList]
         else:
@@ -88,7 +97,9 @@ class Data_setListApi(Resource):
     def post(self):
         args = self.parser.parse_args()
         title = args['title']
-        data_set_type_id = args['data_set_type_id']
+        # data_set_type_id = args['data_set_type_id']
+        data_set_type = args['type_name']
+        data_set_type_id = Type.query.filter_by(name=data_set_type).first()
         creator_id = args['creator_id']
         create_time = args['create_time']
         data_set = Data_set(title=title, creator_id=creator_id, create_time=create_time,data_set_type_id=data_set_type_id)
