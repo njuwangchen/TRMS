@@ -82,13 +82,25 @@ class TypeQueryApi(Resource):
 
      def post(self):
         args = self.parser.parse_args()
-        name = args['name']
-        type_id = args['type_id']
-        typeList = Type.query.filter_by(name=name, type_id=type_id)
-        if typeList:
-            return [marshal(type_self, type_fields) for type_self in typeList]
+        q = Type.query
+        for attr, value in args.items():
+            if value:
+                q = q.filter(getattr(Type, attr).like("%%%s%%" % value))
+        if q:
+            return [marshal(type_self, type_fields) for type_self in q]
         else:
             abort(404, message='No such type at all')
+
+     # def post(self):
+     #    args = self.parser.parse_args()
+     #    name = args['name']
+     #    type_id = args['type_id']
+     #    typeList = Type.query.filter_by(name=name, type_id=type_id)
+     #    if typeList:
+     #        return [marshal(type_self, type_fields) for type_self in typeList]
+     #    else:
+     #        abort(404, message='No such type at all')
+
 
 api.add_resource(TypeApi, '/api/v1/types/<type_id>', endpoint='type')
 api.add_resource(TypeListApi, '/api/v1/types', endpoint='typeList')
