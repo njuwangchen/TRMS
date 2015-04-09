@@ -74,6 +74,7 @@ class ReportListApi(Resource):
         self.parser.add_argument('updater_id', type=int, location='json')
         self.parser.add_argument('create_time', required=True, location='json')
         self.parser.add_argument('update_time', location='json')
+
         super(ReportListApi, self).__init__()
 
     @marshal_with(report_fields)
