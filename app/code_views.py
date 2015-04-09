@@ -102,20 +102,38 @@ class CodeListApi(Resource):
 class CodeQuery(Resource):
     def __init__(self):
         self.parser = reqparse.RequestParser()
-        self.parser.add_argument('creator_id', type=int,required=True,location='json')
-        self.parser.add_argument('update_id', type=int,required=True,location='json')
+        self.parser.add_argument('title', type=unicode,location='json')
+        self.parser.add_argument('creator_id', type=int,location='json')
+        self.parser.add_argument('updater_id', type=int,location='json')
+        self.parser.add_argument('create_time',location='json')
+        self.parser.add_argument('update_time', location='json')
+        self.parser.add_argument('description', type=unicode,location='json')
+        self.parser.add_argument('size', type=float,location='json')
+        self.parser.add_argument('uri', type=unicode,location='json')
+        self.parser.add_argument('language', type=unicode,location='json')
         super(CodeQuery, self).__init__()
-
 
     def post(self):
         args = self.parser.parse_args()
-        creator_id = args['creator_id']
-        update_id = args['update_id']
-        codeList = Code.query.filter_by(update_id=update_id,creator_id=creator_id)
-        if codeList:
-            return [marshal(code, code_fields) for code in codeList]
+        q = Code.query
+        for attr, value in args.items():
+            if value:
+                q = q.filter(getattr(Code, attr).like("%%%s%%" % value))
+        if q:
+            return [marshal(code, code_fields) for code in q]
         else:
-            abort(404, message='No code at all')
+            abort(404, message='No such code at all')
+
+
+    # def post(self):
+    #     args = self.parser.parse_args()
+    #     creator_id = args['creator_id']
+    #     update_id = args['update_id']
+    #     codeList = Code.query.filter_by(update_id=update_id,creator_id=creator_id)
+    #     if codeList:
+    #         return [marshal(code, code_fields) for code in codeList]
+    #     else:
+    #         abort(404, message='No code at all')
 
 
 api.add_resource(CodeQuery, '/api/v1/codes/query', endpoint='codequery')

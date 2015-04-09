@@ -99,7 +99,7 @@ class Data_setListApi(Resource):
         title = args['title']
         # data_set_type_id = args['data_set_type_id']
         data_set_type = args['type_name']
-        data_set_type_id = Type.query.filter_by(name=data_set_type).first()
+        data_set_type_id = Type.query.filter_by(name=data_set_type).first().id
         creator_id = args['creator_id']
         create_time = args['create_time']
         data_set = Data_set(title=title, creator_id=creator_id, create_time=create_time,data_set_type_id=data_set_type_id)
@@ -113,11 +113,32 @@ class Data_setListApi(Resource):
 class Data_setQuery(Resource):
     def __init__(self):
         self.parser = reqparse.RequestParser()
-        self.parser.add_argument('creator_id', type=int,required=True,location='json')
-        self.parser.add_argument('update_id', type=int,required=True,location='json')
+        self.parser.add_argument('title', type=unicode,location='json')
+        self.parser.add_argument('creator_id', type=int,location='json')
+        self.parser.add_argument('data_set_type_id', type=int,location='json')
+        self.parser.add_argument('updater_id', type=int,location='json')
+        self.parser.add_argument('create_time',location='json')
+        self.parser.add_argument('update_time', location='json')
+        self.parser.add_argument('description', type=unicode,location='json')
+        self.parser.add_argument('size', type=float,location='json')
+        self.parser.add_argument('uri', type=unicode,location='json')
+        self.parser.add_argument('type_name', type=unicode, location='json')
         super(Data_setQuery, self).__init__()
 
+    def post(self):
+        args = self.parser.parse_args()
+        q = Data_set.query
+        for attr, value in args.items():
+            if value:
+                q = q.filter(getattr(Data_set, attr).like("%%%s%%" % value))
 
+        if q:
+            for data_set in q:
+                data_set.type_name = data_set.type.name
+
+            return [marshal(data_set, data_set_fields) for data_set in q]
+        else:
+            abort(404, message='No such data_set at all')
     # def post(self):
     #     args = self.parser.parse_args()
     #     creator_id = args['creator_id']
