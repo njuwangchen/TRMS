@@ -13,11 +13,12 @@ comment_fields={
     'type' : fields.Integer,
     'content' : fields.String,
     'star' : fields.Integer,
-    'comment_time' : fields.String
+    'comment_time' : fields.String,
+    'is_simple' : fields.Integer,
+    'commenter_name' : fields.String
 }
 
 class CommentListApi(Resource):
-
     def __init__(self):
         self.parser = reqparse.RequestParser()
         self.parser.add_argument('commenter_id', type=int,required=True, location='json')
@@ -26,6 +27,7 @@ class CommentListApi(Resource):
         self.parser.add_argument('content', type=unicode, location='json')
         self.parser.add_argument('star', type=int, required=True, location='json')
         self.parser.add_argument('comment_time',required=True,location='json')
+        self.parser.add_argument('is_simple', required=True, location='json')
         super(CommentListApi, self).__init__()
 
     # retrieve all comments
@@ -51,9 +53,39 @@ class CommentListApi(Resource):
         star = args['star']
         args['comment_time']= dateutil.parser.parse(args['comment_time'])
         comment_time = args['comment_time']
-        comment = Comment(commenter_id, comment_time, star, resource_id, type, content)
+        is_simple = args['is_simple']
+        comment = Comment(commenter_id, comment_time, star, resource_id, type, is_simple, content)
         db.session.add(comment)
         db.session.commit()
         return comment, 201
 
+class CommentQueryApi(Resource):
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('commenter_id', type=int, location='json')
+        self.parser.add_argument('resource_id', type=int, location='json')
+        self.parser.add_argument('type', type=int, location='json')
+        self.parser.add_argument('content', type=unicode, location='json')
+        self.parser.add_argument('star', type=int, location='json')
+        self.parser.add_argument('comment_time', location='json')
+        self.parser.add_argument('is_simple', location='json')
+        super(CommentQueryApi, self).__init__()
+
+    def post(self):
+        args = self.parser.parse_args()
+        q = Comment.query
+        for attr, value in args.items():
+            if value:
+                q = q.filter(getattr(Comment, attr).like("%%%s%%" % value))
+        if q:
+            q = q.order_by(Comment.comment_time.desc())
+            result = []
+            for comment in q:
+                comment.commenter_name = comment.commenter.name
+                result.append(marshal(comment, comment_fields))
+            return result, 201
+        else:
+            abort(404, message='No such comments')
+
 api.add_resource(CommentListApi, '/api/v1/comments', endpoint='commentList')
+api.add_resource(CommentQueryApi, '/api/v1/comments/query', endpoint='commentQuery')

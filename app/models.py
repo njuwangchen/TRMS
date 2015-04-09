@@ -361,12 +361,15 @@ class Comment(db.Model):
     star = db.Column(db.Integer, nullable=False)
     comment_time = db.Column(db.DateTime, nullable=False)
 
-    def __init__(self, commenter_id, comment_time, star, resource_id, type, content=''):
+    is_simple = db.Column(db.Integer, nullable=False)
+
+    def __init__(self, commenter_id, comment_time, star, resource_id, type, is_simple, content=''):
         self.commenter_id = commenter_id
         self.comment_time = comment_time
         self.star = star
         self.resource_id = resource_id
         self.type = type
+        self.is_simple = is_simple
         self.content = content
 
 
