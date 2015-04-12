@@ -88,10 +88,11 @@ class UserLoginApi(Resource):
 
     def post(self):
         args = self.parser.parse_args()
+        print args
         q = User.query.filter_by(name=args['username']).first()
         if q:
             if q.password == args['password']:
-                return 'TRUE'
+                return q.id
             else:
                 return 'FALSE'
         else:

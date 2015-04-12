@@ -209,6 +209,28 @@ class LiteratureQueryApi(Resource):
         else:
             abort(404, message='No such literature_meta at all')
 
+class LiteratureBatchApi(Resource):
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('ids', type=list, location='json')
+        super(LiteratureBatchApi)
+
+
+    def post(self):
+        args = self.parser.parse_args()
+        ids = args['ids']
+        q = Literature_meta.query
+        result = []
+        for single in ids:
+            tmp = q.filter_by(id = single)
+            if tmp:
+                result.append(tmp.first())
+
+        return [marshal(literature_meta, literature_meta_fields) for literature_meta in result]
+
+api.add_resource(LiteratureBatchApi, '/api/v1/literatures/batch', endpoint='literatureBatch')
+
+
 api.add_resource(LiteratureApi, '/api/v1/literatures/<literature_id>', endpoint='literature')
 api.add_resource(LiteratureListApi, '/api/v1/literatures', endpoint='literatureList')
 api.add_resource(LiteratureQueryApi, '/api/v1/literatures/query', endpoint='literature_metaQuery')

@@ -37,3 +37,38 @@ class favorite_resourceApi(Resource):
         return favorite_resource, 201
 
 api.add_resource(favorite_resourceApi, '/api/v1/favorite_resources', endpoint='favorite_resource')
+
+class favorite_resourceQuery(Resource):
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('resource_id', type=int, location='json')
+        self.parser.add_argument('type', type=int,location='json')
+        self.parser.add_argument('favorites', type=list, location='json')
+        super(favorite_resourceQuery,self).__init__()
+
+    def post(self):
+        args = self.parser.parse_args()
+        q = Favorite_resource.query
+        qList = [];
+        for k,v in args.items():
+            if v:
+                if k == 'favorites':
+                    for each in v:
+                        for innerq in q.filter(getattr(Favorite_resource,'favorite_id') == (each['id'])).all():
+                            qList.append(innerq)
+                else:
+                    q = q.filter(getattr(Favorite_resource, k) == v)
+        type_list = [marshal(favorite_resource,favorite_resource_fields) for favorite_resource in q.all()]
+        qList = [marshal(favorite_resource,favorite_resource_fields) for favorite_resource in qList]
+        result = [];
+        for element in type_list:
+            for inner_element in qList:
+                if element['id'] == inner_element['id']:
+                    result.append(element)
+        res_id_list = [i['resource_id'] for i in result]
+        res_id_list = list(set(res_id_list))
+
+        return res_id_list
+
+
+api.add_resource(favorite_resourceQuery,'/api/v1/favorite_resource/query', endpoint='favorite_resourceQuery')

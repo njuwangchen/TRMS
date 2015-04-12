@@ -125,6 +125,27 @@ class ReportQueryApi(Resource):
             return [marshal(report, report_fields) for report in q]
         else:
             abort(404, message='No such report at all')
+             
+class ReportBatchApi(Resource):
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('ids', type=list, location='json')
+        super(ReportBatchApi)
+
+
+    def post(self):
+        args = self.parser.parse_args()
+        ids = args['ids']
+        q = Report.query
+        result = []
+        for single in ids:
+            tmp = q.filter_by(id = single)
+            if tmp:
+                result.append(tmp.first())
+
+        return [marshal(report, report_fields) for report in result]
+
+api.add_resource(ReportBatchApi, '/api/v1/reports/batch', endpoint='reportBatch')
 
 api.add_resource(ReportApi, '/api/v1/reports/<report_id>', endpoint='report')
 api.add_resource(ReportListApi, '/api/v1/reports', endpoint='reportList')

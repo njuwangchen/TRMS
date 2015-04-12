@@ -149,6 +149,26 @@ class Data_setQuery(Resource):
     #     else:
     #         abort(404, message='No data_set at all')
 
+class Data_setBatchApi(Resource):
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('ids', type=list, location='json')
+        super(Data_setBatchApi)
+
+
+    def post(self):
+        args = self.parser.parse_args()
+        ids = args['ids']
+        q = Data_set.query
+        result = []
+        for single in ids:
+            tmp = q.filter_by(id = single)
+            if tmp:
+                result.append(tmp.first())
+
+        return [marshal(data_set, data_set_fields) for data_set in result]
+
+api.add_resource(Data_setBatchApi, '/api/v1/data_sets/batch', endpoint='data_setBatch')
 
 api.add_resource(Data_setQuery, '/api/v1/data_sets/query', endpoint='data_setquery')
 api.add_resource(Data_setListApi, '/api/v1/data_sets', endpoint='data_setList')

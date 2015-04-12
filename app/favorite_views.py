@@ -12,6 +12,7 @@ favorite_fields = {
     'name': fields.String,
 }
 
+
 class favoriteListApi(Resource):
 
     def __init__(self):
@@ -43,4 +44,25 @@ class favoriteListApi(Resource):
         else:
             abort(404, message='No Favorite at all')
 
+class favoriteQuery(Resource):
+
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('user_id', type=int, location='json')
+        self.parser.add_argument('name', type=unicode, location='json')
+        super(favoriteQuery, self).__init__()
+
+
+    def post(self):
+        args = self.parser.parse_args()
+        q = Favorite.query
+        for attr, value in args.items():
+            if value:
+                q = q.filter(getattr(Favorite, attr).like("%%%s%%" % value))
+        if q:
+            return [marshal(favor,favorite_fields) for favor in q],201
+        else:
+            abort(404,message='favorites not found')
+
 api.add_resource(favoriteListApi, '/api/v1/favorites', endpoint='favoriteList')
+api.add_resource(favoriteQuery,'/api/v1/favorites/query', endpoint='favoriteQuery')

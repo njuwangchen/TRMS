@@ -135,7 +135,26 @@ class CodeQuery(Resource):
     #     else:
     #         abort(404, message='No code at all')
 
+class CodeBatchApi(Resource):
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('ids', type=list, location='json')
+        super(CodeBatchApi)
 
+
+    def post(self):
+        args = self.parser.parse_args()
+        ids = args['ids']
+        q = Code.query
+        result = []
+        for single in ids:
+            tmp = q.filter_by(id = single)
+            if tmp:
+                result.append(tmp.first())
+
+        return [marshal(code, code_fields) for code in result]
+            
+api.add_resource(CodeBatchApi, '/api/v1/codes/batch', endpoint='codeBatch')
 api.add_resource(CodeQuery, '/api/v1/codes/query', endpoint='codequery')
 api.add_resource(CodeListApi, '/api/v1/codes', endpoint='codeList')
 api.add_resource(CodeApi, '/api/v1/codes/<code_id>', endpoint='code')
