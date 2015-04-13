@@ -38,7 +38,9 @@ literature_meta_fields = {
     'updater_id': fields.Integer,
     'literature_type_id': fields.Integer,
     'create_time': fields.String,
-    'update_time': fields.String
+    'update_time': fields.String,
+    'total_rank' : fields.Integer,
+    'rank_num' : fields.Integer
 }
 
 class LiteratureApi(Resource):
@@ -76,6 +78,8 @@ class LiteratureApi(Resource):
         self.parser.add_argument('uri', type=unicode, location='json')
         self.parser.add_argument('updater_id', type=int, location='json')
         self.parser.add_argument('update_time', location='json')
+        self.parser.add_argument('total_rank', type=int, location='json')
+        self.parser.add_argument('rank_num', type=int, location='json')
 
         super(LiteratureApi, self).__init__()
 
@@ -137,6 +141,8 @@ class LiteratureListApi(Resource):
         self.parser.add_argument('uri', type=unicode, location='json')
         self.parser.add_argument('updater_id', type=int, location='json')
         self.parser.add_argument('update_time', location='json')
+        self.parser.add_argument('total_rank', type=int, location='json')
+        self.parser.add_argument('rank_num', type=int, location='json')
         super(LiteratureListApi, self).__init__()
 
     @marshal_with(literature_meta_fields)
@@ -195,6 +201,8 @@ class LiteratureQueryApi(Resource):
         self.parser.add_argument('uri', type=unicode, location='json')
         self.parser.add_argument('updater_id', type=int, location='json')
         self.parser.add_argument('update_time', location='json')
+        self.parser.add_argument('total_rank', type=int, location='json')
+        self.parser.add_argument('rank_num', type=int, location='json')
         super(LiteratureQueryApi, self).__init__()
 
      def post(self):

@@ -11,7 +11,7 @@
  Target Server Version : 50614
  File Encoding         : utf-8
 
- Date: 04/08/2015 10:34:34 AM
+ Date: 04/13/2015 17:16:20 PM
 */
 
 SET NAMES utf8;
@@ -103,10 +103,11 @@ CREATE TABLE `comment` (
   `content` text COLLATE utf8_bin,
   `star` int(11) NOT NULL,
   `comment_time` datetime NOT NULL,
+  `is_simple` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `commenter_id` (`commenter_id`),
   CONSTRAINT `comment_ibfk_1` FOREIGN KEY (`commenter_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- ----------------------------
 --  Table structure for `data_set`
@@ -223,7 +224,7 @@ CREATE TABLE `literature_meta` (
   CONSTRAINT `literature_meta_ibfk_1` FOREIGN KEY (`creator_id`) REFERENCES `user` (`id`),
   CONSTRAINT `literature_meta_ibfk_2` FOREIGN KEY (`literature_type_id`) REFERENCES `type` (`id`),
   CONSTRAINT `literature_meta_ibfk_3` FOREIGN KEY (`updater_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- ----------------------------
 --  Table structure for `ppt`
@@ -238,7 +239,7 @@ CREATE TABLE `ppt` (
   PRIMARY KEY (`id`),
   KEY `literature_id` (`literature_id`),
   CONSTRAINT `ppt_ibfk_1` FOREIGN KEY (`literature_id`) REFERENCES `literature_meta` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- ----------------------------
 --  Table structure for `report`
@@ -392,6 +393,6 @@ CREATE TABLE `video` (
   PRIMARY KEY (`id`),
   KEY `literature_id` (`literature_id`),
   CONSTRAINT `video_ibfk_1` FOREIGN KEY (`literature_id`) REFERENCES `literature_meta` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 SET FOREIGN_KEY_CHECKS = 1;
