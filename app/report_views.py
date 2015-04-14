@@ -1,4 +1,5 @@
 __author__ = 'justsavor'
+# -*- coding: utf-8 -*-
 
 from app import db, app
 from flask.ext.restful import reqparse, abort, Api, Resource, fields, marshal_with, marshal
@@ -18,6 +19,7 @@ report_fields = {
     'create_time': fields.String,
     'updater_id': fields.Integer,
     'update_time': fields.String,
+    'rank_str': fields.String
 }
 
 class ReportApi(Resource):
@@ -40,6 +42,11 @@ class ReportApi(Resource):
     def get(self, report_id):
         report = Report.query.filter_by(id=report_id).first()
         if report:
+            if report.rank_num:
+                report.rank = float(report.total_rank)/report.rank_num
+                report.rank_str = '{:.2f} / {}'.format(report.rank, report.rank_num)
+            else:
+                report.rank_str = u'暂无评分'
             return report, 201
         else:
             abort(404, message='Report {} not found'.format(report_id))
@@ -80,6 +87,12 @@ class ReportListApi(Resource):
     @marshal_with(report_fields)
     def get(self):
         report_list = Report.query.all()
+        for report in report_list:
+            if report.rank_num:
+                report.rank = float(report.total_rank)/report.rank_num
+                report.rank_str = '{:.2f} / {}'.format(report.rank, report.rank_num)
+            else:
+                report.rank_str = u'暂无评分'
         return report_list, 201
 
     @marshal_with(report_fields)
@@ -122,6 +135,12 @@ class ReportQueryApi(Resource):
                 q = q.filter(getattr(Report, attr).like("%%%s%%" % value))
 
         if q:
+            for report in q:
+                if report.rank_num:
+                    report.rank = float(report.total_rank)/report.rank_num
+                    report.rank_str = '{:.2f} / {}'.format(report.rank, report.rank_num)
+                else:
+                    report.rank_str = u'暂无评分'
             return [marshal(report, report_fields) for report in q]
         else:
             abort(404, message='No such report at all')
@@ -142,7 +161,12 @@ class ReportBatchApi(Resource):
             tmp = q.filter_by(id = single)
             if tmp:
                 result.append(tmp.first())
-
+        for report in result:
+            if report.rank_num:
+                report.rank = float(report.total_rank)/report.rank_num
+                report.rank_str = '{:.2f} / {}'.format(report.rank, report.rank_num)
+            else:
+                report.rank_str = u'暂无评分'
         return [marshal(report, report_fields) for report in result]
 
 api.add_resource(ReportBatchApi, '/api/v1/reports/batch', endpoint='reportBatch')

@@ -1,4 +1,5 @@
 __author__ = 'ClarkWong'
+# -*- coding: utf-8 -*-
 
 from app import db, api
 from flask.ext.restful import reqparse, abort, Resource, fields, marshal_with, marshal
@@ -15,7 +16,8 @@ code_fields={
     'description': fields.String,
     'size': fields.Float,
     'uri': fields.String,
-    'language': fields.String
+    'language': fields.String,
+    'rank_str': fields.String
 }
 
 class CodeApi(Resource):
@@ -37,6 +39,11 @@ class CodeApi(Resource):
     def get(self, code_id):
         code = Code.query.filter_by(id=code_id).first()
         if code:
+            if code.rank_num:
+                code.rank = float(code.total_rank)/code.rank_num
+                code.rank_str = '{:.2f} / {}'.format(code.rank, code.rank_num)
+            else:
+                code.rank_str = u'暂无评分'
             return code, 201
         else:
             abort(404, message='Code {} not found'.format(code_id))
@@ -81,6 +88,12 @@ class CodeListApi(Resource):
     def get(self):
         codeList = Code.query.all()
         if codeList:
+            for code in codeList:
+                if code.rank_num:
+                    code.rank = float(code.total_rank)/code.rank_num
+                    code.rank_str = '{:.2f} / {}'.format(code.rank, code.rank_num)
+                else:
+                    code.rank_str = u'暂无评分'
             return [marshal(code, code_fields) for code in codeList]
         else:
             abort(404, message='No Code at all')
@@ -120,6 +133,12 @@ class CodeQuery(Resource):
             if value:
                 q = q.filter(getattr(Code, attr).like("%%%s%%" % value))
         if q:
+            for code in q:
+                if code.rank_num:
+                    code.rank = float(code.total_rank)/code.rank_num
+                    code.rank_str = '{:.2f} / {}'.format(code.rank, code.rank_num)
+                else:
+                    code.rank_str = u'暂无评分'
             return [marshal(code, code_fields) for code in q]
         else:
             abort(404, message='No such code at all')
@@ -151,7 +170,12 @@ class CodeBatchApi(Resource):
             tmp = q.filter_by(id = single)
             if tmp:
                 result.append(tmp.first())
-
+        for code in result:
+            if code.rank_num:
+                code.rank = float(code.total_rank)/code.rank_num
+                code.rank_str = '{:.2f} / {}'.format(code.rank, code.rank_num)
+            else:
+                code.rank_str = u'暂无评分'
         return [marshal(code, code_fields) for code in result]
             
 api.add_resource(CodeBatchApi, '/api/v1/codes/batch', endpoint='codeBatch')

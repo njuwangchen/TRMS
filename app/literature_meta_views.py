@@ -1,4 +1,5 @@
 __author__ = 'ClarkWong'
+# -*- coding: utf-8 -*-
 
 from app import db, app
 from flask.ext.restful import reqparse, abort, Api, Resource, fields, marshal_with, marshal
@@ -40,7 +41,8 @@ literature_meta_fields = {
     'create_time': fields.String,
     'update_time': fields.String,
     'total_rank' : fields.Integer,
-    'rank_num' : fields.Integer
+    'rank_num' : fields.Integer,
+    'rank_str' : fields.String
 }
 
 class LiteratureApi(Resource):
@@ -86,6 +88,11 @@ class LiteratureApi(Resource):
     @marshal_with(literature_meta_fields)
     def get(self, literature_id):
         literature_meta = Literature_meta.query.filter_by(id=literature_id).first()
+        if literature_meta.rank_num:
+            literature_meta.rank = float(literature_meta.total_rank)/literature_meta.rank_num
+            literature_meta.rank_str = '{:.2f} / {}'.format(literature_meta.rank, literature_meta.rank_num)
+        else:
+            literature_meta.rank_str = u'暂无评分'
         if literature_meta:
             return literature_meta, 201
         else:
@@ -148,6 +155,12 @@ class LiteratureListApi(Resource):
     @marshal_with(literature_meta_fields)
     def get(self):
         literature_list = Literature_meta.query.all()
+        for literature_meta in literature_list:
+            if literature_meta.rank_num:
+                literature_meta.rank = float(literature_meta.total_rank)/literature_meta.rank_num
+                literature_meta.rank_str = '{:.2f} / {}'.format(literature_meta.rank, literature_meta.rank_num)
+            else:
+                literature_meta.rank_str = u'暂无评分'
         return literature_list, 201
 
     @marshal_with(literature_meta_fields)
@@ -213,6 +226,12 @@ class LiteratureQueryApi(Resource):
                 q = q.filter(getattr(Literature_meta, attr).like("%%%s%%" % value))
 
         if q:
+            for literature_meta in q:
+                if literature_meta.rank_num:
+                    literature_meta.rank = float(literature_meta.total_rank)/literature_meta.rank_num
+                    literature_meta.rank_str = '{:.2f} / {}'.format(literature_meta.rank, literature_meta.rank_num)
+                else:
+                    literature_meta.rank_str = u'暂无评分'
             return [marshal(literature_meta, literature_meta_fields) for literature_meta in q]
         else:
             abort(404, message='No such literature_meta at all')
@@ -233,6 +252,12 @@ class LiteratureBatchApi(Resource):
             tmp = q.filter_by(id = single)
             if tmp:
                 result.append(tmp.first())
+        for literature_meta in result:
+            if literature_meta.rank_num:
+                literature_meta.rank = float(literature_meta.total_rank)/literature_meta.rank_num
+                literature_meta.rank_str = '{:.2f} / {}'.format(literature_meta.rank, literature_meta.rank_num)
+            else:
+                literature_meta.rank_str = u'暂无评分'
 
         return [marshal(literature_meta, literature_meta_fields) for literature_meta in result]
 

@@ -1,4 +1,5 @@
 __author__ = 'ClarkWong'
+# -*- coding: utf-8 -*-
 
 from app import db, api
 from flask.ext.restful import reqparse, abort, Resource, fields, marshal_with, marshal
@@ -17,7 +18,8 @@ data_set_fields={
     'description': fields.String,
     'size': fields.Float,
     'uri': fields.String,
-    'type_name': fields.String
+    'type_name': fields.String,
+    'rank_str': fields.String
 }
 
 class Data_setApi(Resource):
@@ -40,6 +42,11 @@ class Data_setApi(Resource):
         data_set = Data_set.query.filter_by(id=data_set_id).first()
         if data_set:
             data_set.type_name = data_set.type.name
+            if data_set.rank_num:
+                data_set.rank = float(data_set.total_rank)/data_set.rank_num
+                data_set.rank_str = '{:.2f} / {}'.format(data_set.rank, data_set.rank_num)
+            else:
+                data_set.rank_str = u'暂无评分'
             return data_set, 201
         else:
             abort(404, message='Data_set {} not found'.format(data_set_id))
@@ -89,6 +96,12 @@ class Data_setListApi(Resource):
         for data_set in data_setList:
             data_set.type_name = data_set.type.name
         if data_setList:
+            for data_set in data_setList:
+                if data_set.rank_num:
+                    data_set.rank = float(data_set.total_rank)/data_set.rank_num
+                    data_set.rank_str = '{:.2f} / {}'.format(data_set.rank, data_set.rank_num)
+                else:
+                    data_set.rank_str = u'暂无评分'
             return [marshal(data_set, data_set_fields) for data_set in data_setList]
         else:
             abort(404, message='No Data_set at all')
@@ -135,6 +148,11 @@ class Data_setQuery(Resource):
         if q:
             for data_set in q:
                 data_set.type_name = data_set.type.name
+                if data_set.rank_num:
+                    data_set.rank = float(data_set.total_rank)/data_set.rank_num
+                    data_set.rank_str = '{:.2f} / {}'.format(data_set.rank, data_set.rank_num)
+                else:
+                    data_set.rank_str = u'暂无评分'
 
             return [marshal(data_set, data_set_fields) for data_set in q]
         else:
@@ -165,6 +183,12 @@ class Data_setBatchApi(Resource):
             tmp = q.filter_by(id = single)
             if tmp:
                 result.append(tmp.first())
+        for data_set in result:
+            if data_set.rank_num:
+                data_set.rank = float(data_set.total_rank)/data_set.rank_num
+                data_set.rank_str = '{:.2f} / {}'.format(data_set.rank, data_set.rank_num)
+            else:
+                data_set.rank_str = u'暂无评分'
 
         return [marshal(data_set, data_set_fields) for data_set in result]
 

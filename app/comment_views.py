@@ -2,7 +2,7 @@ __author__ = 'ClarkWong'
 
 from app import db, api
 from flask.ext.restful import reqparse, abort, Resource, fields, marshal_with, marshal
-from models import Comment
+from models import Comment, Literature_meta, Data_set, Code, Report
 import dateutil.parser
 
 
@@ -57,6 +57,20 @@ class CommentListApi(Resource):
         comment = Comment(commenter_id, comment_time, star, resource_id, type, is_simple, content)
         db.session.add(comment)
         db.session.commit()
+        if type == 1:
+            resource = Literature_meta.query.filter_by(id=resource_id).first()
+        elif type == 2:
+            resource = Data_set.query.filter_by(id=resource_id).first()
+        elif type == 3:
+            resource = Code.query.filter_by(id=resource_id).first()
+        elif type == 4:
+            resource = Report.query.filter_by(id=resource_id).first()
+
+        if resource:
+            resource.total_rank += star
+            resource.rank_num += 1
+            db.session.commit()
+
         return comment, 201
 
 class CommentQueryApi(Resource):
