@@ -25,5 +25,24 @@ class TagListApi(Resource):
         else:
             abort(404, message='No Tag at all')
 
+class TagBatchApi(Resource):
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('ids', type=list, required=True, location='json')
+        super(TagBatchApi,self).__init__()
 
+    def post(self):
+        args = self.parser.parse_args()
+        ids = args['ids']
+        q = Tag.query
+        result = []
+        for single in ids:
+            tmp = q.filter_by(id = single)
+            if tmp:
+                result.append(tmp.first())
+
+        return [marshal(tag, tag_fields) for tag in result]
+
+
+api.add_resource(TagBatchApi, '/api/v1/tags/batch', endpoint='tagBatch')
 api.add_resource(TagListApi, '/api/v1/tags', endpoint='tagList')
