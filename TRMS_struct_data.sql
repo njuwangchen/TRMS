@@ -1,52 +1,64 @@
-/*
- Navicat MySQL Data Transfer
+-- phpMyAdmin SQL Dump
+-- version 4.0.8
+-- http://www.phpmyadmin.net
+--
+-- 主机: localhost
+-- 生成日期: 2015-04-19 11:45:49
+-- 服务器版本: 5.6.14
+-- PHP 版本: 5.5.14
 
- Source Server         : local
- Source Server Type    : MySQL
- Source Server Version : 50614
- Source Host           : localhost
- Source Database       : TRMS
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
 
- Target Server Type    : MySQL
- Target Server Version : 50614
- File Encoding         : utf-8
 
- Date: 04/13/2015 17:16:02 PM
-*/
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
 
-SET NAMES utf8;
-SET FOREIGN_KEY_CHECKS = 0;
+--
+-- 数据库: `TRMS`
+--
 
--- ----------------------------
---  Table structure for `alembic_version`
--- ----------------------------
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `alembic_version`
+--
+
 DROP TABLE IF EXISTS `alembic_version`;
-CREATE TABLE `alembic_version` (
+CREATE TABLE IF NOT EXISTS `alembic_version` (
   `version_num` varchar(32) COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
--- ----------------------------
---  Records of `alembic_version`
--- ----------------------------
-BEGIN;
-INSERT INTO `alembic_version` VALUES ('36659af78edd');
-COMMIT;
+--
+-- 转存表中的数据 `alembic_version`
+--
 
--- ----------------------------
---  Table structure for `attribute`
--- ----------------------------
+INSERT INTO `alembic_version` (`version_num`) VALUES
+('1ee52bd52e2f');
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `attribute`
+--
+
 DROP TABLE IF EXISTS `attribute`;
-CREATE TABLE `attribute` (
+CREATE TABLE IF NOT EXISTS `attribute` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(64) COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
 
--- ----------------------------
---  Table structure for `cite`
--- ----------------------------
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `cite`
+--
+
 DROP TABLE IF EXISTS `cite`;
-CREATE TABLE `cite` (
+CREATE TABLE IF NOT EXISTS `cite` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `literature_id` int(11) NOT NULL,
   `cited_id` int(11) NOT NULL,
@@ -54,17 +66,27 @@ CREATE TABLE `cite` (
   PRIMARY KEY (`id`),
   KEY `cite_type_id` (`cite_type_id`),
   KEY `cited_id` (`cited_id`),
-  KEY `literature_id` (`literature_id`),
-  CONSTRAINT `cite_ibfk_1` FOREIGN KEY (`cite_type_id`) REFERENCES `type` (`id`),
-  CONSTRAINT `cite_ibfk_2` FOREIGN KEY (`cited_id`) REFERENCES `literature_meta` (`id`),
-  CONSTRAINT `cite_ibfk_3` FOREIGN KEY (`literature_id`) REFERENCES `literature_meta` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+  KEY `literature_id` (`literature_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=16 ;
 
--- ----------------------------
---  Table structure for `code`
--- ----------------------------
+--
+-- 转存表中的数据 `cite`
+--
+
+INSERT INTO `cite` (`id`, `literature_id`, `cited_id`, `cite_type_id`) VALUES
+(12, 2, 4, 5),
+(13, 2, 5, 6),
+(14, 5, 2, 5),
+(15, 4, 2, 6);
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `code`
+--
+
 DROP TABLE IF EXISTS `code`;
-CREATE TABLE `code` (
+CREATE TABLE IF NOT EXISTS `code` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(256) COLLATE utf8_bin NOT NULL,
   `creator_id` int(11) NOT NULL,
@@ -80,36 +102,50 @@ CREATE TABLE `code` (
   `total_rank` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `creator_id` (`creator_id`),
-  KEY `updater_id` (`updater_id`),
-  CONSTRAINT `code_ibfk_1` FOREIGN KEY (`creator_id`) REFERENCES `user` (`id`),
-  CONSTRAINT `code_ibfk_2` FOREIGN KEY (`updater_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+  KEY `updater_id` (`updater_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=4 ;
 
--- ----------------------------
---  Records of `code`
--- ----------------------------
-BEGIN;
-INSERT INTO `code` VALUES ('1', 'first code', '1', null, '2015-04-07 21:07:40', null, 'lalalla', '0', '', '', null, '0', '0');
-COMMIT;
+--
+-- 转存表中的数据 `code`
+--
 
--- ----------------------------
---  Table structure for `code_literature`
--- ----------------------------
+INSERT INTO `code` (`id`, `title`, `creator_id`, `updater_id`, `create_time`, `update_time`, `description`, `size`, `uri`, `language`, `file_name`, `rank_num`, `total_rank`) VALUES
+(1, 'first code', 1, NULL, '2015-04-07 21:07:40', NULL, 'lalalla', 0, '', '', NULL, 0, 0),
+(2, 'this is yin wang''s 14 rows code', 1, NULL, '2015-04-15 18:29:41', NULL, 'very nice', 0, '', 'ruby', '', 0, 0),
+(3, 'this is yin wang''s 14 rows code', 1, NULL, '2015-04-15 18:31:38', NULL, 'very nice', 0, '', '', '', 0, 0);
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `code_literature`
+--
+
 DROP TABLE IF EXISTS `code_literature`;
-CREATE TABLE `code_literature` (
+CREATE TABLE IF NOT EXISTS `code_literature` (
   `code_id` int(11) NOT NULL,
   `literature_id` int(11) NOT NULL,
   PRIMARY KEY (`code_id`,`literature_id`),
-  KEY `literature_id` (`literature_id`),
-  CONSTRAINT `code_literature_ibfk_1` FOREIGN KEY (`code_id`) REFERENCES `code` (`id`),
-  CONSTRAINT `code_literature_ibfk_2` FOREIGN KEY (`literature_id`) REFERENCES `literature_meta` (`id`)
+  KEY `literature_id` (`literature_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
--- ----------------------------
---  Table structure for `comment`
--- ----------------------------
+--
+-- 转存表中的数据 `code_literature`
+--
+
+INSERT INTO `code_literature` (`code_id`, `literature_id`) VALUES
+(2, 2),
+(3, 2),
+(1, 4),
+(3, 4);
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `comment`
+--
+
 DROP TABLE IF EXISTS `comment`;
-CREATE TABLE `comment` (
+CREATE TABLE IF NOT EXISTS `comment` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `commenter_id` int(11) NOT NULL,
   `resource_id` int(11) NOT NULL,
@@ -119,22 +155,27 @@ CREATE TABLE `comment` (
   `comment_time` datetime NOT NULL,
   `is_simple` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `commenter_id` (`commenter_id`),
-  CONSTRAINT `comment_ibfk_1` FOREIGN KEY (`commenter_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+  KEY `commenter_id` (`commenter_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=33 ;
 
--- ----------------------------
---  Records of `comment`
--- ----------------------------
-BEGIN;
-INSERT INTO `comment` VALUES ('1', '1', '3', '1', 'good article', '3', '2015-04-09 14:29:30', '1'), ('2', '1', '3', '1', '1&2&3', '3', '2015-04-09 14:40:36', '0'), ('3', '1', '2', '1', 'mkmkm', '3', '2015-04-09 16:51:00', '1'), ('4', '1', '2', '1', 'sdfsdf', '3', '2015-04-09 16:52:21', '1'), ('5', '1', '2', '1', 'jkjkjkjkjkj', '3', '2015-04-09 17:31:49', '1'), ('6', '1', '2', '1', 'jkjkjkjk999', '3', '2015-04-09 17:58:07', '1'), ('7', '1', '2', '1', 'm,m,m,m', '3', '2015-04-09 19:46:10', '1'), ('8', '1', '2', '1', 'kjkjk&ouoio&tyty', '3', '2015-04-09 19:46:10', '0'), ('9', '1', '2', '1', 'kjkjk&jkjkj&m,m,', '3', '2015-04-09 19:46:10', '0'), ('10', '1', '2', '1', 'kkk', '3', '2015-04-09 19:46:10', '1'), ('11', '1', '2', '1', '.,.,', '3', '2015-04-09 19:49:55', '1'), ('12', '1', '2', '1', 'iiii', '3', '2015-04-09 19:49:55', '1'), ('13', '1', '2', '1', 'kklk', '3', '2015-04-09 19:56:27', '1'), ('14', '1', '2', '1', 'jkjkjkjkjkjk', '3', '2015-04-09 19:56:32', '1'), ('15', '1', '2', '1', '挺好的&蛮赞的&不错哦', '3', '2015-04-09 20:00:01', '0'), ('16', '1', '2', '1', '这是一首简单的小情歌', '3', '2015-04-09 20:01:55', '1'), ('17', '1', '2', '1', '唱着我们心头的白哥', '3', '2015-04-09 20:04:20', '1'), ('18', '1', '2', '1', '想留不能留', '3', '2015-04-09 20:33:57', '1'), ('19', '1', '2', '1', '才最寂寞&没说完温柔&只剩李哥', '5', '2015-04-09 20:35:05', '0'), ('20', '1', '4', '1', '呵呵哒', '1', '2015-04-09 20:47:21', '1'), ('21', '1', '1', '3', '这样也能行？', '4', '2015-04-09 20:52:22', '1'), ('22', '1', '1', '3', '怎么回事啊。。。', '2', '2015-04-09 20:57:11', '1'), ('23', '1', '1', '3', 'skdlfksldkfsdf', '3', '2015-04-09 21:14:39', '1'), ('24', '1', '1', '2', '数据库地方就开始将对方', '3', '2015-04-09 21:30:13', '1'), ('25', '1', '5', '1', '挺不错的！', '3', '2015-04-12 13:03:46', '1'), ('26', '1', '5', '1', '数据可靠&论证详细&实验有说服力', '4', '2015-04-12 13:10:45', '0'), ('27', '1', '5', '1', '好的好的', '5', '2015-04-12 15:19:12', '1');
-COMMIT;
+--
+-- 转存表中的数据 `comment`
+--
 
--- ----------------------------
---  Table structure for `data_set`
--- ----------------------------
+INSERT INTO `comment` (`id`, `commenter_id`, `resource_id`, `type`, `content`, `star`, `comment_time`, `is_simple`) VALUES
+(29, 1, 2, 1, 'k;dlkf;sdf', 5, '2015-04-19 13:28:19', 1),
+(30, 1, 2, 1, 'sdfsdfsdf', 2, '2015-04-19 13:28:39', 1),
+(31, 1, 3, 1, 'lalallllallallala', 3, '2015-04-19 13:28:52', 1),
+(32, 1, 5, 1, '真是一篇不错的论文呢！', 5, '2015-04-19 13:30:23', 1);
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `data_set`
+--
+
 DROP TABLE IF EXISTS `data_set`;
-CREATE TABLE `data_set` (
+CREATE TABLE IF NOT EXISTS `data_set` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(256) COLLATE utf8_bin NOT NULL,
   `creator_id` int(11) NOT NULL,
@@ -151,65 +192,82 @@ CREATE TABLE `data_set` (
   PRIMARY KEY (`id`),
   KEY `creator_id` (`creator_id`),
   KEY `data_set_type_id` (`data_set_type_id`),
-  KEY `updater_id` (`updater_id`),
-  CONSTRAINT `data_set_ibfk_1` FOREIGN KEY (`creator_id`) REFERENCES `user` (`id`),
-  CONSTRAINT `data_set_ibfk_2` FOREIGN KEY (`data_set_type_id`) REFERENCES `type` (`id`),
-  CONSTRAINT `data_set_ibfk_3` FOREIGN KEY (`updater_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+  KEY `updater_id` (`updater_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=3 ;
 
--- ----------------------------
---  Records of `data_set`
--- ----------------------------
-BEGIN;
-INSERT INTO `data_set` VALUES ('1', 'great pic', '1', null, '2015-04-07 21:26:50', null, '', '2000', '', '3', null, '0', '0');
-COMMIT;
+--
+-- 转存表中的数据 `data_set`
+--
 
--- ----------------------------
---  Table structure for `data_set_literature`
--- ----------------------------
+INSERT INTO `data_set` (`id`, `title`, `creator_id`, `updater_id`, `create_time`, `update_time`, `description`, `size`, `uri`, `data_set_type_id`, `file_name`, `rank_num`, `total_rank`) VALUES
+(1, 'great pic', 1, NULL, '2015-04-07 21:26:50', NULL, '', 2000, '', 3, NULL, 0, 0),
+(2, 'test relation', 1, NULL, '2015-04-15 16:35:24', NULL, '', 0, '', 3, '', 0, 0);
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `data_set_literature`
+--
+
 DROP TABLE IF EXISTS `data_set_literature`;
-CREATE TABLE `data_set_literature` (
+CREATE TABLE IF NOT EXISTS `data_set_literature` (
   `data_set_id` int(11) NOT NULL,
   `literature_id` int(11) NOT NULL,
   PRIMARY KEY (`data_set_id`,`literature_id`),
-  KEY `literature_id` (`literature_id`),
-  CONSTRAINT `data_set_literature_ibfk_1` FOREIGN KEY (`data_set_id`) REFERENCES `data_set` (`id`),
-  CONSTRAINT `data_set_literature_ibfk_2` FOREIGN KEY (`literature_id`) REFERENCES `literature_meta` (`id`)
+  KEY `literature_id` (`literature_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
--- ----------------------------
---  Table structure for `favorite`
--- ----------------------------
+--
+-- 转存表中的数据 `data_set_literature`
+--
+
+INSERT INTO `data_set_literature` (`data_set_id`, `literature_id`) VALUES
+(1, 2),
+(2, 2),
+(1, 4),
+(1, 5),
+(2, 5);
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `favorite`
+--
+
 DROP TABLE IF EXISTS `favorite`;
-CREATE TABLE `favorite` (
+CREATE TABLE IF NOT EXISTS `favorite` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
   `name` varchar(64) COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`),
-  CONSTRAINT `favorite_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
 
--- ----------------------------
---  Table structure for `favorite_resource`
--- ----------------------------
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `favorite_resource`
+--
+
 DROP TABLE IF EXISTS `favorite_resource`;
-CREATE TABLE `favorite_resource` (
+CREATE TABLE IF NOT EXISTS `favorite_resource` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `resource_id` int(11) NOT NULL,
   `type` int(11) NOT NULL,
   `favorite_id` int(11) NOT NULL,
   `favorite_time` datetime NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `favorite_id` (`favorite_id`),
-  CONSTRAINT `favorite_resource_ibfk_1` FOREIGN KEY (`favorite_id`) REFERENCES `favorite` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+  KEY `favorite_id` (`favorite_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
 
--- ----------------------------
---  Table structure for `literature_meta`
--- ----------------------------
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `literature_meta`
+--
+
 DROP TABLE IF EXISTS `literature_meta`;
-CREATE TABLE `literature_meta` (
+CREATE TABLE IF NOT EXISTS `literature_meta` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(256) COLLATE utf8_bin NOT NULL,
   `titleCN` varchar(256) COLLATE utf8_bin DEFAULT NULL,
@@ -248,46 +306,70 @@ CREATE TABLE `literature_meta` (
   PRIMARY KEY (`id`),
   KEY `creator_id` (`creator_id`),
   KEY `literature_type_id` (`literature_type_id`),
-  KEY `updater_id` (`updater_id`),
-  CONSTRAINT `literature_meta_ibfk_1` FOREIGN KEY (`creator_id`) REFERENCES `user` (`id`),
-  CONSTRAINT `literature_meta_ibfk_2` FOREIGN KEY (`literature_type_id`) REFERENCES `type` (`id`),
-  CONSTRAINT `literature_meta_ibfk_3` FOREIGN KEY (`updater_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+  KEY `updater_id` (`updater_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=6 ;
 
--- ----------------------------
---  Records of `literature_meta`
--- ----------------------------
-BEGIN;
-INSERT INTO `literature_meta` VALUES ('2', 'My very first article', '我的第一篇文章', 'This is the first article', 'C.Wang的第一篇文章', 'C.Wang', '王晨', '2014', 'Nanjing University', '南京大学', '', '', '', '', '', '', '0', '0', '0', '0', '', '', '', '', '', '', '/uploaded/p19i9iisutm33vr2ne8jrq1m707.pdf', '1', '1', '1', '2015-04-07 17:08:36', '2015-04-07 17:08:36', null, '0', '0'), ('3', 'This is for testing add..', '', '', '', 'chen wong', '', '0', '', '', '', '', '', '', '', '', '0', '0', '0', '0', '', '', '', '', '', '', '', '1', '1', '2', '2015-04-08 17:42:29', '2015-04-08 21:51:28', '', '0', '0'), ('4', 'meeting', '这是一篇会议论文', '', '', 'cc', '', '0', '', '', '', '', '', '', '', '', '0', '0', '0', '0', '', '', '', '', '', '', '', '1', '1', '2', '2015-04-08 21:14:25', '2015-04-08 21:51:28', '', '0', '0'), ('5', 'Bug Inducing Analysis to Prevent Fault Prone Bug Fixes', '通过对程序中引入的错误分析来预防易注入错误的错误修复', 'Bug fix is an important and challenging task in software development and maintenance. Bug fix is also a dangerous change, because it might induce new bugs. It is difficult to decide whether a bug fix is safe in practice. In this paper, we conducted an empirical study on bug inducing analysis to discover the types and features of fault prone bug fixes. We use a classical algorithm to track the location of the code changes introducing the bugs. The change types of the codes will be checked by an automatic tool and whether this change is a bug fix change is recorded. We analyze the statistics to find out what types of change are most prone to induce new bugs when they are intended to fix a bug. Finally, some guidelines are provided to help developers prevent such fault prone bug fixes.', '这是中文摘要', 'Haoyu Yang, Chen Wang, Qingkai Shi, Yang Feng, Zhenyu Chen', '杨皓宇，王晨，时清凯，冯洋，陈振宇', '2014', 'SEKE', '', 'bug inducing, bug fix, mining software repository, software maintenance', '错误注入，错误修复，程序修复，数据挖掘', 'Toronto', 'State Key Laboratory for Novel Software Technology, Nanjing University', 'Zhenyu Chen', 'English', '6', '0', '0', '0', '', '', '', '', '', '', '/uploaded/p19im0jorf13e61267177hupf1squ7.pdf', '1', '1', '2', '2015-04-08 21:17:47', '2015-04-12 15:19:00', '', '0', '0');
-COMMIT;
+--
+-- 转存表中的数据 `literature_meta`
+--
 
--- ----------------------------
---  Table structure for `ppt`
--- ----------------------------
+INSERT INTO `literature_meta` (`id`, `title`, `titleCN`, `abstract`, `abstractCN`, `author`, `authorCN`, `published_year`, `publisher`, `publisherCN`, `key_words`, `key_words_CN`, `location`, `institute`, `instructor`, `language`, `pages`, `volume`, `issue`, `section`, `edition`, `press`, `editor`, `ISBN`, `ISSN`, `DOI`, `uri`, `creator_id`, `updater_id`, `literature_type_id`, `create_time`, `update_time`, `file_name`, `rank_num`, `total_rank`) VALUES
+(2, 'My very first article', '我的第一篇文章', 'This is the first article', 'C.Wang的第一篇文章', 'C.Wang', '王晨', 2014, 'Nanjing University', '南京大学', '', '', '', '', '', '', 0, 0, 0, 0, '', '', '', '', '', '', '/uploaded/p19i9iisutm33vr2ne8jrq1m707.pdf', 1, 1, 1, '2015-04-07 17:08:36', '2015-04-07 17:08:36', NULL, 2, 7),
+(3, 'This is for testing add..', '', '', '', 'chen wong', '', 0, '', '', '', '', '', '', '', '', 0, 0, 0, 0, '', '', '', '', '', '', '', 1, 1, 2, '2015-04-08 17:42:29', '2015-04-08 21:51:28', '', 1, 3),
+(4, 'meeting', '这是一篇会议论文', '', '', 'cc', '', 0, '', '', '', '', '', '', '', '', 0, 0, 0, 0, '', '', '', '', '', '', '', 1, 1, 2, '2015-04-08 21:14:25', '2015-04-08 21:51:28', '', 0, 0),
+(5, 'Bug Inducing Analysis to Prevent Fault Prone Bug Fixes', '通过对程序中引入的错误分析来预防易注入错误的错误修复', 'Bug fix is an important and challenging task in software development and maintenance. Bug fix is also a dangerous change, because it might induce new bugs. It is difficult to decide whether a bug fix is safe in practice. In this paper, we conducted an empirical study on bug inducing analysis to discover the types and features of fault prone bug fixes. We use a classical algorithm to track the location of the code changes introducing the bugs. The change types of the codes will be checked by an automatic tool and whether this change is a bug fix change is recorded. We analyze the statistics to find out what types of change are most prone to induce new bugs when they are intended to fix a bug. Finally, some guidelines are provided to help developers prevent such fault prone bug fixes.', '这是中文摘要', 'Haoyu Yang, Chen Wang, Qingkai Shi, Yang Feng, Zhenyu Chen', '杨皓宇，王晨，时清凯，冯洋，陈振宇', 2014, 'SEKE', '', 'bug inducing, bug fix, mining software repository, software maintenance', '错误注入，错误修复，程序修复，数据挖掘', 'Toronto', 'State Key Laboratory for Novel Software Technology, Nanjing University', 'Zhenyu Chen', 'English', 6, 0, 0, 0, '', '', '', '', '', '', '/uploaded/p19im0jorf13e61267177hupf1squ7.pdf', 1, 1, 2, '2015-04-08 21:17:47', '2015-04-12 15:19:00', '', 1, 5);
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `personalized`
+--
+
+DROP TABLE IF EXISTS `personalized`;
+CREATE TABLE IF NOT EXISTS `personalized` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `literature_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `uri` varchar(256) COLLATE utf8_bin NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `literature_id` (`literature_id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `ppt`
+--
+
 DROP TABLE IF EXISTS `ppt`;
-CREATE TABLE `ppt` (
+CREATE TABLE IF NOT EXISTS `ppt` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `literature_id` int(11) DEFAULT NULL,
   `size` float DEFAULT NULL,
   `uri` varchar(256) COLLATE utf8_bin DEFAULT NULL,
   `ppt_name` varchar(256) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `literature_id` (`literature_id`),
-  CONSTRAINT `ppt_ibfk_1` FOREIGN KEY (`literature_id`) REFERENCES `literature_meta` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+  KEY `literature_id` (`literature_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=4 ;
 
--- ----------------------------
---  Records of `ppt`
--- ----------------------------
-BEGIN;
-INSERT INTO `ppt` VALUES ('1', '2', '4335810', '/uploadedPpt/p19i9ikdbkgg41lpv1jtgnhvff13.ppt', null), ('2', '5', '1755570', '/uploadedPpt/p19im0me4d1ds43m1jrbpg8otm13.ppt', '');
-COMMIT;
+--
+-- 转存表中的数据 `ppt`
+--
 
--- ----------------------------
---  Table structure for `report`
--- ----------------------------
+INSERT INTO `ppt` (`id`, `literature_id`, `size`, `uri`, `ppt_name`) VALUES
+(1, 2, 4335810, '/uploadedPpt/p19i9ikdbkgg41lpv1jtgnhvff13.ppt', NULL),
+(2, 5, 1755570, '/uploadedPpt/p19im0me4d1ds43m1jrbpg8otm13.ppt', ''),
+(3, 2, 2997560, '/uploadedPpt/p19j838f3815oo5l4bstt15122b7.pptx', '');
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `report`
+--
+
 DROP TABLE IF EXISTS `report`;
-CREATE TABLE `report` (
+CREATE TABLE IF NOT EXISTS `report` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(256) COLLATE utf8_bin NOT NULL,
   `report_date` varchar(256) COLLATE utf8_bin DEFAULT NULL,
@@ -303,159 +385,334 @@ CREATE TABLE `report` (
   `rank_num` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `creator_id` (`creator_id`),
-  KEY `updater_id` (`updater_id`),
-  CONSTRAINT `report_ibfk_1` FOREIGN KEY (`creator_id`) REFERENCES `user` (`id`),
-  CONSTRAINT `report_ibfk_2` FOREIGN KEY (`updater_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+  KEY `updater_id` (`updater_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=2 ;
 
--- ----------------------------
---  Table structure for `report_attachment`
--- ----------------------------
+--
+-- 转存表中的数据 `report`
+--
+
+INSERT INTO `report` (`id`, `title`, `report_date`, `reporter`, `company`, `reporter_title`, `location`, `creator_id`, `updater_id`, `create_time`, `update_time`, `total_rank`, `rank_num`) VALUES
+(1, '一个报告', '2015-05-14 00:00:00', '薛', '', '大神', '学校', 1, NULL, '2015-04-19 13:48:50', NULL, 0, 0);
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `report_attachment`
+--
+
 DROP TABLE IF EXISTS `report_attachment`;
-CREATE TABLE `report_attachment` (
+CREATE TABLE IF NOT EXISTS `report_attachment` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `report_id` int(11) DEFAULT NULL,
   `uri` varchar(256) COLLATE utf8_bin DEFAULT NULL,
   `attachment_name` varchar(256) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `report_id` (`report_id`),
-  CONSTRAINT `report_attachment_ibfk_1` FOREIGN KEY (`report_id`) REFERENCES `report` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+  KEY `report_id` (`report_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
 
--- ----------------------------
---  Table structure for `report_code`
--- ----------------------------
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `report_code`
+--
+
 DROP TABLE IF EXISTS `report_code`;
-CREATE TABLE `report_code` (
+CREATE TABLE IF NOT EXISTS `report_code` (
   `report_id` int(11) NOT NULL,
   `code_id` int(11) NOT NULL,
   PRIMARY KEY (`report_id`,`code_id`),
-  KEY `code_id` (`code_id`),
-  CONSTRAINT `report_code_ibfk_1` FOREIGN KEY (`code_id`) REFERENCES `code` (`id`),
-  CONSTRAINT `report_code_ibfk_2` FOREIGN KEY (`report_id`) REFERENCES `report` (`id`)
+  KEY `code_id` (`code_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
--- ----------------------------
---  Table structure for `report_data_set`
--- ----------------------------
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `report_data_set`
+--
+
 DROP TABLE IF EXISTS `report_data_set`;
-CREATE TABLE `report_data_set` (
+CREATE TABLE IF NOT EXISTS `report_data_set` (
   `report_id` int(11) NOT NULL,
   `data_set_id` int(11) NOT NULL,
   PRIMARY KEY (`report_id`,`data_set_id`),
-  KEY `data_set_id` (`data_set_id`),
-  CONSTRAINT `report_data_set_ibfk_1` FOREIGN KEY (`data_set_id`) REFERENCES `data_set` (`id`),
-  CONSTRAINT `report_data_set_ibfk_2` FOREIGN KEY (`report_id`) REFERENCES `report` (`id`)
+  KEY `data_set_id` (`data_set_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
--- ----------------------------
---  Table structure for `report_literature`
--- ----------------------------
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `report_literature`
+--
+
 DROP TABLE IF EXISTS `report_literature`;
-CREATE TABLE `report_literature` (
+CREATE TABLE IF NOT EXISTS `report_literature` (
   `report_id` int(11) NOT NULL,
   `literature_id` int(11) NOT NULL,
   PRIMARY KEY (`report_id`,`literature_id`),
-  KEY `literature_id` (`literature_id`),
-  CONSTRAINT `report_literature_ibfk_1` FOREIGN KEY (`literature_id`) REFERENCES `literature_meta` (`id`),
-  CONSTRAINT `report_literature_ibfk_2` FOREIGN KEY (`report_id`) REFERENCES `report` (`id`)
+  KEY `literature_id` (`literature_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
--- ----------------------------
---  Table structure for `report_recording`
--- ----------------------------
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `report_recording`
+--
+
 DROP TABLE IF EXISTS `report_recording`;
-CREATE TABLE `report_recording` (
+CREATE TABLE IF NOT EXISTS `report_recording` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `report_id` int(11) DEFAULT NULL,
   `uri` varchar(256) COLLATE utf8_bin DEFAULT NULL,
   `recording_name` varchar(256) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `report_id` (`report_id`),
-  CONSTRAINT `report_recording_ibfk_1` FOREIGN KEY (`report_id`) REFERENCES `report` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+  KEY `report_id` (`report_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
 
--- ----------------------------
---  Table structure for `tag`
--- ----------------------------
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `tag`
+--
+
 DROP TABLE IF EXISTS `tag`;
-CREATE TABLE `tag` (
+CREATE TABLE IF NOT EXISTS `tag` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(64) COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=3 ;
 
--- ----------------------------
---  Table structure for `tag_resource`
--- ----------------------------
+--
+-- 转存表中的数据 `tag`
+--
+
+INSERT INTO `tag` (`id`, `name`) VALUES
+(1, 'c++'),
+(2, 'java');
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `tag_resource`
+--
+
 DROP TABLE IF EXISTS `tag_resource`;
-CREATE TABLE `tag_resource` (
+CREATE TABLE IF NOT EXISTS `tag_resource` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `resource_id` int(11) NOT NULL,
   `type` int(11) NOT NULL,
   `tag_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `tag_id` (`tag_id`),
-  CONSTRAINT `tag_resource_ibfk_1` FOREIGN KEY (`tag_id`) REFERENCES `tag` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+  KEY `tag_id` (`tag_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
 
--- ----------------------------
---  Table structure for `type`
--- ----------------------------
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `type`
+--
+
 DROP TABLE IF EXISTS `type`;
-CREATE TABLE `type` (
+CREATE TABLE IF NOT EXISTS `type` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(64) COLLATE utf8_bin NOT NULL,
   `type_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=7 ;
 
--- ----------------------------
---  Records of `type`
--- ----------------------------
-BEGIN;
-INSERT INTO `type` VALUES ('1', '期刊', '1'), ('2', '会议', '1'), ('3', '图片', '2'), ('4', '数据', '2');
-COMMIT;
+--
+-- 转存表中的数据 `type`
+--
 
--- ----------------------------
---  Table structure for `user`
--- ----------------------------
+INSERT INTO `type` (`id`, `name`, `type_id`) VALUES
+(1, '期刊', 1),
+(2, '会议', 1),
+(3, '图片', 2),
+(4, '数据', 2),
+(5, '赞扬', 3),
+(6, '批评', 3);
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `user`
+--
+
 DROP TABLE IF EXISTS `user`;
-CREATE TABLE `user` (
+CREATE TABLE IF NOT EXISTS `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(20) COLLATE utf8_bin NOT NULL,
   `password` varchar(32) COLLATE utf8_bin NOT NULL,
   `privilege` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=2 ;
 
--- ----------------------------
---  Records of `user`
--- ----------------------------
-BEGIN;
-INSERT INTO `user` VALUES ('1', 'chen', '123', '0');
-COMMIT;
+--
+-- 转存表中的数据 `user`
+--
 
--- ----------------------------
---  Table structure for `video`
--- ----------------------------
+INSERT INTO `user` (`id`, `name`, `password`, `privilege`) VALUES
+(1, 'chen', '123', 0);
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `video`
+--
+
 DROP TABLE IF EXISTS `video`;
-CREATE TABLE `video` (
+CREATE TABLE IF NOT EXISTS `video` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `literature_id` int(11) DEFAULT NULL,
   `size` float DEFAULT NULL,
   `uri` varchar(256) COLLATE utf8_bin DEFAULT NULL,
   `video_name` varchar(256) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `literature_id` (`literature_id`),
-  CONSTRAINT `video_ibfk_1` FOREIGN KEY (`literature_id`) REFERENCES `literature_meta` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+  KEY `literature_id` (`literature_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=5 ;
 
--- ----------------------------
---  Records of `video`
--- ----------------------------
-BEGIN;
-INSERT INTO `video` VALUES ('1', '2', '26618700', '/uploadedVideo/p19i9ijmaqedd1bn18jb2921t989.MP4', null), ('2', '2', '45919000', '/uploadedVideo/p19ibt0h91ed31gsk1btpb1g1j1g7.mp4', ''), ('3', '5', '26618600', '/uploadedVideo/p19im0kt2g1nk6jcsfi0l6q8mc9.MP4', ''), ('4', '5', '61581300', '/uploadedVideo/p19im7t41b6491m0i44kul1i8j7.mp4', '');
-COMMIT;
+--
+-- 转存表中的数据 `video`
+--
 
-SET FOREIGN_KEY_CHECKS = 1;
+INSERT INTO `video` (`id`, `literature_id`, `size`, `uri`, `video_name`) VALUES
+(1, 2, 26618700, '/uploadedVideo/p19i9ijmaqedd1bn18jb2921t989.MP4', NULL),
+(2, 2, 45919000, '/uploadedVideo/p19ibt0h91ed31gsk1btpb1g1j1g7.mp4', ''),
+(3, 5, 26618600, '/uploadedVideo/p19im0kt2g1nk6jcsfi0l6q8mc9.MP4', ''),
+(4, 5, 61581300, '/uploadedVideo/p19im7t41b6491m0i44kul1i8j7.mp4', '');
+
+--
+-- 限制导出的表
+--
+
+--
+-- 限制表 `cite`
+--
+ALTER TABLE `cite`
+  ADD CONSTRAINT `cite_ibfk_1` FOREIGN KEY (`cite_type_id`) REFERENCES `type` (`id`),
+  ADD CONSTRAINT `cite_ibfk_2` FOREIGN KEY (`cited_id`) REFERENCES `literature_meta` (`id`),
+  ADD CONSTRAINT `cite_ibfk_3` FOREIGN KEY (`literature_id`) REFERENCES `literature_meta` (`id`);
+
+--
+-- 限制表 `code`
+--
+ALTER TABLE `code`
+  ADD CONSTRAINT `code_ibfk_1` FOREIGN KEY (`creator_id`) REFERENCES `user` (`id`),
+  ADD CONSTRAINT `code_ibfk_2` FOREIGN KEY (`updater_id`) REFERENCES `user` (`id`);
+
+--
+-- 限制表 `code_literature`
+--
+ALTER TABLE `code_literature`
+  ADD CONSTRAINT `code_literature_ibfk_1` FOREIGN KEY (`code_id`) REFERENCES `code` (`id`),
+  ADD CONSTRAINT `code_literature_ibfk_2` FOREIGN KEY (`literature_id`) REFERENCES `literature_meta` (`id`);
+
+--
+-- 限制表 `comment`
+--
+ALTER TABLE `comment`
+  ADD CONSTRAINT `comment_ibfk_1` FOREIGN KEY (`commenter_id`) REFERENCES `user` (`id`);
+
+--
+-- 限制表 `data_set`
+--
+ALTER TABLE `data_set`
+  ADD CONSTRAINT `data_set_ibfk_1` FOREIGN KEY (`creator_id`) REFERENCES `user` (`id`),
+  ADD CONSTRAINT `data_set_ibfk_2` FOREIGN KEY (`data_set_type_id`) REFERENCES `type` (`id`),
+  ADD CONSTRAINT `data_set_ibfk_3` FOREIGN KEY (`updater_id`) REFERENCES `user` (`id`);
+
+--
+-- 限制表 `data_set_literature`
+--
+ALTER TABLE `data_set_literature`
+  ADD CONSTRAINT `data_set_literature_ibfk_1` FOREIGN KEY (`data_set_id`) REFERENCES `data_set` (`id`),
+  ADD CONSTRAINT `data_set_literature_ibfk_2` FOREIGN KEY (`literature_id`) REFERENCES `literature_meta` (`id`);
+
+--
+-- 限制表 `favorite`
+--
+ALTER TABLE `favorite`
+  ADD CONSTRAINT `favorite_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
+
+--
+-- 限制表 `favorite_resource`
+--
+ALTER TABLE `favorite_resource`
+  ADD CONSTRAINT `favorite_resource_ibfk_1` FOREIGN KEY (`favorite_id`) REFERENCES `favorite` (`id`);
+
+--
+-- 限制表 `literature_meta`
+--
+ALTER TABLE `literature_meta`
+  ADD CONSTRAINT `literature_meta_ibfk_1` FOREIGN KEY (`creator_id`) REFERENCES `user` (`id`),
+  ADD CONSTRAINT `literature_meta_ibfk_2` FOREIGN KEY (`literature_type_id`) REFERENCES `type` (`id`),
+  ADD CONSTRAINT `literature_meta_ibfk_3` FOREIGN KEY (`updater_id`) REFERENCES `user` (`id`);
+
+--
+-- 限制表 `personalized`
+--
+ALTER TABLE `personalized`
+  ADD CONSTRAINT `personalized_ibfk_1` FOREIGN KEY (`literature_id`) REFERENCES `literature_meta` (`id`),
+  ADD CONSTRAINT `personalized_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
+
+--
+-- 限制表 `ppt`
+--
+ALTER TABLE `ppt`
+  ADD CONSTRAINT `ppt_ibfk_1` FOREIGN KEY (`literature_id`) REFERENCES `literature_meta` (`id`);
+
+--
+-- 限制表 `report`
+--
+ALTER TABLE `report`
+  ADD CONSTRAINT `report_ibfk_1` FOREIGN KEY (`creator_id`) REFERENCES `user` (`id`),
+  ADD CONSTRAINT `report_ibfk_2` FOREIGN KEY (`updater_id`) REFERENCES `user` (`id`);
+
+--
+-- 限制表 `report_attachment`
+--
+ALTER TABLE `report_attachment`
+  ADD CONSTRAINT `report_attachment_ibfk_1` FOREIGN KEY (`report_id`) REFERENCES `report` (`id`);
+
+--
+-- 限制表 `report_code`
+--
+ALTER TABLE `report_code`
+  ADD CONSTRAINT `report_code_ibfk_1` FOREIGN KEY (`code_id`) REFERENCES `code` (`id`),
+  ADD CONSTRAINT `report_code_ibfk_2` FOREIGN KEY (`report_id`) REFERENCES `report` (`id`);
+
+--
+-- 限制表 `report_data_set`
+--
+ALTER TABLE `report_data_set`
+  ADD CONSTRAINT `report_data_set_ibfk_1` FOREIGN KEY (`data_set_id`) REFERENCES `data_set` (`id`),
+  ADD CONSTRAINT `report_data_set_ibfk_2` FOREIGN KEY (`report_id`) REFERENCES `report` (`id`);
+
+--
+-- 限制表 `report_literature`
+--
+ALTER TABLE `report_literature`
+  ADD CONSTRAINT `report_literature_ibfk_1` FOREIGN KEY (`literature_id`) REFERENCES `literature_meta` (`id`),
+  ADD CONSTRAINT `report_literature_ibfk_2` FOREIGN KEY (`report_id`) REFERENCES `report` (`id`);
+
+--
+-- 限制表 `report_recording`
+--
+ALTER TABLE `report_recording`
+  ADD CONSTRAINT `report_recording_ibfk_1` FOREIGN KEY (`report_id`) REFERENCES `report` (`id`);
+
+--
+-- 限制表 `tag_resource`
+--
+ALTER TABLE `tag_resource`
+  ADD CONSTRAINT `tag_resource_ibfk_1` FOREIGN KEY (`tag_id`) REFERENCES `tag` (`id`);
+
+--
+-- 限制表 `video`
+--
+ALTER TABLE `video`
+  ADD CONSTRAINT `video_ibfk_1` FOREIGN KEY (`literature_id`) REFERENCES `literature_meta` (`id`);
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

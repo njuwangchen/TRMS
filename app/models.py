@@ -433,3 +433,20 @@ class Favorite_resource(db.Model):
         self.type = type
         self.favorite_id = favorite_id
         self.favorite_time = favorite_time
+
+class Personalized(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+
+    literature_id = db.Column(db.Integer, db.ForeignKey('literature_meta.id'), nullable=False)
+    literature = db.relationship('Literature_meta', backref=db.backref('personals', lazy='dynamic'))
+
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user = db.relationship('User', backref=db.backref('personals', lazy='dynamic'))
+
+    uri = db.Column(db.String(256), nullable=False)
+
+    def __init__(self, literature_id, user_id, uri):
+        self.literature_id = literature_id
+        self.user_id  = user_id
+        self.uri = uri
+
