@@ -3,6 +3,7 @@ __author__ = 'ClarkWong,Justsavor'
 from app import db, app
 from flask.ext.restful import reqparse, abort, Api, Resource, fields, marshal_with, marshal
 from models import *
+from literature_meta_views import literature_meta_fields
 
 api = Api(app)
 
@@ -11,6 +12,7 @@ cite_fields = {
     'literature_id' : fields.Integer,
     'cited_id' : fields.Integer,
     'cite_type_id' : fields.Integer,
+    'type_name' : fields.String
 }
 
 class CiteApi(Resource):
@@ -71,10 +73,13 @@ class CiteQueryApi(Resource):
         q = Cite.query
         for attr, value in args.items():
             if value:
-                q = q.filter(getattr(Cite, attr).like("%%%s%%" % value))
-
+                q = q.filter(getattr(Cite, attr) == value)
         if q:
-            return [marshal(cite, cite_fields) for cite in q]
+            result = []
+            for cite in q:
+                cite.type_name = cite.type.name
+                result.append(cite)
+            return [marshal(cite, cite_fields) for cite in result]
         else:
             abort(404, message='No such cite at all')
 
