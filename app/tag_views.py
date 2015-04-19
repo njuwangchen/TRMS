@@ -20,10 +20,7 @@ class TagListApi(Resource):
 
     def get(self):
         tagList = Tag.query.all()
-        if tagList:
-            return [marshal(tag, tag_fields) for tag in tagList]
-        else:
-            abort(404, message='No Tag at all')
+        return [marshal(tag, tag_fields) for tag in tagList]
 
 class TagBatchApi(Resource):
     def __init__(self):
