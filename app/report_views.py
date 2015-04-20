@@ -1,4 +1,3 @@
-__author__ = 'justsavor'
 # -*- coding: utf-8 -*-
 
 from app import db, app

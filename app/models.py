@@ -30,14 +30,14 @@ report_literature = db.Table('report_literature',
                                        primary_key=True))
 
 report_data_set = db.Table('report_data_set',
-                             db.Column('report_id', db.Integer, db.ForeignKey('report.id'), primary_key=True),
-                             db.Column('data_set_id', db.Integer, db.ForeignKey('data_set.id'),
-                                       primary_key=True))
+                           db.Column('report_id', db.Integer, db.ForeignKey('report.id'), primary_key=True),
+                           db.Column('data_set_id', db.Integer, db.ForeignKey('data_set.id'),
+                                     primary_key=True))
 
 report_code = db.Table('report_code',
-                             db.Column('report_id', db.Integer, db.ForeignKey('report.id'), primary_key=True),
-                             db.Column('code_id', db.Integer, db.ForeignKey('code.id'),
-                                       primary_key=True))
+                       db.Column('report_id', db.Integer, db.ForeignKey('report.id'), primary_key=True),
+                       db.Column('code_id', db.Integer, db.ForeignKey('code.id'),
+                                 primary_key=True))
 
 
 class Cite(db.Model):

@@ -26,7 +26,7 @@ class report_literatureListApi(Resource):
         literature_id = args['literature_id']
         literature = Literature_meta.query.filter_by(id=literature_id).first()
         report = Report.query.filter_by(id=report_id).first()
-        literature.reports.append(report)
+        report.literatures.append(literature)
         db.session.commit()
         return {'message': 'Add report_literature succeed'}, 201
 
