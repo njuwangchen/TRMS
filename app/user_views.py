@@ -10,6 +10,15 @@ user_fields = {
     'name' : fields.String,
     'password' : fields.String,
     'privilege' : fields.Integer,
+    'countLiteratureCreated': fields.Integer,
+    'countLiteratureUpdated': fields.Integer,
+    'countDataSetCreated': fields.Integer,
+    'countDataSetUpdated': fields.Integer,
+    'countCodeCreated': fields.Integer,
+    'countCodeUpdated': fields.Integer,
+    'countReportCreated': fields.Integer,
+    'countReportUpdated': fields.Integer,
+    'countComment': fields.Integer
 }
 
 class UserApi(Resource):
@@ -19,6 +28,7 @@ class UserApi(Resource):
         self.parser.add_argument('name', type=unicode, location='json')
         self.parser.add_argument('password', type=unicode, location='json')
         self.parser.add_argument('privilege', type=int, location='json')
+
         super(UserApi, self).__init__()
 
     @marshal_with(user_fields)
@@ -59,11 +69,22 @@ class UserListApi(Resource):
         self.parser.add_argument('name', type=unicode, required=True, location='json')
         self.parser.add_argument('password', type=unicode, required=True, location='json')
         self.parser.add_argument('privilege', type=int, required=True, location='json')
+        self.parser.add_argument('countLiteratureCreated', type=int, location='json')
+        self.parser.add_argument('countLiteratureUpdated', type=int, location='json')
+        self.parser.add_argument('countDataSetCreated', type=int, location='json')
+        self.parser.add_argument('countDataSetUpdated', type=int, location='json')
+        self.parser.add_argument('countCodeCreated', type=int, location='json')
+        self.parser.add_argument('countCodeUpdated', type=int, location='json')
+        self.parser.add_argument('countReportCreated', type=int, location='json')
+        self.parser.add_argument('countReportUpdated', type=int, location='json')
+        self.parser.add_argument('countComment', type=int, location='json')
         super(UserListApi, self).__init__()
 
     def get(self):
         userList = User.query.all()
         if userList:
+            for user in userList:
+                user.countLiteratureCreated = 0
             return [marshal(user, user_fields) for user in userList]
         else:
             abort(404, message='No User at all')
