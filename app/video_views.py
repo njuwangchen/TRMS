@@ -9,18 +9,19 @@ video_fields = {
     'id': fields.Integer,
     'literature_id': fields.Integer,
     'size': fields.Float,
-    'uri': fields.String
+    'uri': fields.String,
+    'video_name': fields.String
 }
 
 class VideoApi(Resource):
 
     def __init__(self):
         self.parser = reqparse.RequestParser()
-        self.parser.add_argument('literature_id', type=int, required=True, location='json')
+        self.parser.add_argument('literature_id', type=int, location='json')
         self.parser.add_argument('size', type=float, location='json')
         self.parser.add_argument('url', type=unicode, location='json')
+        self.parser.add_argument('video_name', type=unicode, location='json')
         super(VideoApi, self).__init__()
-
 
     def delete(self, video_id):
         video = Video.query.filter_by(id=video_id).first()
@@ -28,6 +29,19 @@ class VideoApi(Resource):
             db.session.delete(video)
             db.session.commit()
             return { 'message' : 'Delete Video {} succeed'.format(video_id)}, 201
+        else:
+            abort(404, message='Video {} not found'.format(video_id))
+
+    @marshal_with(video_fields)
+    def put(self, video_id):
+        video = Video.query.get(video_id)
+        if video:
+            args = self.parser.parse_args()
+            for k,v in args.iteritems():
+                if v!= None:
+                    setattr(video, k, v)
+            db.session.commit()
+            return video, 201
         else:
             abort(404, message='Video {} not found'.format(video_id))
 

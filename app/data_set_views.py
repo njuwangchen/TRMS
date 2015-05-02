@@ -18,22 +18,24 @@ data_set_fields={
     'size': fields.Float,
     'uri': fields.String,
     'type_name': fields.String,
-    'rank_str': fields.String
+    'rank_str': fields.String,
+    'file_name': fields.String
 }
 
 class Data_setApi(Resource):
     def __init__(self):
         self.parser = reqparse.RequestParser()
-        self.parser.add_argument('title', required=True, type=unicode,location='json')
-        self.parser.add_argument('creator_id', type=int,required=True,location='json')
-        self.parser.add_argument('data_set_type_id', type=int,required=True,location='json')
-        self.parser.add_argument('updater_id', type=int,location='json')
-        self.parser.add_argument('create_time',required=True,location='json')
+        self.parser.add_argument('title', type=unicode,location='json')
+        self.parser.add_argument('creator_id', type=int, location='json')
+        self.parser.add_argument('data_set_type_id', type=int, location='json')
+        self.parser.add_argument('updater_id', type=int, location='json')
+        self.parser.add_argument('create_time', location='json')
         self.parser.add_argument('update_time', location='json')
-        self.parser.add_argument('description', type=unicode,location='json')
-        self.parser.add_argument('size', type=float,location='json')
-        self.parser.add_argument('uri', type=unicode,location='json')
+        self.parser.add_argument('description', type=unicode, location='json')
+        self.parser.add_argument('size', type=float, location='json')
+        self.parser.add_argument('uri', type=unicode, location='json')
         self.parser.add_argument('type_name', type=unicode, location='json')
+        self.parser.add_argument('file_name', type=unicode, location='json')
         super(Data_setApi, self).__init__()
 
     @marshal_with(data_set_fields)

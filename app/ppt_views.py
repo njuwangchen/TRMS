@@ -9,16 +9,18 @@ ppt_fields = {
     'id': fields.Integer,
     'literature_id': fields.Integer,
     'size': fields.Float,
-    'uri': fields.String
+    'uri': fields.String,
+    'ppt_name': fields.String
 }
 
 class PptApi(Resource):
 
     def __init__(self):
         self.parser = reqparse.RequestParser()
-        self.parser.add_argument('literature_id', type=int, required=True, location='json')
+        self.parser.add_argument('literature_id', type=int, location='json')
         self.parser.add_argument('size', type=float, location='json')
         self.parser.add_argument('uri', type=unicode, location='json')
+        self.parser.add_argument('ppt_name', type=unicode, location='json')
         super(PptApi, self).__init__()
 
     def delete(self, ppt_id):
@@ -30,6 +32,18 @@ class PptApi(Resource):
         else:
             abort(404, message='Ppt {} not found'.format(ppt_id))
 
+    @marshal_with(ppt_fields)
+    def put(self, ppt_id):
+        ppt = Ppt.query.get(ppt_id)
+        if ppt:
+            args = self.parser.parse_args()
+            for k,v in args.iteritems():
+                if v!= None:
+                    setattr(ppt, k, v)
+            db.session.commit()
+            return ppt, 201
+        else:
+            abort(404, message='PPT {} not found'.format(ppt_id))
 
 class PptListApi(Resource):
 
