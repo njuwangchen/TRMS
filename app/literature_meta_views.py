@@ -272,26 +272,92 @@ class LiteratureExport(Resource):
         args = self.parser.parse_args()
         literature = Literature_meta.query.filter_by(id=args['id']).first()
         result = ""
-        with open('exportSettings.csv','r') as csvfile:
-            settingsReader = csv.reader(csvfile,delimiter = ',')
-            for row in settingsReader:
-                for each in row:
-                    if each == 'author':
-                        result += str(getattr(literature,each)) +". "
-                    elif each =='volume':
-                        result += str(getattr(literature,each))
-                    elif each == 'issue':
-                        result += "("+str(getattr(literature,each))+"): "
-                    elif each == 'pages':
-                        result += str(getattr(literature,each))+"."
-                    else:
-                        result += str(getattr(literature,each)) +", "
+
+        if getattr(literature,"literature_type_id")==1:#期刊
+            with open('exportJournal.csv','r') as csvfile:
+                settingsReader = csv.reader(csvfile,delimiter = ',')
+                for row in settingsReader:
+                    for each in row:
+                        if each == 'title':
+                            result += "\""+str(getattr(literature,each)) +"\". "
+                        elif each == 'publisher':
+                            result += str(getattr(literature,each))+" "
+                        elif each == 'issue':
+                            result += str(getattr(literature,each))+" "
+                        elif each =='year':
+                            result += "("+str(getattr(literature,each))+"): "
+                        elif each == 'pages':
+                            result += str(getattr(literature,each))+"."
+                        else:
+                            result += str(getattr(literature,each)) +". "
+
+        elif getattr(literature,"literature_type_id")==2:#会议
+            with open('exportConf.csv','r') as csvfile:
+                settingsReader = csv.reader(csvfile,delimiter = ',')
+                for row in settingsReader:
+                    for each in row:
+                        if each =='title':
+                            result += "\""+str(getattr(literature,each))+"\". "
+                        elif each =='publisher':
+                            result += str(getattr(literature,each))+". Ed. "
+                        elif each =='location':
+                            result += str(getattr(literature,each))+": "
+                        elif each =='press':
+                            result += str(getattr(literature,each))+", "
+                        else:
+                            result += str(getattr(literature,each)) +". "
 
         return result,201
 
 
+class LiteratureExportBatch(Resource):
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('ids', type=list, location='json')
+        super(LiteratureExportBatch)
 
+    def post(self):
+        args = self.parser.parse_args()
+        resultList = ""
+        for id in args['ids']:
+            literature = Literature_meta.query.filter_by(id=id).first()
+            result = ""
+            if getattr(literature,"literature_type_id")==1:#期刊
+                with open('exportJournal.csv','r') as csvfile:
+                    settingsReader = csv.reader(csvfile,delimiter = ',')
+                    for row in settingsReader:
+                        for each in row:
+                            if each == 'title':
+                                result += "\""+str(getattr(literature,each)) +"\". "
+                            elif each == 'publisher':
+                                result += str(getattr(literature,each))+" "
+                            elif each == 'issue':
+                                result += str(getattr(literature,each))+" "
+                            elif each =='year':
+                                result += "("+str(getattr(literature,each))+"): "
+                            elif each == 'pages':
+                                result += str(getattr(literature,each))+"."
+                            else:
+                                result += str(getattr(literature,each)) +". "
 
+            elif getattr(literature,"literature_type_id")==2:#会议
+                with open('exportConf.csv','r') as csvfile:
+                    settingsReader = csv.reader(csvfile,delimiter = ',')
+                    for row in settingsReader:
+                        for each in row:
+                            if each =='title':
+                                result += "\""+str(getattr(literature,each))+"\". "
+                            elif each =='publisher':
+                                result += str(getattr(literature,each))+". Ed. "
+                            elif each =='location':
+                                result += str(getattr(literature,each))+": "
+                            elif each =='press':
+                                result += str(getattr(literature,each))+", "
+                            else:
+                                result += str(getattr(literature,each)) +". "
+
+            resultList+=result+"\n"
+        return resultList,201
 
 
 
@@ -301,4 +367,4 @@ api.add_resource(LiteratureApi, '/api/v1/literatures/<literature_id>', endpoint=
 api.add_resource(LiteratureListApi, '/api/v1/literatures', endpoint='literatureList')
 api.add_resource(LiteratureQueryApi, '/api/v1/literatures/query', endpoint='literature_metaQuery')
 api.add_resource(LiteratureExport, '/api/v1/literatures/export', endpoint='literatureExport')
-
+api.add_resource(LiteratureExportBatch, '/api/v1/literatures/exportBatch', endpoint='literatureExportBatch')
