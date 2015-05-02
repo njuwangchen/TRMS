@@ -292,9 +292,11 @@ class Data_set(db.Model):
     rank_num = db.Column(db.Integer)
     file_name = db.Column(db.String(256))
 
+    link = db.Column(db.String(256))
+    publisher = db.Column(db.String(256))
 
     def __init__(self, title, creator_id, create_time, data_set_type_id, updater_id=None, update_time=None,
-                 description='', size=0, uri='', total_rank=0, rank_num=0, file_name=''):
+                 description='', size=0, uri='', total_rank=0, rank_num=0, file_name='', link='', publisher=''):
         self.title = title
         self.creator_id = creator_id
         self.create_time = create_time
@@ -307,6 +309,8 @@ class Data_set(db.Model):
         self.total_rank = total_rank
         self.rank_num = rank_num
         self.file_name = file_name
+        self.link = link
+        self.publisher = publisher
 
 
 class Code(db.Model):
@@ -332,8 +336,11 @@ class Code(db.Model):
     rank_num = db.Column(db.Integer)
     file_name = db.Column(db.String(256))
 
+    link = db.Column(db.String(256))
+    publisher = db.Column(db.String(256))
+
     def __init__(self, title, creator_id, create_time, updater_id=None, update_time=None, description='', size=0,
-                 uri='', language='', total_rank=0, rank_num=0, file_name=''):
+                 uri='', language='', total_rank=0, rank_num=0, file_name='', link='', publisher=''):
         self.title = title
         self.creator_id = creator_id
         self.create_time = create_time
@@ -346,6 +353,8 @@ class Code(db.Model):
         self.total_rank = total_rank
         self.rank_num = rank_num
         self.file_name = file_name
+        self.link = link
+        self.publisher = publisher
 
 
 class Comment(db.Model):

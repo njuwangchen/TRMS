@@ -17,7 +17,9 @@ code_fields = {
     'uri': fields.String,
     'language': fields.String,
     'rank_str': fields.String,
-    'file_name': fields.String
+    'file_name': fields.String,
+    'link': fields.String,
+    'publisher': fields.String
 }
 
 
@@ -34,6 +36,8 @@ class CodeApi(Resource):
         self.parser.add_argument('uri', type=unicode, location='json')
         self.parser.add_argument('language', type=unicode, location='json')
         self.parser.add_argument('file_name', type=unicode, location='json')
+        self.parser.add_argument('link', type=unicode, location='json')
+        self.parser.add_argument('publisher', type=unicode, location='json')
         super(CodeApi, self).__init__()
 
     @marshal_with(code_fields)
@@ -86,6 +90,8 @@ class CodeListApi(Resource):
         self.parser.add_argument('size', type=float, location='json')
         self.parser.add_argument('uri', type=unicode, location='json')
         self.parser.add_argument('language', type=unicode, location='json')
+        self.parser.add_argument('link', type=unicode, location='json')
+        self.parser.add_argument('publisher', type=unicode, location='json')
         super(CodeListApi, self).__init__()
 
     def get(self):
@@ -128,6 +134,8 @@ class CodeQuery(Resource):
         self.parser.add_argument('size', type=float, location='json')
         self.parser.add_argument('uri', type=unicode, location='json')
         self.parser.add_argument('language', type=unicode, location='json')
+        self.parser.add_argument('link', type=unicode, location='json')
+        self.parser.add_argument('publisher', type=unicode, location='json')
         super(CodeQuery, self).__init__()
 
     def post(self):

@@ -19,7 +19,9 @@ data_set_fields={
     'uri': fields.String,
     'type_name': fields.String,
     'rank_str': fields.String,
-    'file_name': fields.String
+    'file_name': fields.String,
+    'link': fields.String,
+    'publisher': fields.String
 }
 
 class Data_setApi(Resource):
@@ -36,6 +38,8 @@ class Data_setApi(Resource):
         self.parser.add_argument('uri', type=unicode, location='json')
         self.parser.add_argument('type_name', type=unicode, location='json')
         self.parser.add_argument('file_name', type=unicode, location='json')
+        self.parser.add_argument('link', type=unicode, location='json')
+        self.parser.add_argument('publisher', type=unicode, location='json')
         super(Data_setApi, self).__init__()
 
     @marshal_with(data_set_fields)
@@ -90,6 +94,8 @@ class Data_setListApi(Resource):
         self.parser.add_argument('size', type=float,location='json')
         self.parser.add_argument('uri', type=unicode,location='json')
         self.parser.add_argument('type_name', type=unicode, location='json')
+        self.parser.add_argument('link', type=unicode, location='json')
+        self.parser.add_argument('publisher', type=unicode, location='json')
         super(Data_setListApi, self).__init__()
 
     def get(self):
@@ -137,6 +143,8 @@ class Data_setQuery(Resource):
         self.parser.add_argument('size', type=float,location='json')
         self.parser.add_argument('uri', type=unicode,location='json')
         self.parser.add_argument('type_name', type=unicode, location='json')
+        self.parser.add_argument('link', type=unicode, location='json')
+        self.parser.add_argument('publisher', type=unicode, location='json')
         super(Data_setQuery, self).__init__()
 
     def post(self):
@@ -194,7 +202,6 @@ class Data_setBatchApi(Resource):
         return [marshal(data_set, data_set_fields) for data_set in result]
 
 api.add_resource(Data_setBatchApi, '/api/v1/data_sets/batch', endpoint='data_setBatch')
-
 api.add_resource(Data_setQuery, '/api/v1/data_sets/query', endpoint='data_setquery')
 api.add_resource(Data_setListApi, '/api/v1/data_sets', endpoint='data_setList')
 api.add_resource(Data_setApi, '/api/v1/data_sets/<data_set_id>', endpoint='data_set')
