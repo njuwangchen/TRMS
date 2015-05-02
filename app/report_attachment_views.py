@@ -16,7 +16,7 @@ class Report_attachmentApi(Resource):
 
     def __init__(self):
         self.parser = reqparse.RequestParser()
-        self.parser.add_argument('report_id', type=int, required=True, location='json')
+        self.parser.add_argument('report_id', type=int, location='json')
         self.parser.add_argument('attachment_name', type=unicode, location='json')
         self.parser.add_argument('uri', type=unicode, location='json')
         super(Report_attachmentApi, self).__init__()
@@ -30,6 +30,19 @@ class Report_attachmentApi(Resource):
             return { 'message' : 'Delete Report_attachment {} succeed'.format(report_attachment_id)}, 201
         else:
             abort(404, message='Report_attachment {} not found'.format(report_attachment_id))
+
+    @marshal_with(report_attachment_fields)
+    def put(self, report_attachment_id):
+        attachment = Report_attachment.query.get(report_attachment_id)
+        if attachment:
+            args = self.parser.parse_args()
+            for k,v in args.iteritems():
+                if v!= None:
+                    setattr(attachment, k, v)
+            db.session.commit()
+            return attachment, 201
+        else:
+            abort(404, message='Attachment {} not found'.format(report_attachment_id))
 
 
 class Report_attachmentListApi(Resource):

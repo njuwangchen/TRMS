@@ -18,7 +18,7 @@ class Report_recordingApi(Resource):
 
     def __init__(self):
         self.parser = reqparse.RequestParser()
-        self.parser.add_argument('report_id', type=int, required=True, location='json')
+        self.parser.add_argument('report_id', type=int, location='json')
         self.parser.add_argument('recording_name', type=unicode, location='json')
         self.parser.add_argument('uri', type=unicode, location='json')
         super(Report_recordingApi, self).__init__()
@@ -33,6 +33,18 @@ class Report_recordingApi(Resource):
         else:
             abort(404, message='Report_recording {} not found'.format(report_recording_id))
 
+    @marshal_with(report_recording_fields)
+    def put(self, report_recording_id):
+        recording = Report_recording.query.get(report_recording_id)
+        if recording:
+            args = self.parser.parse_args()
+            for k,v in args.iteritems():
+                if v!= None:
+                    setattr(recording, k, v)
+            db.session.commit()
+            return recording, 201
+        else:
+            abort(404, message='Recording {} not found'.format(report_recording_id))
 
 class Report_recordingListApi(Resource):
 

@@ -42,7 +42,8 @@ literature_meta_fields = {
     'update_time': fields.String,
     'total_rank' : fields.Integer,
     'rank_num' : fields.Integer,
-    'rank_str' : fields.String
+    'rank_str' : fields.String,
+    'file_name' : fields.String,
 }
 
 class LiteratureApi(Resource):
@@ -82,6 +83,7 @@ class LiteratureApi(Resource):
         self.parser.add_argument('update_time', location='json')
         self.parser.add_argument('total_rank', type=int, location='json')
         self.parser.add_argument('rank_num', type=int, location='json')
+        self.parser.add_argument('file_name', type=unicode, location='json')
 
         super(LiteratureApi, self).__init__()
 
