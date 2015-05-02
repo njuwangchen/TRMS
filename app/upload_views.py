@@ -2,7 +2,7 @@ __author__ = 'ClarkWong'
 
 from app import db, app
 from flask import request, send_from_directory, url_for
-from models import Literature_meta, Video, Ppt, Code, Data_set, Report_attachment, Report_recording
+from models import Literature_meta, Video, Ppt, Code, Data_set, Report_attachment, Report_recording,Personalized
 import os
 import json
 import werkzeug
@@ -14,7 +14,7 @@ UPLOAD_FOLDER_CODE = os.getcwd() + '/uploadCode/'
 UPLOAD_FOLDER_DATA_SET = os.getcwd() + '/uploadDataset/'
 UPLOAD_FOLDER_REPORTATTACHMENT = os.getcwd() + '/uploadReportattachment/'
 UPLOAD_FOLDER_REPORTRECORDING = os.getcwd() + '/uploadReportrecording/'
-
+UPLOAD_FOLDER_PERSONALIZED = os.getcwd() + '/uploadPersonalized/'
 
 @app.route('/upload', methods=['POST'])
 def upload():
@@ -219,3 +219,34 @@ def uploadReportrecording():
 @app.route('/uploadedReportrecording/<reportrecordingName>', methods=['GET', 'POST'])
 def get_uploadedReportrecording(reportrecordingName):
     return send_from_directory(UPLOAD_FOLDER_REPORTRECORDING, reportrecordingName)
+
+
+@app.route('/uploadPersonalized', methods=['POST'])
+def uploadPersonalized():
+    file = request.files['file']
+    literature_id = request.form['literature_id']
+    user_id = request.form['user_id']
+    if 'chunk' in request.form:
+        chunk = int(request.form['chunk'])
+        chunks = int(request.form['chunks'])
+    else:
+        chunk = 0
+        chunks = 1
+    filename = request.form['name']
+    filename = werkzeug.secure_filename(filename)
+    filePath = os.path.join(UPLOAD_FOLDER_PERSONALIZED, filename)
+    with open(filePath, 'ab+') as f:
+        file.save(f)
+    saved_file_url = url_for('get_uploadPersonalized', filename=filename)
+
+    if chunk == (chunks - 1):
+        # add this url to database
+        literaturePersonalized = Personalized(literature_id,user_id,saved_file_url)
+        db.session.add(literaturePersonalized)
+        db.session.commit()
+    return json.dumps(saved_file_url)
+
+
+@app.route('/uploadedPersonalized/<filename>', methods=['GET', 'POST'])
+def get_uploadPersonalized(filename):
+    return send_from_directory(UPLOAD_FOLDER_PERSONALIZED, filename)
