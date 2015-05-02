@@ -3,6 +3,7 @@
 from app import db, app
 from flask.ext.restful import reqparse, abort, Api, Resource, fields, marshal_with, marshal
 from models import *
+import csv
 import dateutil.parser
 api = Api(app)
 
@@ -235,6 +236,7 @@ class LiteratureQueryApi(Resource):
         else:
             abort(404, message='No such literature_meta at all')
 
+
 class LiteratureBatchApi(Resource):
     def __init__(self):
         self.parser = reqparse.RequestParser()
@@ -260,9 +262,43 @@ class LiteratureBatchApi(Resource):
 
         return [marshal(literature_meta, literature_meta_fields) for literature_meta in result]
 
+class LiteratureExport(Resource):
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('id', type=int, location='json')
+        super(LiteratureExport)
+
+    def post(self):
+        args = self.parser.parse_args()
+        literature = Literature_meta.query.filter_by(id=args['id']).first()
+        result = ""
+        with open('exportSettings.csv','r') as csvfile:
+            settingsReader = csv.reader(csvfile,delimiter = ',')
+            for row in settingsReader:
+                for each in row:
+                    if each == 'author':
+                        result += str(getattr(literature,each)) +". "
+                    elif each =='volume':
+                        result += str(getattr(literature,each))
+                    elif each == 'issue':
+                        result += "("+str(getattr(literature,each))+"): "
+                    elif each == 'pages':
+                        result += str(getattr(literature,each))+"."
+                    else:
+                        result += str(getattr(literature,each)) +", "
+
+        return result,201
+
+
+
+
+
+
+
+
 api.add_resource(LiteratureBatchApi, '/api/v1/literatures/batch', endpoint='literatureBatch')
-
-
 api.add_resource(LiteratureApi, '/api/v1/literatures/<literature_id>', endpoint='literature')
 api.add_resource(LiteratureListApi, '/api/v1/literatures', endpoint='literatureList')
 api.add_resource(LiteratureQueryApi, '/api/v1/literatures/query', endpoint='literature_metaQuery')
+api.add_resource(LiteratureExport, '/api/v1/literatures/export', endpoint='literatureExport')
+
