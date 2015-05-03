@@ -5,6 +5,8 @@ from flask.ext.restful import reqparse, abort, Api, Resource, fields, marshal_wi
 from models import *
 import csv
 import dateutil.parser
+from fuzzywuzzy import fuzz,process
+
 api = Api(app)
 
 literature_meta_fields = {
@@ -362,8 +364,95 @@ class LiteratureExportBatch(Resource):
         return resultList,201
 
 
+class LiteratureFuzzySearchApi(Resource):
+     def __init__(self):
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('title', type=unicode, location='json')
+        self.parser.add_argument('creator_id', type=int, location='json')
+        self.parser.add_argument('create_time', location='json')
+        self.parser.add_argument('literature_type_id', type=int, location='json')
+        self.parser.add_argument('titleCN', type=unicode,location='json')
+        self.parser.add_argument('abstract', location='json')
+        self.parser.add_argument('abstractCN', location='json')
+        self.parser.add_argument('author', type=unicode, location='json')
+        self.parser.add_argument('authorCN', type=unicode, location='json')
+        self.parser.add_argument('published_year', type=int, location='json')
+        self.parser.add_argument('publisher', type=unicode, location='json')
+        self.parser.add_argument('publisherCN', type=unicode, location='json')
+        self.parser.add_argument('volume', type=int, location='json')
+        self.parser.add_argument('issue', type=int, location='json')
+        self.parser.add_argument('location', type=unicode, location='json')
+        self.parser.add_argument('institute', type=unicode, location='json')
+        self.parser.add_argument('instructor', type=unicode, location='json')
+        self.parser.add_argument('key_words', type=unicode, location='json')
+        self.parser.add_argument('key_words_CN', type=unicode, location='json')
+        self.parser.add_argument('language', type=unicode, location='json')
+        self.parser.add_argument('pages', type=int, location='json')
+        self.parser.add_argument('section', type=int, location='json')
+        self.parser.add_argument('edition', type=unicode, location='json')
+        self.parser.add_argument('press', type=unicode, location='json')
+        self.parser.add_argument('editor', type=unicode, location='json')
+        self.parser.add_argument('ISBN', type=unicode, location='json')
+        self.parser.add_argument('ISSN', type=unicode, location='json')
+        self.parser.add_argument('DOI', type=unicode, location='json')
+        self.parser.add_argument('uri', type=unicode, location='json')
+        self.parser.add_argument('updater_id', type=int, location='json')
+        self.parser.add_argument('update_time', location='json')
+        self.parser.add_argument('total_rank', type=int, location='json')
+        self.parser.add_argument('rank_num', type=int, location='json')
+        self.parser.add_argument('tags',type=list,location='json')
+        super(LiteratureFuzzySearchApi, self).__init__()
 
+     def post(self):
+        args = self.parser.parse_args()
+        q = Literature_meta.query
+        literatures = []
+        for attr, value in args.items():
+            if value and attr!='title' and attr!='author' and attr!='tags':
+                q = q.filter(getattr(Literature_meta, attr).like("%%%s%%" % value))
+            elif value and attr=='tags':
+                records = set();
+                for tag in value:
+                    trs = Tag_resource.query.filter_by(tag_id=tag['id'],type=1).all()
+                    records = set([tr.resource_id for tr in trs]) | records
+                for id in records:
+                    item = q.filter_by(id=id).first()
+                    if item:
+                        literatures.append(item)
 
+        if not args['tags']:
+            resultList = []
+            literatures = q.all()
+            for literature in literatures:
+                if args['title']:
+                    if fuzz.partial_ratio(args['title'],literature.title)>=60:
+                        resultList.append(literature)
+                elif args['author']:
+                    if fuzz.partial_ratio(args['author'],literature.author)>=60:
+                        resultList.append(literature)
+        else:
+            resultList = literatures
+            for literature in literatures:
+                if args['title']:
+                    if fuzz.partial_ratio(args['title'],literature.title)<60:
+                        resultList.remove(literature)
+                elif args['author']:
+                    if fuzz.partial_ratio(args['author'],literature.author)<60:
+                        resultList.remove(literature)
+        q = resultList
+
+        if q:
+            for literature_meta in q:
+                if literature_meta.rank_num:
+                    literature_meta.rank = float(literature_meta.total_rank)/literature_meta.rank_num
+                    literature_meta.rank_str = '{:.2f} / {}'.format(literature_meta.rank, literature_meta.rank_num)
+                else:
+                    literature_meta.rank_str = u'暂无评分'
+            return [marshal(literature_meta, literature_meta_fields) for literature_meta in q]
+        else:
+            return []
+
+api.add_resource(LiteratureFuzzySearchApi, '/api/v1/literatures/fuzzysearch', endpoint='literatureFuzzySearch')
 api.add_resource(LiteratureBatchApi, '/api/v1/literatures/batch', endpoint='literatureBatch')
 api.add_resource(LiteratureApi, '/api/v1/literatures/<literature_id>', endpoint='literature')
 api.add_resource(LiteratureListApi, '/api/v1/literatures', endpoint='literatureList')

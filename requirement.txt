@@ -5,3 +5,5 @@ mysql-python
 flask-restful
 flask-cors
 python-dateutil
+fuzzywuzzy
+python-Levenshtein
