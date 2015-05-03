@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- 主机: localhost
--- 生成日期: 2015-05-02 12:02:05
+-- 生成日期: 2015-05-03 08:56:33
 -- 服务器版本: 5.6.14
 -- PHP 版本: 5.5.14
 
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `alembic_version` (
 --
 
 INSERT INTO `alembic_version` (`version_num`) VALUES
-('eafdfccc66b');
+('538484b812ec');
 
 -- --------------------------------------------------------
 
@@ -104,6 +104,7 @@ CREATE TABLE IF NOT EXISTS `code` (
   `total_rank` int(11) DEFAULT NULL,
   `link` varchar(256) COLLATE utf8_bin DEFAULT NULL,
   `publisher` varchar(256) COLLATE utf8_bin DEFAULT NULL,
+  `upload_history` text COLLATE utf8_bin,
   PRIMARY KEY (`id`),
   KEY `creator_id` (`creator_id`),
   KEY `updater_id` (`updater_id`)
@@ -113,10 +114,10 @@ CREATE TABLE IF NOT EXISTS `code` (
 -- 转存表中的数据 `code`
 --
 
-INSERT INTO `code` (`id`, `title`, `creator_id`, `updater_id`, `create_time`, `update_time`, `description`, `size`, `uri`, `language`, `file_name`, `rank_num`, `total_rank`, `link`, `publisher`) VALUES
-(1, 'first code', 1, 1, '2015-04-07 21:07:40', '2015-05-02 17:35:50', 'lalalla', 23977300, '/uploadedCode/p19k9rpbubsvd8n3brf1haala63.zip', 'sdf', 'travel3.zip', 0, 0, NULL, 'chen'),
-(2, 'this is yin wang''s 14 rows code', 1, 1, '2015-04-15 18:29:41', '2015-04-20 14:22:34', 'very nice', 0, '', 'ruby', '', 0, 0, NULL, NULL),
-(3, 'this is yin wang''s 14 rows code', 1, NULL, '2015-04-15 18:31:38', NULL, 'very nice', 0, '', '', '', 0, 0, NULL, NULL);
+INSERT INTO `code` (`id`, `title`, `creator_id`, `updater_id`, `create_time`, `update_time`, `description`, `size`, `uri`, `language`, `file_name`, `rank_num`, `total_rank`, `link`, `publisher`, `upload_history`) VALUES
+(1, 'first code', 1, 1, '2015-04-07 21:07:40', '2015-05-03 16:49:14', 'lalalla', 1751260, '/uploadedCode/p19kcfe3pu1r971lu2i871j6b1mtub.zip', 'sdf', 'linux_setup_1.4.1.zip', 0, 0, NULL, 'chen', 'null;linux_setup_1.4.1.zip,p19kcfe3pu1r971lu2i871j6b1mtub.zip,1751257'),
+(2, 'this is yin wang''s 14 rows code', 1, 1, '2015-04-15 18:29:41', '2015-04-20 14:22:34', 'very nice', 0, '', 'ruby', '', 0, 0, NULL, NULL, NULL),
+(3, 'this is yin wang''s 14 rows code', 1, NULL, '2015-04-15 18:31:38', NULL, 'very nice', 0, '', '', '', 0, 0, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -197,6 +198,7 @@ CREATE TABLE IF NOT EXISTS `data_set` (
   `total_rank` int(11) DEFAULT NULL,
   `link` varchar(256) COLLATE utf8_bin DEFAULT NULL,
   `publisher` varchar(256) COLLATE utf8_bin DEFAULT NULL,
+  `upload_history` text COLLATE utf8_bin,
   PRIMARY KEY (`id`),
   KEY `creator_id` (`creator_id`),
   KEY `data_set_type_id` (`data_set_type_id`),
@@ -207,9 +209,9 @@ CREATE TABLE IF NOT EXISTS `data_set` (
 -- 转存表中的数据 `data_set`
 --
 
-INSERT INTO `data_set` (`id`, `title`, `creator_id`, `updater_id`, `create_time`, `update_time`, `description`, `size`, `uri`, `data_set_type_id`, `file_name`, `rank_num`, `total_rank`, `link`, `publisher`) VALUES
-(1, 'great pic', 1, 1, '2015-04-07 21:26:50', '2015-05-02 17:36:07', '', 28662, '/uploadedDataset/p19k9r0f7p7ke9of1qmq143aih83.zip', 3, 'the last project.zip', 0, 0, NULL, 'a'),
-(2, 'test relation', 1, 1, '2015-04-15 16:35:24', '2015-05-02 17:36:18', '', 9047050, '/uploadedDataset/p19k9r6lqm1sku1km11ngq2sl1t905.zip', 3, 'VanillaTravel.zip', 0, 0, NULL, 'b');
+INSERT INTO `data_set` (`id`, `title`, `creator_id`, `updater_id`, `create_time`, `update_time`, `description`, `size`, `uri`, `data_set_type_id`, `file_name`, `rank_num`, `total_rank`, `link`, `publisher`, `upload_history`) VALUES
+(1, 'great pic', 1, 1, '2015-04-07 21:26:50', '2015-05-02 17:36:07', '', 28662, '/uploadedDataset/p19k9r0f7p7ke9of1qmq143aih83.zip', 3, 'the last project.zip', 0, 0, NULL, 'a', NULL),
+(2, 'test relation', 1, 1, '2015-04-15 16:35:24', '2015-05-03 16:53:46', '', 5631520, '/uploadedDataset/p19kcfmdnb1s74ish19o2ot6oq67.zip', 3, 'ui-grid.info-3.0.0-rc.20.zip', 0, 0, NULL, 'b', 'null;ui-grid.info-3.0.0-rc.20.zip,p19kcfmdnb1s74ish19o2ot6oq67.zip,5631520');
 
 -- --------------------------------------------------------
 
@@ -318,6 +320,7 @@ CREATE TABLE IF NOT EXISTS `literature_meta` (
   `file_name` varchar(256) COLLATE utf8_bin DEFAULT NULL,
   `rank_num` int(11) DEFAULT NULL,
   `total_rank` int(11) DEFAULT NULL,
+  `upload_history` text COLLATE utf8_bin,
   PRIMARY KEY (`id`),
   KEY `creator_id` (`creator_id`),
   KEY `literature_type_id` (`literature_type_id`),
@@ -328,11 +331,11 @@ CREATE TABLE IF NOT EXISTS `literature_meta` (
 -- 转存表中的数据 `literature_meta`
 --
 
-INSERT INTO `literature_meta` (`id`, `title`, `titleCN`, `abstract`, `abstractCN`, `author`, `authorCN`, `published_year`, `publisher`, `publisherCN`, `key_words`, `key_words_CN`, `location`, `institute`, `instructor`, `language`, `pages`, `volume`, `issue`, `section`, `edition`, `press`, `editor`, `ISBN`, `ISSN`, `DOI`, `uri`, `creator_id`, `updater_id`, `literature_type_id`, `create_time`, `update_time`, `file_name`, `rank_num`, `total_rank`) VALUES
-(2, 'My very first article', '我的第一篇文章', 'This is the first article', 'C.Wang的第一篇文章', 'C.Wang', '王晨', 2014, 'Nanjing University', '南京大学', '', '', '', '', '', '', 0, 0, 0, 0, '', '', '', '', '', '', '/uploaded/p19k9m7ra51e1p1ug5ha24p5qnk9.pdf', 1, 1, 1, '2015-04-07 17:08:36', '2015-05-02 14:50:25', 'Automatic identification of bug-introducing changes.pdf', 3, 11),
-(3, 'This is for testing add..', '', '', '', 'chen wong', '', 0, '', '', '', '', '', '', '', '', 0, 0, 0, 0, '', '', '', '', '', '', '', 1, 1, 2, '2015-04-08 17:42:29', '2015-04-08 21:51:28', '', 1, 3),
-(4, 'meeting', '这是一篇会议论文', '', '', 'cc', '', 0, '', '', '', '', '', '', '', '', 0, 0, 0, 0, '', '', '', '', '', '', '', 1, 1, 2, '2015-04-08 21:14:25', '2015-04-08 21:51:28', '', 0, 0),
-(5, 'Bug Inducing Analysis to Prevent Fault Prone Bug Fixes', '通过对程序中引入的错误分析来预防易注入错误的错误修复', 'Bug fix is an important and challenging task in software development and maintenance. Bug fix is also a dangerous change, because it might induce new bugs. It is difficult to decide whether a bug fix is safe in practice. In this paper, we conducted an empirical study on bug inducing analysis to discover the types and features of fault prone bug fixes. We use a classical algorithm to track the location of the code changes introducing the bugs. The change types of the codes will be checked by an automatic tool and whether this change is a bug fix change is recorded. We analyze the statistics to find out what types of change are most prone to induce new bugs when they are intended to fix a bug. Finally, some guidelines are provided to help developers prevent such fault prone bug fixes.', '这是中文摘要', 'Haoyu Yang, Chen Wang, Qingkai Shi, Yang Feng, Zhenyu Chen', '杨皓宇，王晨，时清凯，冯洋，陈振宇', 2014, 'SEKE', '', 'bug inducing, bug fix, mining software repository, software maintenance', '错误注入，错误修复，程序修复，数据挖掘', 'Toronto', 'State Key Laboratory for Novel Software Technology, Nanjing University', 'Zhenyu Chen', 'English', 6, 0, 0, 0, '', '', '', '', '', '', '/uploaded/p19k9pnukf1mvt38f1snoeh71qcpv.pdf', 1, 1, 2, '2015-04-08 21:17:47', '2015-05-02 15:51:38', 'Bug Inducing Analysis to Prevent Fault Prone Bug Fixes.pdf', 1, 5);
+INSERT INTO `literature_meta` (`id`, `title`, `titleCN`, `abstract`, `abstractCN`, `author`, `authorCN`, `published_year`, `publisher`, `publisherCN`, `key_words`, `key_words_CN`, `location`, `institute`, `instructor`, `language`, `pages`, `volume`, `issue`, `section`, `edition`, `press`, `editor`, `ISBN`, `ISSN`, `DOI`, `uri`, `creator_id`, `updater_id`, `literature_type_id`, `create_time`, `update_time`, `file_name`, `rank_num`, `total_rank`, `upload_history`) VALUES
+(2, 'My very first article', '我的第一篇文章', 'This is the first article', 'C.Wang的第一篇文章', 'C.Wang', '王晨', 2014, 'Nanjing University', '南京大学', '', '', '', '', '', '', 0, 0, 0, 0, '', '', '', '', '', '', '/uploaded/p19kcf99narpu1n1g8d818m314bp9.pdf', 1, 1, 1, '2015-04-07 17:08:36', '2015-05-03 16:46:36', 'cartoon.pdf', 3, 11, 'null;Lease_CW.pdf,p19kcesfra15141o6emtj15m2co49.pdf;cartoon.pdf,p19kcf99narpu1n1g8d818m314bp9.pdf'),
+(3, 'This is for testing add..', '', '', '', 'chen wong', '', 0, '', '', '', '', '', '', '', '', 0, 0, 0, 0, '', '', '', '', '', '', '', 1, 1, 2, '2015-04-08 17:42:29', '2015-04-08 21:51:28', '', 1, 3, NULL),
+(4, 'meeting', '这是一篇会议论文', '', '', 'cc', '', 0, '', '', '', '', '', '', '', '', 0, 0, 0, 0, '', '', '', '', '', '', '', 1, 1, 2, '2015-04-08 21:14:25', '2015-04-08 21:51:28', '', 0, 0, NULL),
+(5, 'Bug Inducing Analysis to Prevent Fault Prone Bug Fixes', '通过对程序中引入的错误分析来预防易注入错误的错误修复', 'Bug fix is an important and challenging task in software development and maintenance. Bug fix is also a dangerous change, because it might induce new bugs. It is difficult to decide whether a bug fix is safe in practice. In this paper, we conducted an empirical study on bug inducing analysis to discover the types and features of fault prone bug fixes. We use a classical algorithm to track the location of the code changes introducing the bugs. The change types of the codes will be checked by an automatic tool and whether this change is a bug fix change is recorded. We analyze the statistics to find out what types of change are most prone to induce new bugs when they are intended to fix a bug. Finally, some guidelines are provided to help developers prevent such fault prone bug fixes.', '这是中文摘要', 'Haoyu Yang, Chen Wang, Qingkai Shi, Yang Feng, Zhenyu Chen', '杨皓宇，王晨，时清凯，冯洋，陈振宇', 2014, 'SEKE', '', 'bug inducing, bug fix, mining software repository, software maintenance', '错误注入，错误修复，程序修复，数据挖掘', 'Toronto', 'State Key Laboratory for Novel Software Technology, Nanjing University', 'Zhenyu Chen', 'English', 6, 0, 0, 0, '', '', '', '', '', '', '/uploaded/p19k9pnukf1mvt38f1snoeh71qcpv.pdf', 1, 1, 2, '2015-04-08 21:17:47', '2015-05-02 15:51:38', 'Bug Inducing Analysis to Prevent Fault Prone Bug Fixes.pdf', 1, 5, NULL);
 
 -- --------------------------------------------------------
 

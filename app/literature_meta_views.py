@@ -46,6 +46,7 @@ literature_meta_fields = {
     'rank_num' : fields.Integer,
     'rank_str' : fields.String,
     'file_name' : fields.String,
+    'upload_history': fields.String
 }
 
 class LiteratureApi(Resource):
@@ -86,7 +87,7 @@ class LiteratureApi(Resource):
         self.parser.add_argument('total_rank', type=int, location='json')
         self.parser.add_argument('rank_num', type=int, location='json')
         self.parser.add_argument('file_name', type=unicode, location='json')
-
+        self.parser.add_argument('upload_history', type=unicode, location='json')
         super(LiteratureApi, self).__init__()
 
     @marshal_with(literature_meta_fields)
@@ -154,6 +155,7 @@ class LiteratureListApi(Resource):
         self.parser.add_argument('update_time', location='json')
         self.parser.add_argument('total_rank', type=int, location='json')
         self.parser.add_argument('rank_num', type=int, location='json')
+        self.parser.add_argument('upload_history', type=unicode, location='json')
         super(LiteratureListApi, self).__init__()
 
     @marshal_with(literature_meta_fields)

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- 主机: localhost
--- 生成日期: 2015-05-02 12:02:27
+-- 生成日期: 2015-05-03 08:57:02
 -- 服务器版本: 5.6.14
 -- PHP 版本: 5.5.14
 
@@ -85,6 +85,7 @@ CREATE TABLE IF NOT EXISTS `code` (
   `total_rank` int(11) DEFAULT NULL,
   `link` varchar(256) COLLATE utf8_bin DEFAULT NULL,
   `publisher` varchar(256) COLLATE utf8_bin DEFAULT NULL,
+  `upload_history` text COLLATE utf8_bin,
   PRIMARY KEY (`id`),
   KEY `creator_id` (`creator_id`),
   KEY `updater_id` (`updater_id`)
@@ -147,6 +148,7 @@ CREATE TABLE IF NOT EXISTS `data_set` (
   `total_rank` int(11) DEFAULT NULL,
   `link` varchar(256) COLLATE utf8_bin DEFAULT NULL,
   `publisher` varchar(256) COLLATE utf8_bin DEFAULT NULL,
+  `upload_history` text COLLATE utf8_bin,
   PRIMARY KEY (`id`),
   KEY `creator_id` (`creator_id`),
   KEY `data_set_type_id` (`data_set_type_id`),
@@ -242,6 +244,7 @@ CREATE TABLE IF NOT EXISTS `literature_meta` (
   `file_name` varchar(256) COLLATE utf8_bin DEFAULT NULL,
   `rank_num` int(11) DEFAULT NULL,
   `total_rank` int(11) DEFAULT NULL,
+  `upload_history` text COLLATE utf8_bin,
   PRIMARY KEY (`id`),
   KEY `creator_id` (`creator_id`),
   KEY `literature_type_id` (`literature_type_id`),

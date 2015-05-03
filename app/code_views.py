@@ -19,7 +19,8 @@ code_fields = {
     'rank_str': fields.String,
     'file_name': fields.String,
     'link': fields.String,
-    'publisher': fields.String
+    'publisher': fields.String,
+    'upload_history': fields.String
 }
 
 
@@ -38,6 +39,7 @@ class CodeApi(Resource):
         self.parser.add_argument('file_name', type=unicode, location='json')
         self.parser.add_argument('link', type=unicode, location='json')
         self.parser.add_argument('publisher', type=unicode, location='json')
+        self.parser.add_argument('upload_history', type=unicode, location='json')
         super(CodeApi, self).__init__()
 
     @marshal_with(code_fields)
@@ -92,6 +94,7 @@ class CodeListApi(Resource):
         self.parser.add_argument('language', type=unicode, location='json')
         self.parser.add_argument('link', type=unicode, location='json')
         self.parser.add_argument('publisher', type=unicode, location='json')
+        self.parser.add_argument('upload_history', type=unicode, location='json')
         super(CodeListApi, self).__init__()
 
     def get(self):

@@ -21,7 +21,8 @@ data_set_fields={
     'rank_str': fields.String,
     'file_name': fields.String,
     'link': fields.String,
-    'publisher': fields.String
+    'publisher': fields.String,
+    'upload_history': fields.String
 }
 
 class Data_setApi(Resource):
@@ -40,6 +41,7 @@ class Data_setApi(Resource):
         self.parser.add_argument('file_name', type=unicode, location='json')
         self.parser.add_argument('link', type=unicode, location='json')
         self.parser.add_argument('publisher', type=unicode, location='json')
+        self.parser.add_argument('upload_history', type=unicode, location='json')
         super(Data_setApi, self).__init__()
 
     @marshal_with(data_set_fields)
@@ -96,6 +98,7 @@ class Data_setListApi(Resource):
         self.parser.add_argument('type_name', type=unicode, location='json')
         self.parser.add_argument('link', type=unicode, location='json')
         self.parser.add_argument('publisher', type=unicode, location='json')
+        self.parser.add_argument('upload_history', type=unicode, location='json')
         super(Data_setListApi, self).__init__()
 
     def get(self):

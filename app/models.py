@@ -181,11 +181,13 @@ class Literature_meta(db.Model):
     rank_num = db.Column(db.Integer)
     file_name = db.Column(db.String(256))
 
+    upload_history = db.Column(db.Text)
+
 
     def __init__(self, title, creator_id, create_time, literature_type_id, titleCN='', abstract='', abstractCN='',
                  author='', authorCN='', published_year=0, publisher='', publisherCN='', volume=0, issue=0, location='',
                  institute='', instructor='', key_words='', key_words_CN='', language='', pages=0, section=0,
-                 edition='', press='', editor='', ISBN='', ISSN='', DOI='', uri='', updater_id=None, update_time=None, total_rank=0, rank_num=0, file_name=''):
+                 edition='', press='', editor='', ISBN='', ISSN='', DOI='', uri='', updater_id=None, update_time=None, total_rank=0, rank_num=0, file_name='', upload_history=''):
         self.title = title
         self.creator_id = creator_id
         self.create_time = create_time
@@ -220,6 +222,7 @@ class Literature_meta(db.Model):
         self.total_rank = total_rank
         self.rank_num = rank_num
         self.file_name = file_name
+        self.upload_history = upload_history
 
 
 class Type(db.Model):
@@ -295,8 +298,10 @@ class Data_set(db.Model):
     link = db.Column(db.String(256))
     publisher = db.Column(db.String(256))
 
+    upload_history = db.Column(db.Text)
+
     def __init__(self, title, creator_id, create_time, data_set_type_id, updater_id=None, update_time=None,
-                 description='', size=0, uri='', total_rank=0, rank_num=0, file_name='', link='', publisher=''):
+                 description='', size=0, uri='', total_rank=0, rank_num=0, file_name='', link='', publisher='', upload_history=''):
         self.title = title
         self.creator_id = creator_id
         self.create_time = create_time
@@ -311,6 +316,7 @@ class Data_set(db.Model):
         self.file_name = file_name
         self.link = link
         self.publisher = publisher
+        self.upload_history = upload_history
 
 
 class Code(db.Model):
@@ -339,8 +345,10 @@ class Code(db.Model):
     link = db.Column(db.String(256))
     publisher = db.Column(db.String(256))
 
+    upload_history = db.Column(db.Text)
+
     def __init__(self, title, creator_id, create_time, updater_id=None, update_time=None, description='', size=0,
-                 uri='', language='', total_rank=0, rank_num=0, file_name='', link='', publisher=''):
+                 uri='', language='', total_rank=0, rank_num=0, file_name='', link='', publisher='', upload_history=''):
         self.title = title
         self.creator_id = creator_id
         self.create_time = create_time
@@ -355,6 +363,7 @@ class Code(db.Model):
         self.file_name = file_name
         self.link = link
         self.publisher = publisher
+        self.upload_history = upload_history
 
 
 class Comment(db.Model):
