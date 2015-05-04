@@ -241,9 +241,14 @@ def uploadPersonalized():
 
     if chunk == (chunks - 1):
         # add this url to database
-        literaturePersonalized = Personalized(literature_id,user_id,saved_file_url)
-        db.session.add(literaturePersonalized)
-        db.session.commit()
+        personalized = Personalized.query.filter_by(literature_id=literature_id, user_id=user_id).first()
+        if personalized:
+            personalized.uri = saved_file_url
+            db.session.commit()
+        else:
+            literaturePersonalized = Personalized(literature_id,user_id,saved_file_url)
+            db.session.add(literaturePersonalized)
+            db.session.commit()
     return json.dumps(saved_file_url)
 
 
