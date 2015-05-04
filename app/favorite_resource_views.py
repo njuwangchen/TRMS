@@ -20,6 +20,7 @@ class favorite_resourceApi(Resource):
         self.parser.add_argument('resource_id', type=int, required=True, location='json')
         self.parser.add_argument('type', type=int, required=True, location='json')
         self.parser.add_argument('favorite_id', type=int, required=True, location='json')
+        self.parser.add_argument('favorite_time', required=True, location='json')
         super(favorite_resourceApi, self).__init__()
 
     # add a new favorite_resource
@@ -31,7 +32,7 @@ class favorite_resourceApi(Resource):
         resource_id = args['resource_id']
         type_data = args['type']
         favorite_id = args['favorite_id']
-        favorite_resource = Favorite_resource(resource_id=resource_id, type=type_data, favorite_id=favorite_id)
+        favorite_resource = Favorite_resource(resource_id=resource_id, type=type_data, favorite_id=favorite_id,favorite_time = args['favorite_time'])
         db.session.add(favorite_resource)
         db.session.commit()
         return favorite_resource, 201
