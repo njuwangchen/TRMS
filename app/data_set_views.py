@@ -103,10 +103,9 @@ class Data_setListApi(Resource):
 
     def get(self):
         data_setList = Data_set.query.all()
-        for data_set in data_setList:
-            data_set.type_name = data_set.type.name
         if data_setList:
             for data_set in data_setList:
+                data_set.type_name = data_set.type.name
                 if data_set.rank_num:
                     data_set.rank = float(data_set.total_rank)/data_set.rank_num
                     data_set.rank_str = '{:.2f} / {}'.format(data_set.rank, data_set.rank_num)

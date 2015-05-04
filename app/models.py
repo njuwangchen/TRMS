@@ -183,11 +183,13 @@ class Literature_meta(db.Model):
 
     upload_history = db.Column(db.Text)
 
+    publisher_abbreviation = db.Column(db.String(128))
+
 
     def __init__(self, title, creator_id, create_time, literature_type_id, titleCN='', abstract='', abstractCN='',
                  author='', authorCN='', published_year=0, publisher='', publisherCN='', volume=0, issue=0, location='',
                  institute='', instructor='', key_words='', key_words_CN='', language='', pages=0, section=0,
-                 edition='', press='', editor='', ISBN='', ISSN='', DOI='', uri='', updater_id=None, update_time=None, total_rank=0, rank_num=0, file_name='', upload_history=''):
+                 edition='', press='', editor='', ISBN='', ISSN='', DOI='', uri='', updater_id=None, update_time=None, total_rank=0, rank_num=0, file_name='', upload_history='', publisher_abbreviation=''):
         self.title = title
         self.creator_id = creator_id
         self.create_time = create_time
@@ -223,6 +225,7 @@ class Literature_meta(db.Model):
         self.rank_num = rank_num
         self.file_name = file_name
         self.upload_history = upload_history
+        self.publisher_abbreviation = publisher_abbreviation
 
 
 class Type(db.Model):
@@ -467,4 +470,54 @@ class Personalized(db.Model):
         self.literature_id = literature_id
         self.user_id  = user_id
         self.uri = uri
+
+class KB_Conference(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+
+    abbreviation = db.Column(db.String(128), nullable=False)
+    full = db.Column(db.String(256), nullable=False)
+
+    def __init__(self, abbreviation, full):
+        self.abbreviation = abbreviation
+        self.full = full
+
+class KB_Conference_Year(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+
+    abbreviation = db.Column(db.String(128), nullable=False)
+    year = db.Column(db.Integer, nullable=False)
+
+    location = db.Column(db.String(256), nullable=False)
+    editor = db.Column(db.String(256), nullable=False)
+
+    def __init__(self, abbreviation, year, location, editor):
+        self.abbreviation = abbreviation
+        self.year = year
+        self.location = location
+        self.editor = editor
+
+class KB_Journal(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+
+    abbreviation = db.Column(db.String(128), nullable=False)
+    full = db.Column(db.String(256), nullable=False)
+
+    def __init__(self, abbreviation, full):
+        self.abbreviation = abbreviation
+        self.full = full
+
+class KB_Journal_Year_Issue(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+
+    abbreviation = db.Column(db.String(128), nullable=False)
+    year = db.Column(db.Integer, nullable=False)
+    issue = db.Column(db.Integer, nullable=False)
+
+    editor = db.Column(db.String(256), nullable=False)
+
+    def __init__(self, abbreviation, year, issue, editor):
+        self.abbreviation = abbreviation
+        self.year = year
+        self.issue = issue
+        self.editor = editor
 

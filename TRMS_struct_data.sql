@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- 主机: localhost
--- 生成日期: 2015-05-03 08:56:33
+-- 生成日期: 2015-05-04 03:09:55
 -- 服务器版本: 5.6.14
 -- PHP 版本: 5.5.14
 
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `alembic_version` (
 --
 
 INSERT INTO `alembic_version` (`version_num`) VALUES
-('538484b812ec');
+('3655f04c417b');
 
 -- --------------------------------------------------------
 
@@ -280,6 +280,98 @@ CREATE TABLE IF NOT EXISTS `favorite_resource` (
 -- --------------------------------------------------------
 
 --
+-- 表的结构 `KB__conference`
+--
+
+DROP TABLE IF EXISTS `KB__conference`;
+CREATE TABLE IF NOT EXISTS `KB__conference` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `abbreviation` varchar(128) COLLATE utf8_bin NOT NULL,
+  `full` varchar(256) COLLATE utf8_bin NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=3 ;
+
+--
+-- 转存表中的数据 `KB__conference`
+--
+
+INSERT INTO `KB__conference` (`id`, `abbreviation`, `full`) VALUES
+(1, 'aa', 'amerivan aa'),
+(2, 'bb', 'bros pppp');
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `KB__conference__year`
+--
+
+DROP TABLE IF EXISTS `KB__conference__year`;
+CREATE TABLE IF NOT EXISTS `KB__conference__year` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `abbreviation` varchar(128) COLLATE utf8_bin NOT NULL,
+  `year` int(11) NOT NULL,
+  `location` varchar(256) COLLATE utf8_bin NOT NULL,
+  `editor` varchar(256) COLLATE utf8_bin NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=3 ;
+
+--
+-- 转存表中的数据 `KB__conference__year`
+--
+
+INSERT INTO `KB__conference__year` (`id`, `abbreviation`, `year`, `location`, `editor`) VALUES
+(1, 'bb', 2003, 'new york', 'sunanzhi'),
+(2, 'aa', 2003, 'madison', 'sdfsdfsdfsdfs');
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `KB__journal`
+--
+
+DROP TABLE IF EXISTS `KB__journal`;
+CREATE TABLE IF NOT EXISTS `KB__journal` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `abbreviation` varchar(128) COLLATE utf8_bin NOT NULL,
+  `full` varchar(256) COLLATE utf8_bin NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=3 ;
+
+--
+-- 转存表中的数据 `KB__journal`
+--
+
+INSERT INTO `KB__journal` (`id`, `abbreviation`, `full`) VALUES
+(1, 'bb', 'jslkdjflkajlsdf'),
+(2, 'aa', 'asdfsdfasdfa');
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `KB__journal__year__issue`
+--
+
+DROP TABLE IF EXISTS `KB__journal__year__issue`;
+CREATE TABLE IF NOT EXISTS `KB__journal__year__issue` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `abbreviation` varchar(128) COLLATE utf8_bin NOT NULL,
+  `year` int(11) NOT NULL,
+  `issue` int(11) NOT NULL,
+  `editor` varchar(256) COLLATE utf8_bin NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=3 ;
+
+--
+-- 转存表中的数据 `KB__journal__year__issue`
+--
+
+INSERT INTO `KB__journal__year__issue` (`id`, `abbreviation`, `year`, `issue`, `editor`) VALUES
+(1, 'aa', 2003, 1, 'jskldjfklajlsdkjf'),
+(2, 'bb', 2009, 2, 'askdjflskjdlkfja');
+
+-- --------------------------------------------------------
+
+--
 -- 表的结构 `literature_meta`
 --
 
@@ -321,6 +413,7 @@ CREATE TABLE IF NOT EXISTS `literature_meta` (
   `rank_num` int(11) DEFAULT NULL,
   `total_rank` int(11) DEFAULT NULL,
   `upload_history` text COLLATE utf8_bin,
+  `publisher_abbreviation` varchar(128) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `creator_id` (`creator_id`),
   KEY `literature_type_id` (`literature_type_id`),
@@ -331,11 +424,11 @@ CREATE TABLE IF NOT EXISTS `literature_meta` (
 -- 转存表中的数据 `literature_meta`
 --
 
-INSERT INTO `literature_meta` (`id`, `title`, `titleCN`, `abstract`, `abstractCN`, `author`, `authorCN`, `published_year`, `publisher`, `publisherCN`, `key_words`, `key_words_CN`, `location`, `institute`, `instructor`, `language`, `pages`, `volume`, `issue`, `section`, `edition`, `press`, `editor`, `ISBN`, `ISSN`, `DOI`, `uri`, `creator_id`, `updater_id`, `literature_type_id`, `create_time`, `update_time`, `file_name`, `rank_num`, `total_rank`, `upload_history`) VALUES
-(2, 'My very first article', '我的第一篇文章', 'This is the first article', 'C.Wang的第一篇文章', 'C.Wang', '王晨', 2014, 'Nanjing University', '南京大学', '', '', '', '', '', '', 0, 0, 0, 0, '', '', '', '', '', '', '/uploaded/p19kcf99narpu1n1g8d818m314bp9.pdf', 1, 1, 1, '2015-04-07 17:08:36', '2015-05-03 16:46:36', 'cartoon.pdf', 3, 11, 'null;Lease_CW.pdf,p19kcesfra15141o6emtj15m2co49.pdf;cartoon.pdf,p19kcf99narpu1n1g8d818m314bp9.pdf'),
-(3, 'This is for testing add..', '', '', '', 'chen wong', '', 0, '', '', '', '', '', '', '', '', 0, 0, 0, 0, '', '', '', '', '', '', '', 1, 1, 2, '2015-04-08 17:42:29', '2015-04-08 21:51:28', '', 1, 3, NULL),
-(4, 'meeting', '这是一篇会议论文', '', '', 'cc', '', 0, '', '', '', '', '', '', '', '', 0, 0, 0, 0, '', '', '', '', '', '', '', 1, 1, 2, '2015-04-08 21:14:25', '2015-04-08 21:51:28', '', 0, 0, NULL),
-(5, 'Bug Inducing Analysis to Prevent Fault Prone Bug Fixes', '通过对程序中引入的错误分析来预防易注入错误的错误修复', 'Bug fix is an important and challenging task in software development and maintenance. Bug fix is also a dangerous change, because it might induce new bugs. It is difficult to decide whether a bug fix is safe in practice. In this paper, we conducted an empirical study on bug inducing analysis to discover the types and features of fault prone bug fixes. We use a classical algorithm to track the location of the code changes introducing the bugs. The change types of the codes will be checked by an automatic tool and whether this change is a bug fix change is recorded. We analyze the statistics to find out what types of change are most prone to induce new bugs when they are intended to fix a bug. Finally, some guidelines are provided to help developers prevent such fault prone bug fixes.', '这是中文摘要', 'Haoyu Yang, Chen Wang, Qingkai Shi, Yang Feng, Zhenyu Chen', '杨皓宇，王晨，时清凯，冯洋，陈振宇', 2014, 'SEKE', '', 'bug inducing, bug fix, mining software repository, software maintenance', '错误注入，错误修复，程序修复，数据挖掘', 'Toronto', 'State Key Laboratory for Novel Software Technology, Nanjing University', 'Zhenyu Chen', 'English', 6, 0, 0, 0, '', '', '', '', '', '', '/uploaded/p19k9pnukf1mvt38f1snoeh71qcpv.pdf', 1, 1, 2, '2015-04-08 21:17:47', '2015-05-02 15:51:38', 'Bug Inducing Analysis to Prevent Fault Prone Bug Fixes.pdf', 1, 5, NULL);
+INSERT INTO `literature_meta` (`id`, `title`, `titleCN`, `abstract`, `abstractCN`, `author`, `authorCN`, `published_year`, `publisher`, `publisherCN`, `key_words`, `key_words_CN`, `location`, `institute`, `instructor`, `language`, `pages`, `volume`, `issue`, `section`, `edition`, `press`, `editor`, `ISBN`, `ISSN`, `DOI`, `uri`, `creator_id`, `updater_id`, `literature_type_id`, `create_time`, `update_time`, `file_name`, `rank_num`, `total_rank`, `upload_history`, `publisher_abbreviation`) VALUES
+(2, 'My very first article', '我的第一篇文章', 'This is the first article', 'C.Wang的第一篇文章', 'C.Wang', '王晨', 2014, 'Nanjing University', '南京大学', '', '', '', '', '', '', 0, 0, 0, 0, '', '', '', '', '', '', '/uploaded/p19kcf99narpu1n1g8d818m314bp9.pdf', 1, 1, 1, '2015-04-07 17:08:36', '2015-05-03 16:46:36', 'cartoon.pdf', 3, 11, 'null;Lease_CW.pdf,p19kcesfra15141o6emtj15m2co49.pdf;cartoon.pdf,p19kcf99narpu1n1g8d818m314bp9.pdf', NULL),
+(3, 'This is for testing add..', '', '', '', 'chen wong', '', 0, '', '', '', '', '', '', '', '', 0, 0, 0, 0, '', '', '', '', '', '', '', 1, 1, 2, '2015-04-08 17:42:29', '2015-04-08 21:51:28', '', 1, 3, NULL, NULL),
+(4, 'meeting', '这是一篇会议论文', '', '', 'cc', '', 0, '', '', '', '', '', '', '', '', 0, 0, 0, 0, '', '', '', '', '', '', '', 1, 1, 2, '2015-04-08 21:14:25', '2015-04-08 21:51:28', '', 0, 0, NULL, NULL),
+(5, 'Bug Inducing Analysis to Prevent Fault Prone Bug Fixes', '通过对程序中引入的错误分析来预防易注入错误的错误修复', 'Bug fix is an important and challenging task in software development and maintenance. Bug fix is also a dangerous change, because it might induce new bugs. It is difficult to decide whether a bug fix is safe in practice. In this paper, we conducted an empirical study on bug inducing analysis to discover the types and features of fault prone bug fixes. We use a classical algorithm to track the location of the code changes introducing the bugs. The change types of the codes will be checked by an automatic tool and whether this change is a bug fix change is recorded. We analyze the statistics to find out what types of change are most prone to induce new bugs when they are intended to fix a bug. Finally, some guidelines are provided to help developers prevent such fault prone bug fixes.', '这是中文摘要', 'Haoyu Yang, Chen Wang, Qingkai Shi, Yang Feng, Zhenyu Chen', '杨皓宇，王晨，时清凯，冯洋，陈振宇', 2014, 'SEKE', '', 'bug inducing, bug fix, mining software repository, software maintenance', '错误注入，错误修复，程序修复，数据挖掘', 'Toronto', 'State Key Laboratory for Novel Software Technology, Nanjing University', 'Zhenyu Chen', 'English', 6, 0, 0, 0, '', '', '', '', '', '', '/uploaded/p19k9pnukf1mvt38f1snoeh71qcpv.pdf', 1, 1, 2, '2015-04-08 21:17:47', '2015-05-02 15:51:38', 'Bug Inducing Analysis to Prevent Fault Prone Bug Fixes.pdf', 1, 5, NULL, NULL);
 
 -- --------------------------------------------------------
 

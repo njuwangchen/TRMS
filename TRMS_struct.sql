@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- 主机: localhost
--- 生成日期: 2015-05-03 08:57:02
+-- 生成日期: 2015-05-04 03:10:09
 -- 服务器版本: 5.6.14
 -- PHP 版本: 5.5.14
 
@@ -204,6 +204,66 @@ CREATE TABLE IF NOT EXISTS `favorite_resource` (
 -- --------------------------------------------------------
 
 --
+-- 表的结构 `KB__conference`
+--
+
+DROP TABLE IF EXISTS `KB__conference`;
+CREATE TABLE IF NOT EXISTS `KB__conference` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `abbreviation` varchar(128) COLLATE utf8_bin NOT NULL,
+  `full` varchar(256) COLLATE utf8_bin NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=3 ;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `KB__conference__year`
+--
+
+DROP TABLE IF EXISTS `KB__conference__year`;
+CREATE TABLE IF NOT EXISTS `KB__conference__year` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `abbreviation` varchar(128) COLLATE utf8_bin NOT NULL,
+  `year` int(11) NOT NULL,
+  `location` varchar(256) COLLATE utf8_bin NOT NULL,
+  `editor` varchar(256) COLLATE utf8_bin NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=3 ;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `KB__journal`
+--
+
+DROP TABLE IF EXISTS `KB__journal`;
+CREATE TABLE IF NOT EXISTS `KB__journal` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `abbreviation` varchar(128) COLLATE utf8_bin NOT NULL,
+  `full` varchar(256) COLLATE utf8_bin NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=3 ;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `KB__journal__year__issue`
+--
+
+DROP TABLE IF EXISTS `KB__journal__year__issue`;
+CREATE TABLE IF NOT EXISTS `KB__journal__year__issue` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `abbreviation` varchar(128) COLLATE utf8_bin NOT NULL,
+  `year` int(11) NOT NULL,
+  `issue` int(11) NOT NULL,
+  `editor` varchar(256) COLLATE utf8_bin NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=3 ;
+
+-- --------------------------------------------------------
+
+--
 -- 表的结构 `literature_meta`
 --
 
@@ -245,6 +305,7 @@ CREATE TABLE IF NOT EXISTS `literature_meta` (
   `rank_num` int(11) DEFAULT NULL,
   `total_rank` int(11) DEFAULT NULL,
   `upload_history` text COLLATE utf8_bin,
+  `publisher_abbreviation` varchar(128) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `creator_id` (`creator_id`),
   KEY `literature_type_id` (`literature_type_id`),
