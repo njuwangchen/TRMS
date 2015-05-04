@@ -25,7 +25,7 @@ class data_set_literatureDel(Resource):
         args = self.parser.parse_args()
         literature = Literature_meta.query.filter_by(id=args['literature_id']).first()
         data_set = Data_set.query.filter_by(id=args['data_set_id']).first()
-        literature.codes.remove(data_set)
+        literature.data_sets.remove(data_set)
         db.session.commit()
         return "delete success" , 201
 
@@ -79,3 +79,4 @@ class data_set_literatureQueryApi(Resource):
 
 api.add_resource(data_set_literatureListApi, '/api/v1/data_set_literatures', endpoint='data_set_literature')
 api.add_resource(data_set_literatureQueryApi, '/api/v1/data_set_literatures/query', endpoint='data_set_literatureQuery')
+api.add_resource(data_set_literatureDel, '/api/v1/data_set_literatures/del', endpoint='data_set_literatureDel')
