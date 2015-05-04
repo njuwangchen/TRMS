@@ -1,4 +1,4 @@
-__author__ = 'ClarkWong'
+# -*- coding: utf-8 -*-
 
 from app import db, api
 from flask.ext.restful import reqparse, abort, Resource, fields, marshal_with, marshal
@@ -15,7 +15,9 @@ comment_fields={
     'star' : fields.Integer,
     'comment_time' : fields.String,
     'is_simple' : fields.Integer,
-    'commenter_name' : fields.String
+    'commenter_name' : fields.String,
+    'resource_name': fields.String,
+    'resource_type_name': fields.String
 }
 
 class CommentListApi(Resource):
@@ -95,6 +97,23 @@ class CommentQueryApi(Resource):
             q = q.order_by(Comment.comment_time.desc())
             result = []
             for comment in q:
+                if comment.type == 1:
+                    resource = Literature_meta.query.filter_by(id=comment.resource_id).first()
+                    comment.resource_type_name = u"文献"
+                    comment.resource_name = resource.title
+                if comment.type == 2:
+                    resource = Data_set.query.filter_by(id=comment.resource_id).first()
+                    comment.resource_type_name = u"数据集"
+                    comment.resource_name = resource.title
+                if comment.type == 3:
+                    resource = Code.query.filter_by(id=comment.resource_id).first()
+                    comment.resource_type_name = u"代码"
+                    comment.resource_name = resource.title
+                if comment.type == 4:
+                    resource = Report.query.filter_by(id=comment.resource_id).first()
+                    comment.resource_type_name = u"报告"
+                    comment.resource_name = resource.title
+
                 comment.commenter_name = comment.commenter.name
                 result.append(marshal(comment, comment_fields))
             return result, 201
