@@ -13,6 +13,9 @@ class User(db.Model):
         self.password = password
         self.privilege = privilege
 
+    def verify_password(self, password):
+        return password == self.password
+
 
 data_set_literature = db.Table('data_set_literature',
                                db.Column('data_set_id', db.Integer, db.ForeignKey('data_set.id'), primary_key=True),

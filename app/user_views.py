@@ -12,6 +12,15 @@ user_fields = {
     'privilege' : fields.Integer,
 }
 
+login_fields = {
+    "isSucceed": fields.Boolean,
+    "userNotExist": fields.Boolean,
+    "passwdNotRight": fields.Boolean,
+    "id": fields.Integer,
+    "name": fields.String,
+    "privilege": fields.String
+}
+
 class UserApi(Resource):
 
     def __init__(self):
@@ -87,17 +96,36 @@ class UserLoginApi(Resource):
         self.parser.add_argument('password', type=unicode, required=True, location='json')
         super(UserLoginApi,self).__init__()
 
+    # @marshal_with(user_fields)
+    # def post(self):
+    #     args = self.parser.parse_args()
+    #     print args
+    #     q = User.query.filter_by(name=args['username']).first()
+    #     if q:
+    #         if q.password == args['password']:
+    #             return q
+    #         else:
+    #             return 'FALSE'
+    #     else:
+    #         return 'FALSE'
+
+    @marshal_with(login_fields)
     def post(self):
+        result = dict()
         args = self.parser.parse_args()
-        print args
-        q = User.query.filter_by(name=args['username']).first()
-        if q:
-            if q.password == args['password']:
-                return q.id
-            else:
-                return 'FALSE'
+        user = User.query.filter_by(name=args['username']).first()
+        if not user:
+            result['isSucceed'] = False
+            result['userNotExist'] = True
+        elif not user.verify_password(args['password']):
+            result['isSucceed'] = False
+            result['passwdNotRight'] = True
         else:
-            return 'FALSE'
+            result['isSucceed'] = True
+            result['id'] = user.id
+            result['name'] = user.name
+            result['privilege'] = user.privilege
+        return result, 201
 
 api.add_resource(UserListApi, '/api/v1/users', endpoint='userList')
 api.add_resource(UserApi, '/api/v1/users/<user_id>', endpoint='user')
