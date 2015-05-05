@@ -5,7 +5,8 @@ from flask.ext.restful import reqparse, abort, Api, Resource, fields, marshal_wi
 from models import *
 import csv
 import dateutil.parser
-from fuzzywuzzy import fuzz,process
+from fuzzywuzzy import fuzz
+from type_views import type_fields
 
 api = Api(app)
 
@@ -407,14 +408,17 @@ class LiteratureFuzzySearchApi(Resource):
         self.parser.add_argument('total_rank', type=int, location='json')
         self.parser.add_argument('rank_num', type=int, location='json')
         self.parser.add_argument('tags',type=list,location='json')
+        self.parser.add_argument('year_begin',type=int,location='json')
+        self.parser.add_argument('year_over',type=int,location='json')
         super(LiteratureFuzzySearchApi, self).__init__()
 
      def post(self):
         args = self.parser.parse_args()
         q = Literature_meta.query
         literatures = []
+
         for attr, value in args.items():
-            if value and attr!='title' and attr!='author' and attr!='tags':
+            if value and attr!='title' and attr!='author' and attr!='tags' and attr!='year_begin' and attr!='year_over':
                 q = q.filter(getattr(Literature_meta, attr).like("%%%s%%" % value))
             elif value and attr=='tags':
                 records = set();
@@ -436,6 +440,8 @@ class LiteratureFuzzySearchApi(Resource):
                 elif args['author']:
                     if fuzz.partial_ratio(args['author'],literature.author)>=60:
                         resultList.append(literature)
+                else:
+                    resultList.append(literature)
         else:
             resultList = literatures
             for literature in literatures:
@@ -445,6 +451,16 @@ class LiteratureFuzzySearchApi(Resource):
                 elif args['author']:
                     if fuzz.partial_ratio(args['author'],literature.author)<60:
                         resultList.remove(literature)
+
+        # for i in range(0,len(resultList)):
+        #     if args['year_begin'] and args['year_over']:
+        #         if args['year_begin']==args['year_over']:
+        #             if  resultList[i].published_year!=args['year_over']:
+        #                 resultList.pop(i)
+        #         elif args['year_begin']<args['year_over']:
+        #             if resultList[i].published_year<args['year_begin'] or result.published_year>args['year_over']:
+        #                 resultList.pop(i)
+
         q = resultList
 
         if q:
@@ -458,6 +474,29 @@ class LiteratureFuzzySearchApi(Resource):
         else:
             return []
 
+class LiteratureSettingApi(Resource):
+    def __init__(self):
+        super(LiteratureSettingApi, self).__init__()
+
+    def get(self):
+        literature = Literature_meta.query.first()
+        # fieldsNotNeeded = ['id','uri','creator_id','updater_id','literature_type_id',
+        #                    'create_time','update_time','file_name','rank_num','total_rank','upload_history','publisher_abbrevi']
+
+        fieldsCanBeSet = Attribute.query.filter_by(type=1)
+        fieldList = [x.name for x in fieldsCanBeSet]
+
+        literatureTypes = Type.query.filter_by(type_id=1)
+        literatureTypes = [marshal(literatureType, type_fields) for literatureType in literatureTypes]
+
+        fieldDict = {}
+        fieldDict['fields']=fieldList
+        fieldDict['literatureTypes']=literatureTypes
+
+        return fieldDict
+
+
+api.add_resource(LiteratureSettingApi,'/api/v1/literatures/settings',endpoint='literatureSetting')
 api.add_resource(LiteratureFuzzySearchApi, '/api/v1/literatures/fuzzysearch', endpoint='literatureFuzzySearch')
 api.add_resource(LiteratureBatchApi, '/api/v1/literatures/batch', endpoint='literatureBatch')
 api.add_resource(LiteratureApi, '/api/v1/literatures/<literature_id>', endpoint='literature')

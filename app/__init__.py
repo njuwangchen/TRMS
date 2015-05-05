@@ -13,8 +13,9 @@ cor = CORS(app, allow_headers='Content-Type')
 
 api = Api(app)
 
+
 from app import models
-from app import attribute_views, cite_views, code_literature_views, \
+from app import attribute_views, cite_views, code_literature_views, setting_views,\
     code_views, comment_views, data_set_literature_views, data_set_views, \
     favorite_resource_views, favorite_views, literature_meta_views, ppt_views, \
     tag_resource_views, tag_views, type_views, user_views, video_views, upload_views, \

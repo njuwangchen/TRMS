@@ -1,0 +1,12 @@
+!!python/unicode 'commentFieldsIds': [9, 11]
+!!python/unicode 'refTypes': [!!python/unicode 'mention', !!python/unicode 'agree']
+!!python/unicode 'version': 1.2
+"\u4F1A\u8BAE": [!!python/unicode 'author', !!python/unicode 'abstract', !!python/unicode 'title',
+  !!python/unicode 'publisherCN', !!python/unicode 'key_words_CN', !!python/unicode 'location',
+  !!python/unicode 'institute', !!python/unicode 'instructor', !!python/unicode 'language']
+"\u4F60\u597D": [!!python/unicode 'ISBN', !!python/unicode 'ISSN']
+"\u6211\u597D": [!!python/unicode 'title', !!python/unicode 'ISBN', !!python/unicode 'authorCN']
+"\u671F\u520A": [!!python/unicode 'ISBN', !!python/unicode 'author', !!python/unicode 'abstract',
+  !!python/unicode 'abstractCN', !!python/unicode 'title', !!python/unicode 'publisherCN',
+  !!python/unicode 'key_words', !!python/unicode 'key_words_CN', !!python/unicode 'location',
+  !!python/unicode 'institute', !!python/unicode 'instructor']
