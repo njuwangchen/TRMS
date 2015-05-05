@@ -70,7 +70,8 @@ class CommentListApi(Resource):
 
         if resource:
             resource.total_rank += star
-            resource.rank_num += 1
+            if star:
+                resource.rank_num += 1
             db.session.commit()
 
         return comment, 201
