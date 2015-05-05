@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- 主机: localhost
--- 生成日期: 2015-05-04 03:10:09
+-- 生成日期: 2015-05-05 14:58:51
 -- 服务器版本: 5.6.14
 -- PHP 版本: 5.5.14
 
@@ -41,6 +41,7 @@ DROP TABLE IF EXISTS `attribute`;
 CREATE TABLE IF NOT EXISTS `attribute` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(64) COLLATE utf8_bin NOT NULL,
+  `type` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
 
@@ -60,7 +61,7 @@ CREATE TABLE IF NOT EXISTS `cite` (
   KEY `cite_type_id` (`cite_type_id`),
   KEY `cited_id` (`cited_id`),
   KEY `literature_id` (`literature_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=18 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=19 ;
 
 -- --------------------------------------------------------
 
@@ -86,9 +87,11 @@ CREATE TABLE IF NOT EXISTS `code` (
   `link` varchar(256) COLLATE utf8_bin DEFAULT NULL,
   `publisher` varchar(256) COLLATE utf8_bin DEFAULT NULL,
   `upload_history` text COLLATE utf8_bin,
+  `from_literature_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `creator_id` (`creator_id`),
-  KEY `updater_id` (`updater_id`)
+  KEY `updater_id` (`updater_id`),
+  KEY `from_literature_id` (`from_literature_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=4 ;
 
 -- --------------------------------------------------------
@@ -149,10 +152,12 @@ CREATE TABLE IF NOT EXISTS `data_set` (
   `link` varchar(256) COLLATE utf8_bin DEFAULT NULL,
   `publisher` varchar(256) COLLATE utf8_bin DEFAULT NULL,
   `upload_history` text COLLATE utf8_bin,
+  `from_literature_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `creator_id` (`creator_id`),
   KEY `data_set_type_id` (`data_set_type_id`),
-  KEY `updater_id` (`updater_id`)
+  KEY `updater_id` (`updater_id`),
+  KEY `from_literature_id` (`from_literature_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=3 ;
 
 -- --------------------------------------------------------
@@ -310,7 +315,7 @@ CREATE TABLE IF NOT EXISTS `literature_meta` (
   KEY `creator_id` (`creator_id`),
   KEY `literature_type_id` (`literature_type_id`),
   KEY `updater_id` (`updater_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=13 ;
 
 -- --------------------------------------------------------
 
@@ -324,10 +329,11 @@ CREATE TABLE IF NOT EXISTS `personalized` (
   `literature_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `uri` varchar(256) COLLATE utf8_bin NOT NULL,
+  `fileName` varchar(256) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `literature_id` (`literature_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=9 ;
 
 -- --------------------------------------------------------
 
@@ -344,7 +350,7 @@ CREATE TABLE IF NOT EXISTS `ppt` (
   `ppt_name` varchar(256) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `literature_id` (`literature_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=9 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -386,7 +392,7 @@ CREATE TABLE IF NOT EXISTS `report_attachment` (
   `attachment_name` varchar(256) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `report_id` (`report_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=5 ;
 
 -- --------------------------------------------------------
 
@@ -444,7 +450,7 @@ CREATE TABLE IF NOT EXISTS `report_recording` (
   `recording_name` varchar(256) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `report_id` (`report_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -456,6 +462,7 @@ DROP TABLE IF EXISTS `tag`;
 CREATE TABLE IF NOT EXISTS `tag` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(64) COLLATE utf8_bin NOT NULL,
+  `type` varchar(64) COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=3 ;
 
@@ -502,7 +509,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `password` varchar(32) COLLATE utf8_bin NOT NULL,
   `privilege` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=3 ;
 
 -- --------------------------------------------------------
 
@@ -537,6 +544,7 @@ ALTER TABLE `cite`
 -- 限制表 `code`
 --
 ALTER TABLE `code`
+  ADD CONSTRAINT `code_ibfk_3` FOREIGN KEY (`from_literature_id`) REFERENCES `literature_meta` (`id`),
   ADD CONSTRAINT `code_ibfk_1` FOREIGN KEY (`creator_id`) REFERENCES `user` (`id`),
   ADD CONSTRAINT `code_ibfk_2` FOREIGN KEY (`updater_id`) REFERENCES `user` (`id`);
 
@@ -557,6 +565,7 @@ ALTER TABLE `comment`
 -- 限制表 `data_set`
 --
 ALTER TABLE `data_set`
+  ADD CONSTRAINT `data_set_ibfk_4` FOREIGN KEY (`from_literature_id`) REFERENCES `literature_meta` (`id`),
   ADD CONSTRAINT `data_set_ibfk_1` FOREIGN KEY (`creator_id`) REFERENCES `user` (`id`),
   ADD CONSTRAINT `data_set_ibfk_2` FOREIGN KEY (`data_set_type_id`) REFERENCES `type` (`id`),
   ADD CONSTRAINT `data_set_ibfk_3` FOREIGN KEY (`updater_id`) REFERENCES `user` (`id`);

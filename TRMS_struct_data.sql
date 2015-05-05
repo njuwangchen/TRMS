@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- 主机: localhost
--- 生成日期: 2015-05-04 03:09:55
+-- 生成日期: 2015-05-05 14:58:10
 -- 服务器版本: 5.6.14
 -- PHP 版本: 5.5.14
 
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `alembic_version` (
 --
 
 INSERT INTO `alembic_version` (`version_num`) VALUES
-('3655f04c417b');
+('300bdc5571f2');
 
 -- --------------------------------------------------------
 
@@ -48,6 +48,7 @@ DROP TABLE IF EXISTS `attribute`;
 CREATE TABLE IF NOT EXISTS `attribute` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(64) COLLATE utf8_bin NOT NULL,
+  `type` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
 
@@ -67,19 +68,15 @@ CREATE TABLE IF NOT EXISTS `cite` (
   KEY `cite_type_id` (`cite_type_id`),
   KEY `cited_id` (`cited_id`),
   KEY `literature_id` (`literature_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=18 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=19 ;
 
 --
 -- 转存表中的数据 `cite`
 --
 
 INSERT INTO `cite` (`id`, `literature_id`, `cited_id`, `cite_type_id`) VALUES
-(12, 2, 4, 5),
-(13, 2, 5, 6),
 (14, 5, 2, 5),
-(15, 4, 2, 6),
-(16, 2, 2, 6),
-(17, 2, 3, 6);
+(18, 2, 3, 5);
 
 -- --------------------------------------------------------
 
@@ -105,19 +102,21 @@ CREATE TABLE IF NOT EXISTS `code` (
   `link` varchar(256) COLLATE utf8_bin DEFAULT NULL,
   `publisher` varchar(256) COLLATE utf8_bin DEFAULT NULL,
   `upload_history` text COLLATE utf8_bin,
+  `from_literature_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `creator_id` (`creator_id`),
-  KEY `updater_id` (`updater_id`)
+  KEY `updater_id` (`updater_id`),
+  KEY `from_literature_id` (`from_literature_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=4 ;
 
 --
 -- 转存表中的数据 `code`
 --
 
-INSERT INTO `code` (`id`, `title`, `creator_id`, `updater_id`, `create_time`, `update_time`, `description`, `size`, `uri`, `language`, `file_name`, `rank_num`, `total_rank`, `link`, `publisher`, `upload_history`) VALUES
-(1, 'first code', 1, 1, '2015-04-07 21:07:40', '2015-05-03 16:49:14', 'lalalla', 1751260, '/uploadedCode/p19kcfe3pu1r971lu2i871j6b1mtub.zip', 'sdf', 'linux_setup_1.4.1.zip', 0, 0, NULL, 'chen', 'null;linux_setup_1.4.1.zip,p19kcfe3pu1r971lu2i871j6b1mtub.zip,1751257'),
-(2, 'this is yin wang''s 14 rows code', 1, 1, '2015-04-15 18:29:41', '2015-04-20 14:22:34', 'very nice', 0, '', 'ruby', '', 0, 0, NULL, NULL, NULL),
-(3, 'this is yin wang''s 14 rows code', 1, NULL, '2015-04-15 18:31:38', NULL, 'very nice', 0, '', '', '', 0, 0, NULL, NULL, NULL);
+INSERT INTO `code` (`id`, `title`, `creator_id`, `updater_id`, `create_time`, `update_time`, `description`, `size`, `uri`, `language`, `file_name`, `rank_num`, `total_rank`, `link`, `publisher`, `upload_history`, `from_literature_id`) VALUES
+(1, 'first code', 1, 1, '2015-04-07 21:07:40', '2015-05-05 17:28:50', 'lalalla', 0, '', 'sdf', '', 0, 0, NULL, 'chen', 'null;linux_setup_1.4.1.zip,p19kcfe3pu1r971lu2i871j6b1mtub.zip,1751257', 5),
+(2, 'this is yin wang''s 14 rows code', 1, 1, '2015-04-15 18:29:41', '2015-04-20 14:22:34', 'very nice', 0, '', 'ruby', '', 0, 0, NULL, NULL, NULL, NULL),
+(3, 'this is yin wang''s 14 rows code', 1, NULL, '2015-04-15 18:31:38', NULL, 'very nice', 0, '', '', '', 0, 0, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -138,11 +137,9 @@ CREATE TABLE IF NOT EXISTS `code_literature` (
 --
 
 INSERT INTO `code_literature` (`code_id`, `literature_id`) VALUES
-(2, 2),
 (3, 2),
 (1, 4),
-(3, 4),
-(2, 5);
+(3, 4);
 
 -- --------------------------------------------------------
 
@@ -199,19 +196,21 @@ CREATE TABLE IF NOT EXISTS `data_set` (
   `link` varchar(256) COLLATE utf8_bin DEFAULT NULL,
   `publisher` varchar(256) COLLATE utf8_bin DEFAULT NULL,
   `upload_history` text COLLATE utf8_bin,
+  `from_literature_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `creator_id` (`creator_id`),
   KEY `data_set_type_id` (`data_set_type_id`),
-  KEY `updater_id` (`updater_id`)
+  KEY `updater_id` (`updater_id`),
+  KEY `from_literature_id` (`from_literature_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=3 ;
 
 --
 -- 转存表中的数据 `data_set`
 --
 
-INSERT INTO `data_set` (`id`, `title`, `creator_id`, `updater_id`, `create_time`, `update_time`, `description`, `size`, `uri`, `data_set_type_id`, `file_name`, `rank_num`, `total_rank`, `link`, `publisher`, `upload_history`) VALUES
-(1, 'great pic', 1, 1, '2015-04-07 21:26:50', '2015-05-02 17:36:07', '', 28662, '/uploadedDataset/p19k9r0f7p7ke9of1qmq143aih83.zip', 3, 'the last project.zip', 0, 0, NULL, 'a', NULL),
-(2, 'test relation', 1, 1, '2015-04-15 16:35:24', '2015-05-03 16:53:46', '', 5631520, '/uploadedDataset/p19kcfmdnb1s74ish19o2ot6oq67.zip', 3, 'ui-grid.info-3.0.0-rc.20.zip', 0, 0, NULL, 'b', 'null;ui-grid.info-3.0.0-rc.20.zip,p19kcfmdnb1s74ish19o2ot6oq67.zip,5631520');
+INSERT INTO `data_set` (`id`, `title`, `creator_id`, `updater_id`, `create_time`, `update_time`, `description`, `size`, `uri`, `data_set_type_id`, `file_name`, `rank_num`, `total_rank`, `link`, `publisher`, `upload_history`, `from_literature_id`) VALUES
+(1, 'great pic', 1, 1, '2015-04-07 21:26:50', '2015-05-05 17:42:28', '', 0, '', 3, '', 0, 0, NULL, 'a', NULL, 5),
+(2, 'test relation', 1, 1, '2015-04-15 16:35:24', '2015-05-03 16:53:46', '', 5631520, '/uploadedDataset/p19kcfmdnb1s74ish19o2ot6oq67.zip', 3, 'ui-grid.info-3.0.0-rc.20.zip', 0, 0, NULL, 'b', 'null;ui-grid.info-3.0.0-rc.20.zip,p19kcfmdnb1s74ish19o2ot6oq67.zip,5631520', NULL);
 
 -- --------------------------------------------------------
 
@@ -233,10 +232,8 @@ CREATE TABLE IF NOT EXISTS `data_set_literature` (
 
 INSERT INTO `data_set_literature` (`data_set_id`, `literature_id`) VALUES
 (1, 2),
-(2, 2),
 (1, 4),
-(1, 5),
-(2, 5);
+(1, 5);
 
 -- --------------------------------------------------------
 
@@ -418,17 +415,24 @@ CREATE TABLE IF NOT EXISTS `literature_meta` (
   KEY `creator_id` (`creator_id`),
   KEY `literature_type_id` (`literature_type_id`),
   KEY `updater_id` (`updater_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=13 ;
 
 --
 -- 转存表中的数据 `literature_meta`
 --
 
 INSERT INTO `literature_meta` (`id`, `title`, `titleCN`, `abstract`, `abstractCN`, `author`, `authorCN`, `published_year`, `publisher`, `publisherCN`, `key_words`, `key_words_CN`, `location`, `institute`, `instructor`, `language`, `pages`, `volume`, `issue`, `section`, `edition`, `press`, `editor`, `ISBN`, `ISSN`, `DOI`, `uri`, `creator_id`, `updater_id`, `literature_type_id`, `create_time`, `update_time`, `file_name`, `rank_num`, `total_rank`, `upload_history`, `publisher_abbreviation`) VALUES
-(2, 'My very first article', '我的第一篇文章', 'This is the first article', 'C.Wang的第一篇文章', 'C.Wang', '王晨', 2014, 'Nanjing University', '南京大学', '', '', '', '', '', '', 0, 0, 0, 0, '', '', '', '', '', '', '/uploaded/p19kcf99narpu1n1g8d818m314bp9.pdf', 1, 1, 1, '2015-04-07 17:08:36', '2015-05-03 16:46:36', 'cartoon.pdf', 3, 11, 'null;Lease_CW.pdf,p19kcesfra15141o6emtj15m2co49.pdf;cartoon.pdf,p19kcf99narpu1n1g8d818m314bp9.pdf', NULL),
+(2, 'My very first article', '我的第一篇文章', 'This is the first article', 'C.Wang的第一篇文章', 'C.Wang', '王晨', 2014, 'Nanjing University', '南京大学', '', '', '', '', '', '', 0, 0, 0, 0, '', '', '', '', '', '', '', 1, 1, 1, '2015-04-07 17:08:36', '2015-05-04 16:30:26', '', 3, 11, 'null;Lease_CW.pdf,p19kcesfra15141o6emtj15m2co49.pdf;cartoon.pdf,p19kcf99narpu1n1g8d818m314bp9.pdf', NULL),
 (3, 'This is for testing add..', '', '', '', 'chen wong', '', 0, '', '', '', '', '', '', '', '', 0, 0, 0, 0, '', '', '', '', '', '', '', 1, 1, 2, '2015-04-08 17:42:29', '2015-04-08 21:51:28', '', 1, 3, NULL, NULL),
 (4, 'meeting', '这是一篇会议论文', '', '', 'cc', '', 0, '', '', '', '', '', '', '', '', 0, 0, 0, 0, '', '', '', '', '', '', '', 1, 1, 2, '2015-04-08 21:14:25', '2015-04-08 21:51:28', '', 0, 0, NULL, NULL),
-(5, 'Bug Inducing Analysis to Prevent Fault Prone Bug Fixes', '通过对程序中引入的错误分析来预防易注入错误的错误修复', 'Bug fix is an important and challenging task in software development and maintenance. Bug fix is also a dangerous change, because it might induce new bugs. It is difficult to decide whether a bug fix is safe in practice. In this paper, we conducted an empirical study on bug inducing analysis to discover the types and features of fault prone bug fixes. We use a classical algorithm to track the location of the code changes introducing the bugs. The change types of the codes will be checked by an automatic tool and whether this change is a bug fix change is recorded. We analyze the statistics to find out what types of change are most prone to induce new bugs when they are intended to fix a bug. Finally, some guidelines are provided to help developers prevent such fault prone bug fixes.', '这是中文摘要', 'Haoyu Yang, Chen Wang, Qingkai Shi, Yang Feng, Zhenyu Chen', '杨皓宇，王晨，时清凯，冯洋，陈振宇', 2014, 'SEKE', '', 'bug inducing, bug fix, mining software repository, software maintenance', '错误注入，错误修复，程序修复，数据挖掘', 'Toronto', 'State Key Laboratory for Novel Software Technology, Nanjing University', 'Zhenyu Chen', 'English', 6, 0, 0, 0, '', '', '', '', '', '', '/uploaded/p19k9pnukf1mvt38f1snoeh71qcpv.pdf', 1, 1, 2, '2015-04-08 21:17:47', '2015-05-02 15:51:38', 'Bug Inducing Analysis to Prevent Fault Prone Bug Fixes.pdf', 1, 5, NULL, NULL);
+(5, 'Bug Inducing Analysis to Prevent Fault Prone Bug Fixes', '通过对程序中引入的错误分析来预防易注入错误的错误修复', 'Bug fix is an important and challenging task in software development and maintenance. Bug fix is also a dangerous change, because it might induce new bugs. It is difficult to decide whether a bug fix is safe in practice. In this paper, we conducted an empirical study on bug inducing analysis to discover the types and features of fault prone bug fixes. We use a classical algorithm to track the location of the code changes introducing the bugs. The change types of the codes will be checked by an automatic tool and whether this change is a bug fix change is recorded. We analyze the statistics to find out what types of change are most prone to induce new bugs when they are intended to fix a bug. Finally, some guidelines are provided to help developers prevent such fault prone bug fixes.', '这是中文摘要', 'Haoyu Yang, Chen Wang, Qingkai Shi, Yang Feng, Zhenyu Chen', '杨皓宇，王晨，时清凯，冯洋，陈振宇', 2014, 'SEKE', '', 'bug inducing, bug fix, mining software repository, software maintenance', '错误注入，错误修复，程序修复，数据挖掘', 'Toronto', 'State Key Laboratory for Novel Software Technology, Nanjing University', 'Zhenyu Chen', 'English', 6, 0, 0, 0, '', '', '', '', '', '', '/uploaded/p19k9pnukf1mvt38f1snoeh71qcpv.pdf', 1, 1, 2, '2015-04-08 21:17:47', '2015-05-02 15:51:38', 'Bug Inducing Analysis to Prevent Fault Prone Bug Fixes.pdf', 1, 5, NULL, NULL),
+(6, 'test kb', '', '', '', 'test', '', 0, 'amerivan aa', '', '', '', '', '', '', '', 0, 0, 0, 0, '', '', '', '', '', '', '', 1, NULL, 1, '2015-05-04 13:31:45', NULL, '', 0, 0, '', 'aa'),
+(7, 'test kb 2', '', '', '', 'test', '', 1, 'amerivan aa', '', '', '', '', '', '', '', 0, 0, 0, 0, '', '', '', '', '', '', '', 1, NULL, 1, '2015-05-04 13:32:37', NULL, '', 0, 0, '', 'aa'),
+(8, 'test kb 3', '', '', '', 'test', '', 2009, '', '', '', '', '', '', '', '', 0, 0, 0, 0, '', '', '', '', '', '', '', 1, NULL, 1, '2015-05-04 13:33:40', NULL, '', 0, 0, '', 'aa'),
+(9, 'test kb 4', '', '', '', 'test', '', 0, 'el es ed', '', '', '', '', '', '', '', 0, 0, 0, 0, '', '', '', '', '', '', '', 1, NULL, 1, '2015-05-04 13:34:15', NULL, '', 0, 0, '', 'eee'),
+(10, 'test kb 5', '', '', '', 'test', '', 2003, '', '', '', '', 'madison', '', '', '', 0, 0, 0, 0, '', '', 'sdfsdfsdfsdfs', '', '', '', '', 1, NULL, 1, '2015-05-04 13:47:55', NULL, '', 0, 0, '', 'aa'),
+(11, 'test kb 778', '', '', '', 'wdfsdf', '', 0, '', '', '', '', '', '', '', '', 0, 0, 0, 0, '', '', '', '', '', '', '', 1, NULL, 2, '2015-05-04 14:13:31', NULL, '', 0, 0, '', 'aa'),
+(12, 'hhhh', '', '', '', 'hjk', '', 0, 'amerivan aa', '', '', '', '', '', '', '', 0, 0, 0, 0, '', '', '', '', '', '', '', 1, NULL, 1, '2015-05-04 14:17:43', NULL, '', 0, 0, '', 'aa');
 
 -- --------------------------------------------------------
 
@@ -442,10 +446,18 @@ CREATE TABLE IF NOT EXISTS `personalized` (
   `literature_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `uri` varchar(256) COLLATE utf8_bin NOT NULL,
+  `fileName` varchar(256) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `literature_id` (`literature_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=9 ;
+
+--
+-- 转存表中的数据 `personalized`
+--
+
+INSERT INTO `personalized` (`id`, `literature_id`, `user_id`, `uri`, `fileName`) VALUES
+(8, 2, 1, '', '');
 
 -- --------------------------------------------------------
 
@@ -462,14 +474,7 @@ CREATE TABLE IF NOT EXISTS `ppt` (
   `ppt_name` varchar(256) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `literature_id` (`literature_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=9 ;
-
---
--- 转存表中的数据 `ppt`
---
-
-INSERT INTO `ppt` (`id`, `literature_id`, `size`, `uri`, `ppt_name`) VALUES
-(8, 2, 282112, '/uploadedPpt/p19k9pkfa2qn21nqe1aqoctd1cbp7.ppt', '第9章.观察和文档审查.ppt');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -518,15 +523,14 @@ CREATE TABLE IF NOT EXISTS `report_attachment` (
   `attachment_name` varchar(256) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `report_id` (`report_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=5 ;
 
 --
 -- 转存表中的数据 `report_attachment`
 --
 
 INSERT INTO `report_attachment` (`id`, `report_id`, `uri`, `attachment_name`) VALUES
-(4, 1, '/uploadedReportattachment/p19k9smbso4res3oa778l01sje5.pdf', 'Fabric说明文档.pdf'),
-(5, 1, '/uploadedReportattachment/p19k9spnpkj4q102rp4r1fv913ho5.docx', 'android 大题整理.docx');
+(4, 1, '/uploadedReportattachment/p19k9smbso4res3oa778l01sje5.pdf', 'Fabric说明文档.pdf');
 
 -- --------------------------------------------------------
 
@@ -584,14 +588,7 @@ CREATE TABLE IF NOT EXISTS `report_recording` (
   `recording_name` varchar(256) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `report_id` (`report_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=3 ;
-
---
--- 转存表中的数据 `report_recording`
---
-
-INSERT INTO `report_recording` (`id`, `report_id`, `uri`, `recording_name`) VALUES
-(2, 1, '/uploadedReportrecording/p19k9tftgm1p9s5or13la5el1hm55.mp4', 'Miranda Lambert.mp4');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -603,6 +600,7 @@ DROP TABLE IF EXISTS `tag`;
 CREATE TABLE IF NOT EXISTS `tag` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(64) COLLATE utf8_bin NOT NULL,
+  `type` varchar(64) COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=3 ;
 
@@ -610,9 +608,9 @@ CREATE TABLE IF NOT EXISTS `tag` (
 -- 转存表中的数据 `tag`
 --
 
-INSERT INTO `tag` (`id`, `name`) VALUES
-(1, 'c++'),
-(2, 'java');
+INSERT INTO `tag` (`id`, `name`, `type`) VALUES
+(1, 'c++', ''),
+(2, 'java', '');
 
 -- --------------------------------------------------------
 
@@ -678,14 +676,15 @@ CREATE TABLE IF NOT EXISTS `user` (
   `password` varchar(32) COLLATE utf8_bin NOT NULL,
   `privilege` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=3 ;
 
 --
 -- 转存表中的数据 `user`
 --
 
 INSERT INTO `user` (`id`, `name`, `password`, `privilege`) VALUES
-(1, 'chen', '123', 0);
+(1, 'chen', '123', 0),
+(2, 'test', 'test', 0);
 
 -- --------------------------------------------------------
 
@@ -709,7 +708,6 @@ CREATE TABLE IF NOT EXISTS `video` (
 --
 
 INSERT INTO `video` (`id`, `literature_id`, `size`, `uri`, `video_name`) VALUES
-(8, 2, 26618600, '/uploadedVideo/p19k9okm0a14dp1btde6r103e16al7.MP4', 'Taylor Swift - Presenting Best New Artist.MP4'),
 (9, 2, 58897900, '/uploadedVideo/p19k9oof7j1h871o67v13raf1d0o7.mp4', 'Lady Gaga and Tony Bennett perform Cheek to Cheek.mp4');
 
 --
@@ -728,6 +726,7 @@ ALTER TABLE `cite`
 -- 限制表 `code`
 --
 ALTER TABLE `code`
+  ADD CONSTRAINT `code_ibfk_3` FOREIGN KEY (`from_literature_id`) REFERENCES `literature_meta` (`id`),
   ADD CONSTRAINT `code_ibfk_1` FOREIGN KEY (`creator_id`) REFERENCES `user` (`id`),
   ADD CONSTRAINT `code_ibfk_2` FOREIGN KEY (`updater_id`) REFERENCES `user` (`id`);
 
@@ -748,6 +747,7 @@ ALTER TABLE `comment`
 -- 限制表 `data_set`
 --
 ALTER TABLE `data_set`
+  ADD CONSTRAINT `data_set_ibfk_4` FOREIGN KEY (`from_literature_id`) REFERENCES `literature_meta` (`id`),
   ADD CONSTRAINT `data_set_ibfk_1` FOREIGN KEY (`creator_id`) REFERENCES `user` (`id`),
   ADD CONSTRAINT `data_set_ibfk_2` FOREIGN KEY (`data_set_type_id`) REFERENCES `type` (`id`),
   ADD CONSTRAINT `data_set_ibfk_3` FOREIGN KEY (`updater_id`) REFERENCES `user` (`id`);

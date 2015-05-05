@@ -408,17 +408,21 @@ class Comment(db.Model):
 class Attribute(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), nullable=False)
+    type = db.Column(db.Integer, nullable=False)
 
-    def __init__(self, name):
+    def __init__(self, name, type):
         self.name = name
+        self.type = type
 
 
 class Tag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), nullable=False)
+    type = db.Column(db.String(64), nullable=False)
 
-    def __init__(self, name):
+    def __init__(self, name, type):
         self.name = name
+        self.type = type
 
 
 class Tag_resource(db.Model):
