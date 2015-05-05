@@ -20,7 +20,9 @@ code_fields = {
     'file_name': fields.String,
     'link': fields.String,
     'publisher': fields.String,
-    'upload_history': fields.String
+    'upload_history': fields.String,
+    'from_literature_id': fields.Integer,
+    'from_literature_name': fields.String
 }
 
 
@@ -40,12 +42,15 @@ class CodeApi(Resource):
         self.parser.add_argument('link', type=unicode, location='json')
         self.parser.add_argument('publisher', type=unicode, location='json')
         self.parser.add_argument('upload_history', type=unicode, location='json')
+        self.parser.add_argument('from_literature_id', type=int, location='json')
         super(CodeApi, self).__init__()
 
     @marshal_with(code_fields)
     def get(self, code_id):
         code = Code.query.filter_by(id=code_id).first()
         if code:
+            if code.from_literature_id:
+                code.from_literature_name = code.from_literature.title
             if code.rank_num:
                 code.rank = float(code.total_rank) / code.rank_num
                 code.rank_str = '{:.2f} / {}'.format(code.rank, code.rank_num)
@@ -74,6 +79,8 @@ class CodeApi(Resource):
             for k, v in args.iteritems():
                 if v != None:
                     setattr(code, k, v)
+            if args['from_literature_id'] == 0:
+                code.from_literature = None
             db.session.commit()
             return code, 201
         else:

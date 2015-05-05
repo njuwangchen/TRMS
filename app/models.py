@@ -306,8 +306,11 @@ class Data_set(db.Model):
 
     upload_history = db.Column(db.Text)
 
+    from_literature_id = db.Column(db.Integer, db.ForeignKey('literature_meta.id'))
+    from_literature = db.relationship('Literature_meta', backref=db.backref('data_sets_post', lazy='dynamic'))
+
     def __init__(self, title, creator_id, create_time, data_set_type_id, updater_id=None, update_time=None,
-                 description='', size=0, uri='', total_rank=0, rank_num=0, file_name='', link='', publisher='', upload_history=''):
+                 description='', size=0, uri='', total_rank=0, rank_num=0, file_name='', link='', publisher='', upload_history='', from_literature_id=None):
         self.title = title
         self.creator_id = creator_id
         self.create_time = create_time
@@ -323,6 +326,7 @@ class Data_set(db.Model):
         self.link = link
         self.publisher = publisher
         self.upload_history = upload_history
+        self.from_literature_id = from_literature_id
 
 
 class Code(db.Model):
@@ -353,8 +357,11 @@ class Code(db.Model):
 
     upload_history = db.Column(db.Text)
 
+    from_literature_id = db.Column(db.Integer, db.ForeignKey('literature_meta.id'))
+    from_literature = db.relationship('Literature_meta', backref=db.backref('codes_post', lazy='dynamic'))
+
     def __init__(self, title, creator_id, create_time, updater_id=None, update_time=None, description='', size=0,
-                 uri='', language='', total_rank=0, rank_num=0, file_name='', link='', publisher='', upload_history=''):
+                 uri='', language='', total_rank=0, rank_num=0, file_name='', link='', publisher='', upload_history='', from_literature_id=None):
         self.title = title
         self.creator_id = creator_id
         self.create_time = create_time
@@ -370,6 +377,7 @@ class Code(db.Model):
         self.link = link
         self.publisher = publisher
         self.upload_history = upload_history
+        self.from_literature_id = from_literature_id
 
 
 class Comment(db.Model):
@@ -468,11 +476,13 @@ class Personalized(db.Model):
     user = db.relationship('User', backref=db.backref('personals', lazy='dynamic'))
 
     uri = db.Column(db.String(256), nullable=False)
+    fileName = db.Column(db.String(256))
 
-    def __init__(self, literature_id, user_id, uri):
+    def __init__(self, literature_id, user_id, uri, fileName=''):
         self.literature_id = literature_id
         self.user_id  = user_id
         self.uri = uri
+        self.fileName = fileName
 
 class KB_Conference(db.Model):
     id = db.Column(db.Integer, primary_key=True)

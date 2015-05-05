@@ -22,7 +22,9 @@ data_set_fields={
     'file_name': fields.String,
     'link': fields.String,
     'publisher': fields.String,
-    'upload_history': fields.String
+    'upload_history': fields.String,
+    'from_literature_id': fields.Integer,
+    'from_literature_name': fields.String
 }
 
 class Data_setApi(Resource):
@@ -42,6 +44,7 @@ class Data_setApi(Resource):
         self.parser.add_argument('link', type=unicode, location='json')
         self.parser.add_argument('publisher', type=unicode, location='json')
         self.parser.add_argument('upload_history', type=unicode, location='json')
+        self.parser.add_argument('from_literature_id', type=int, location='json')
         super(Data_setApi, self).__init__()
 
     @marshal_with(data_set_fields)
@@ -49,6 +52,8 @@ class Data_setApi(Resource):
         data_set = Data_set.query.filter_by(id=data_set_id).first()
         if data_set:
             data_set.type_name = data_set.type.name
+            if data_set.from_literature_id:
+                data_set.from_literature_name = data_set.from_literature.title
             if data_set.rank_num:
                 data_set.rank = float(data_set.total_rank)/data_set.rank_num
                 data_set.rank_str = '{:.2f} / {}'.format(data_set.rank, data_set.rank_num)
@@ -77,6 +82,8 @@ class Data_setApi(Resource):
             for k,v in args.iteritems():
                 if v!= None:
                     setattr(data_set, k, v)
+            if args['from_literature_id'] == 0:
+                data_set.from_literature = None
             db.session.commit()
             return data_set, 201
         else:
