@@ -121,6 +121,30 @@ class LiteratureApi(Resource):
         else:
             abort(404, message='Literature_meta {} not found'.format(literature_id))
 
+    def delete(self, literature_id):
+        literature_meta = Literature_meta.query.get(literature_id)
+        if literature_meta:
+            personals = literature_meta.personals
+            ppts = literature_meta.Ppt
+            videos = literature_meta.Video
+            for personal in personals:
+                db.session.delete(personal)
+            for ppt in ppts:
+                db.session.delete(ppt)
+            for video in videos:
+                db.session.delete(video)
+            cite_set = literature_meta.cite_set
+            cited_set = literature_meta.cited_set
+            for cite in cite_set:
+                db.session.delete(cite)
+            for cited in cited_set:
+                db.session.delete(cited)
+            db.session.delete(literature_meta)
+            db.session.commit()
+            return "delete success!", 201
+        else:
+            abort(404)
+
 class LiteratureListApi(Resource):
 
     def __init__(self):
@@ -261,9 +285,9 @@ class LiteratureBatchApi(Resource):
         q = Literature_meta.query
         result = []
         for single in ids:
-            tmp = q.filter_by(id = single)
+            tmp = q.get(single)
             if tmp:
-                result.append(tmp.first())
+                result.append(tmp)
         for literature_meta in result:
             if literature_meta.rank_num:
                 literature_meta.rank = float(literature_meta.total_rank)/literature_meta.rank_num
@@ -331,42 +355,42 @@ class LiteratureExportBatch(Resource):
         args = self.parser.parse_args()
         resultList = ""
         for id in args['ids']:
-            literature = Literature_meta.query.filter_by(id=id).first()
+            literature = Literature_meta.query.get(id)
             result = ""
-            if getattr(literature,"literature_type_id")==1:#期刊
-                with open('exportJournal.csv','r') as csvfile:
-                    settingsReader = csv.reader(csvfile,delimiter = ',')
-                    for row in settingsReader:
-                        for each in row:
-                            if each == 'title':
-                                result += "\""+str(getattr(literature,each)) +"\". "
-                            elif each == 'publisher':
-                                result += str(getattr(literature,each))+" "
-                            elif each == 'issue':
-                                result += str(getattr(literature,each))+" "
-                            elif each =='year':
-                                result += "("+str(getattr(literature,each))+"): "
-                            elif each == 'pages':
-                                result += str(getattr(literature,each))+"."
-                            else:
-                                result += str(getattr(literature,each)) +". "
+            if literature:
+                if getattr(literature,"literature_type_id")==1:#期刊
+                    with open('exportJournal.csv','r') as csvfile:
+                        settingsReader = csv.reader(csvfile,delimiter = ',')
+                        for row in settingsReader:
+                            for each in row:
+                                if each == 'title':
+                                    result += "\""+str(getattr(literature,each)) +"\". "
+                                elif each == 'publisher':
+                                    result += str(getattr(literature,each))+" "
+                                elif each == 'issue':
+                                    result += str(getattr(literature,each))+" "
+                                elif each =='year':
+                                    result += "("+str(getattr(literature,each))+"): "
+                                elif each == 'pages':
+                                    result += str(getattr(literature,each))+"."
+                                else:
+                                    result += str(getattr(literature,each)) +". "
 
-            elif getattr(literature,"literature_type_id")==2:#会议
-                with open('exportConf.csv','r') as csvfile:
-                    settingsReader = csv.reader(csvfile,delimiter = ',')
-                    for row in settingsReader:
-                        for each in row:
-                            if each =='title':
-                                result += "\""+str(getattr(literature,each))+"\". "
-                            elif each =='publisher':
-                                result += str(getattr(literature,each))+". Ed. "
-                            elif each =='location':
-                                result += str(getattr(literature,each))+": "
-                            elif each =='press':
-                                result += str(getattr(literature,each))+", "
-                            else:
-                                result += str(getattr(literature,each)) +". "
-
+                elif getattr(literature,"literature_type_id")==2:#会议
+                    with open('exportConf.csv','r') as csvfile:
+                        settingsReader = csv.reader(csvfile,delimiter = ',')
+                        for row in settingsReader:
+                            for each in row:
+                                if each =='title':
+                                    result += "\""+str(getattr(literature,each))+"\". "
+                                elif each =='publisher':
+                                    result += str(getattr(literature,each))+". Ed. "
+                                elif each =='location':
+                                    result += str(getattr(literature,each))+": "
+                                elif each =='press':
+                                    result += str(getattr(literature,each))+", "
+                                else:
+                                    result += str(getattr(literature,each)) +". "
             resultList+=result+"\n"
         return resultList,201
 
