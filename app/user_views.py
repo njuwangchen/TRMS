@@ -2,6 +2,7 @@ __author__ = 'ClarkWong'
 
 from app import db, api
 from flask.ext.restful import reqparse, abort, Resource, fields, marshal_with, marshal
+from flask import session
 from models import User
 
 

@@ -74,5 +74,29 @@ class CommentSettingListApi(Resource):
         else:
             return "failed"
 
+
+class RefTypeSettingListApi(Resource):
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('newSetting', type=dict, location='json')
+        super(RefTypeSettingListApi,self).__init__()
+
+    def get(self):
+        q = Attribute.query.filter_by(type=3)
+        return [marshal(attribute,attribute_fields) for attribute in q]
+
+    def post(self):
+        args = self.parser.parse_args()
+        configData = args['newSetting']
+        stream = file("settings.yaml", 'w')
+
+        yaml.dump(configData,stream)
+        stream.close()
+        if configData:
+            return "success"
+        else:
+            return "failed"
+
 api.add_resource(SettingApi, '/api/v1/settings', endpoint='settings')
 api.add_resource(CommentSettingListApi, '/api/v1/commentSettings', endpoint='commentSettings')
+api.add_resource(RefTypeSettingListApi, '/api/v1/refTypeSettings', endpoint='refsettings')

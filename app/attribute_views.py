@@ -79,7 +79,7 @@ class AttributeQuery(Resource):
         self.parser = reqparse.RequestParser()
         self.parser.add_argument('name',self,type=unicode,location="json")
         self.parser.add_argument('type',self,type=int,location="json")
-        super(AttributeListApi,self).__init__()
+        super(AttributeQuery,self).__init__()
         
     def post(self):
         args = self.parser.parse_args()

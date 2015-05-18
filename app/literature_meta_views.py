@@ -441,6 +441,13 @@ class LiteratureFuzzySearchApi(Resource):
         q = Literature_meta.query
         literatures = []
 
+        if args['year_begin'] and args['year_over']:
+            if args['year_begin']==args['year_over']:
+                q = q.filter_by(published_year=args['year_begin'])
+            else:
+                q = q.filter(Literature_meta.published_year > args['year_begin'],Literature_meta.published_year < args
+                         ['year_over']);
+
         for attr, value in args.items():
             if value and attr!='title' and attr!='author' and attr!='tags' and attr!='year_begin' and attr!='year_over':
                 q = q.filter(getattr(Literature_meta, attr).like("%%%s%%" % value))
@@ -476,14 +483,6 @@ class LiteratureFuzzySearchApi(Resource):
                     if fuzz.partial_ratio(args['author'],literature.author)<60:
                         resultList.remove(literature)
 
-        # for i in range(0,len(resultList)):
-        #     if args['year_begin'] and args['year_over']:
-        #         if args['year_begin']==args['year_over']:
-        #             if  resultList[i].published_year!=args['year_over']:
-        #                 resultList.pop(i)
-        #         elif args['year_begin']<args['year_over']:
-        #             if resultList[i].published_year<args['year_begin'] or result.published_year>args['year_over']:
-        #                 resultList.pop(i)
 
         q = resultList
 

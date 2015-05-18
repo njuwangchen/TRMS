@@ -8,14 +8,37 @@ api = Api(app)
 
 tag_fields = {
     'id': fields.Integer,
-    'name': fields.String
+    'name': fields.String,
+    'type':fields.String
 }
+
+
+class TagApi(Resource):
+
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('id', type=int, location='json')
+        self.parser.add_argument('name', type=unicode, location='json')
+        self.parser.add_argument('type', type=unicode, location='json')
+        super(TagApi,self).__init__()
+
+    @marshal_with(tag_fields)
+    def put(self,tag_id):
+        args = self.parser.parse_args()
+        tag = Tag.query.filter_by(id = tag_id).first()
+        setattr(tag,'type',args['type'])
+        setattr(tag,'name',args['name'])
+        db.session.commit()
+
+        return tag,201
 
 class TagListApi(Resource):
 
     def __init__(self):
         self.parser = reqparse.RequestParser()
         self.parser.add_argument('name', type=unicode, required=True, location='json')
+        self.parser.add_argument('type', type=unicode, required=True, location='json')
+
         super(TagListApi,self).__init__()
 
     def get(self):
@@ -43,3 +66,4 @@ class TagBatchApi(Resource):
 
 api.add_resource(TagBatchApi, '/api/v1/tags/batch', endpoint='tagBatch')
 api.add_resource(TagListApi, '/api/v1/tags', endpoint='tagList')
+api.add_resource(TagApi, '/api/v1/tags/<tag_id>', endpoint='tag')
