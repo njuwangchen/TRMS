@@ -2,9 +2,7 @@ __author__ = 'ClarkWong'
 
 from app import db, api
 from flask.ext.restful import reqparse, abort, Resource, fields, marshal_with, marshal
-from flask import session
-from models import User
-
+from models import User, Literature_meta, Data_set, Code, Report, Comment
 
 user_fields = {
     'id' : fields.Integer,
@@ -22,8 +20,14 @@ login_fields = {
     "privilege": fields.String
 }
 
-class UserApi(Resource):
+user_resource_fields = {
+    'id': fields.Integer,
+    'title': fields.String,
+    'updater_name': fields.String,
+    'update_time': fields.String
+}
 
+class UserApi(Resource):
     def __init__(self):
         self.parser = reqparse.RequestParser()
         self.parser.add_argument('name', type=unicode, location='json')
@@ -97,19 +101,6 @@ class UserLoginApi(Resource):
         self.parser.add_argument('password', type=unicode, required=True, location='json')
         super(UserLoginApi,self).__init__()
 
-    # @marshal_with(user_fields)
-    # def post(self):
-    #     args = self.parser.parse_args()
-    #     print args
-    #     q = User.query.filter_by(name=args['username']).first()
-    #     if q:
-    #         if q.password == args['password']:
-    #             return q
-    #         else:
-    #             return 'FALSE'
-    #     else:
-    #         return 'FALSE'
-
     @marshal_with(login_fields)
     def post(self):
         result = dict()
@@ -128,6 +119,72 @@ class UserLoginApi(Resource):
             result['privilege'] = user.privilege
         return result, 201
 
+class UserResourceApi(Resource):
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('user_id', type=int, required=True, location='json')
+        # 0 for query creating, 1 for query updating, 2 for query commenting
+        self.parser.add_argument('query_type', type=int, required=True, location='json')
+        # 0 for literature, 1 for data_set, 2 for code, 3 for report
+        self.parser.add_argument('resource_type', type=int, required=True, location='json')
+
+    def post(self):
+        args = self.parser.parse_args()
+        user = User.query.get(args['user_id'])
+        if user:
+            if args['query_type'] == 0:
+                if args['resource_type'] == 0:
+                    result = user.literatures_create.order_by(Literature_meta.id.desc()).all()
+                if args['resource_type'] == 1:
+                    result = user.data_sets_create.order_by(Data_set.id.desc()).all()
+                if args['resource_type'] == 2:
+                    result = user.codes_create.order_by(Code.id.desc()).all()
+                if args['resource_type'] == 3:
+                    result = user.reports_create.order_by(Report.id.desc()).all()
+            if args['query_type'] == 1:
+                if args['resource_type'] == 0:
+                    result = user.literatures_update.order_by(Literature_meta.update_time.desc()).all()
+                if args['resource_type'] == 1:
+                    result = user.data_sets_update.order_by(Data_set.update_time.desc()).all()
+                if args['resource_type'] == 2:
+                    result = user.codes_update.order_by(Code.update_time.desc()).all()
+                if args['resource_type'] == 3:
+                    result = user.reports_update.order_by(Report.update_time.desc()).all()
+            if args['query_type'] == 2:
+                if args['resource_type'] == 0:
+                    comments = user.comments.filter_by(type=1).order_by(Comment.id.desc()).all()
+                    result = set()
+                    for comment in comments:
+                        literature = Literature_meta.query.get(comment.resource_id)
+                        if literature:
+                            result.add(literature)
+                if args['resource_type'] == 1:
+                    comments = user.comments.filter_by(type=2).order_by(Comment.id.desc()).all()
+                    result = set()
+                    for comment in comments:
+                        data_set = Data_set.query.get(comment.resource_id)
+                        if data_set:
+                            result.add(data_set)
+                if args['resource_type'] == 2:
+                    comments = user.comments.filter_by(type=3).order_by(Comment.id.desc()).all()
+                    result = set()
+                    for comment in comments:
+                        code = Code.query.get(comment.resource_id)
+                        if code:
+                            result.add(code)
+                if args['resource_type'] == 3:
+                    comments = user.comments.filter_by(type=4).order_by(Comment.id.desc()).all()
+                    result = set()
+                    for comment in comments:
+                        report = Report.query.get(comment.resource_id)
+                        if report:
+                            result.add(report)
+            for item in result:
+                if item and item.updater:
+                    item.updater_name = item.updater.name
+            return [marshal(data, user_resource_fields) for data in result], 201
+
 api.add_resource(UserListApi, '/api/v1/users', endpoint='userList')
 api.add_resource(UserApi, '/api/v1/users/<user_id>', endpoint='user')
 api.add_resource(UserLoginApi,'/api/v1/users/login', endpoint='userLogin')
+api.add_resource(UserResourceApi, '/api/v1/users/resources', endpoint='userResource')
