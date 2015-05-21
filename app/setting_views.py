@@ -8,6 +8,7 @@ from flask import jsonify
 import yaml
 from models import Type,Attribute
 from attribute_views import attribute_fields
+import os
 api = Api(app)
 
 
@@ -20,7 +21,9 @@ class SettingApi(Resource):
         super(SettingApi,self).__init__()
 
     def get(self):
-        stream = file("settings.yaml", 'r')
+        abspath = os.path.abspath('.')
+        abspath = os.path.join(abspath, 'settings.yaml')
+        stream = file(abspath, 'r')
         configData = yaml.load(stream)
         stream.close()
 
@@ -48,8 +51,9 @@ class SettingApi(Resource):
             type = Type(newType[u'name'],newType[u'type_id'])
             db.session.add(type)
             db.session.commit()
-
-        stream = file("settings.yaml", 'w')
+        abspath = os.path.abspath('.')
+        abspath = os.path.join(abspath, 'settings.yaml')
+        stream = file(abspath, 'w')
 
         # configData['exportFormat'] = {};
         # configData['exportFormat'][u'会议'] = "title. author. publisher."
