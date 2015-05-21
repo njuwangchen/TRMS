@@ -79,7 +79,9 @@ class CommentSettingListApi(Resource):
     def post(self):
         args = self.parser.parse_args()
         configData = args['newSetting']
-        stream = file("settings.yaml", 'w')
+        abspath = os.path.abspath('.')
+        abspath = os.path.join(abspath, 'settings.yaml')
+        stream = file(abspath, 'w')
 
         yaml.dump(configData,stream)
         stream.close()
@@ -102,7 +104,9 @@ class RefTypeSettingListApi(Resource):
     def post(self):
         args = self.parser.parse_args()
         configData = args['newSetting']
-        stream = file("settings.yaml", 'w')
+        abspath = os.path.abspath('.')
+        abspath = os.path.join(abspath, 'settings.yaml')
+        stream = file(abspath, 'w')
 
         yaml.dump(configData,stream)
         stream.close()
