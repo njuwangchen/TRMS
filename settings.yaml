@@ -1,12 +1,13 @@
-!!python/unicode 'commentFieldsIds': [9, 11]
-!!python/unicode 'refTypes': [!!python/unicode 'mention', !!python/unicode 'agree']
+!!python/unicode 'commentFieldsIds': [!!python/unicode '1', !!python/unicode '2']
+!!python/unicode 'exportFormat': {"\u4F1A\u8BAE": !!python/unicode 'title. author:
+    publisher. published_year,location', "\u4F60\u597D": !!python/unicode 'title',
+  "\u671F\u520A": !!python/unicode 'title. author, published_year, edition, press,
+    volume,issue.'}
+!!python/unicode 'refTypesIds': [!!python/unicode '32', !!python/unicode '34']
 !!python/unicode 'version': 1.2
-"\u4F1A\u8BAE": [!!python/unicode 'author', !!python/unicode 'abstract', !!python/unicode 'title',
-  !!python/unicode 'publisherCN', !!python/unicode 'key_words_CN', !!python/unicode 'location',
-  !!python/unicode 'institute', !!python/unicode 'instructor', !!python/unicode 'language']
+"\u4F1A\u8BAE": [!!python/unicode 'title', !!python/unicode 'author', !!python/unicode 'published_year',
+  !!python/unicode 'publisher', !!python/unicode 'location']
 "\u4F60\u597D": [!!python/unicode 'ISBN', !!python/unicode 'ISSN']
 "\u6211\u597D": [!!python/unicode 'title', !!python/unicode 'ISBN', !!python/unicode 'authorCN']
-"\u671F\u520A": [!!python/unicode 'ISBN', !!python/unicode 'author', !!python/unicode 'abstract',
-  !!python/unicode 'abstractCN', !!python/unicode 'title', !!python/unicode 'publisherCN',
-  !!python/unicode 'key_words', !!python/unicode 'key_words_CN', !!python/unicode 'location',
-  !!python/unicode 'institute', !!python/unicode 'instructor']
+"\u671F\u520A": [!!python/unicode 'title', !!python/unicode 'author', !!python/unicode 'volume',
+  !!python/unicode 'issue', !!python/unicode 'edition', !!python/unicode 'press']
