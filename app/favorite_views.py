@@ -12,6 +12,24 @@ favorite_fields = {
     'name': fields.String,
 }
 
+class favoriteApi(Resource):
+
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('user_id', type=int, location='json')
+        self.parser.add_argument('name', type=unicode, location='json')
+        super(favoriteApi, self).__init__()
+
+    def delete(self,favorite_id):
+        favorite = Favorite.query.filter_by(id=favorite_id).first()
+        if favorite:
+            db.session.delete(favorite)
+            db.session.commit()
+            return 201
+        else:
+            abort("not found",404)
+
+
 
 class favoriteListApi(Resource):
 
@@ -66,3 +84,4 @@ class favoriteQuery(Resource):
 
 api.add_resource(favoriteListApi, '/api/v1/favorites', endpoint='favoriteList')
 api.add_resource(favoriteQuery,'/api/v1/favorites/query', endpoint='favoriteQuery')
+api.add_resource(favoriteApi,'/api/v1/favorites/<favorite_id>',endpoint="favoriteApi")

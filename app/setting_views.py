@@ -31,6 +31,12 @@ class SettingApi(Resource):
                 setting_fields[k]=fields.List(fields.String)
             elif type(v) == type(0.1):
                 setting_fields[k]=fields.Float
+            elif type(v) == type(dict()):
+                inner_fields = {}
+                for in_k,in_v in v.iteritems():
+                    if type(in_v) == type(u" "):
+                        inner_fields[in_k] = fields.String
+                setting_fields[k] = fields.Nested(inner_fields)
 
         return marshal(configData,setting_fields),201
 
@@ -45,6 +51,10 @@ class SettingApi(Resource):
 
         stream = file("settings.yaml", 'w')
 
+        # configData['exportFormat'] = {};
+        # configData['exportFormat'][u'会议'] = "title. author. publisher."
+        # configData['exportFormat'][u'期刊'] = "title. author"
+        # configData['exportFormat'][u'你好'] = "title"
         yaml.dump(configData,stream)
         stream.close()
         if configData:

@@ -7,6 +7,7 @@ import csv
 import dateutil.parser
 from fuzzywuzzy import fuzz
 from type_views import type_fields
+import yaml,re
 
 api = Api(app)
 
@@ -306,43 +307,25 @@ class LiteratureExport(Resource):
     def post(self):
         args = self.parser.parse_args()
         literature = Literature_meta.query.filter_by(id=args['id']).first()
-        result = ""
 
-        if getattr(literature,"literature_type_id")==1:#期刊
-            with open('exportJournal.csv','r') as csvfile:
-                settingsReader = csv.reader(csvfile,delimiter = ',')
-                for row in settingsReader:
-                    for each in row:
-                        if each == 'title':
-                            result += "\""+str(getattr(literature,each)) +"\". "
-                        elif each == 'publisher':
-                            result += str(getattr(literature,each))+" "
-                        elif each == 'issue':
-                            result += str(getattr(literature,each))+" "
-                        elif each =='year':
-                            result += "("+str(getattr(literature,each))+"): "
-                        elif each == 'pages':
-                            result += str(getattr(literature,each))+"."
-                        else:
-                            result += str(getattr(literature,each)) +". "
+        stream = file("settings.yaml", 'r')
+        configData = yaml.load(stream)
+        stream.close()
 
-        elif getattr(literature,"literature_type_id")==2:#会议
-            with open('exportConf.csv','r') as csvfile:
-                settingsReader = csv.reader(csvfile,delimiter = ',')
-                for row in settingsReader:
-                    for each in row:
-                        if each =='title':
-                            result += "\""+str(getattr(literature,each))+"\". "
-                        elif each =='publisher':
-                            result += str(getattr(literature,each))+". Ed. "
-                        elif each =='location':
-                            result += str(getattr(literature,each))+": "
-                        elif each =='press':
-                            result += str(getattr(literature,each))+", "
-                        else:
-                            result += str(getattr(literature,each)) +". "
+        literature_types = Type.query.filter_by(type_id = 1)
+        for literature_type in literature_types:
+            if literature_type.id == literature.literature_type_id:
+                type_name = literature_type.name
 
-        return result,201
+        exportFormat = configData['exportFormat']
+        settingLine = exportFormat[unicode(type_name)]
+        matchedFields = re.findall(r"\w+",settingLine)
+        for field in matchedFields:
+            if getattr(literature,field):
+                settingLine = re.sub(field,unicode(getattr(literature,field)),settingLine)
+
+        return settingLine,201
+
 
 
 class LiteratureExportBatch(Resource):
@@ -356,42 +339,23 @@ class LiteratureExportBatch(Resource):
         resultList = ""
         for id in args['ids']:
             literature = Literature_meta.query.get(id)
-            result = ""
             if literature:
-                if getattr(literature,"literature_type_id")==1:#期刊
-                    with open('exportJournal.csv','r') as csvfile:
-                        settingsReader = csv.reader(csvfile,delimiter = ',')
-                        for row in settingsReader:
-                            for each in row:
-                                if each == 'title':
-                                    result += "\""+str(getattr(literature,each)) +"\". "
-                                elif each == 'publisher':
-                                    result += str(getattr(literature,each))+" "
-                                elif each == 'issue':
-                                    result += str(getattr(literature,each))+" "
-                                elif each =='year':
-                                    result += "("+str(getattr(literature,each))+"): "
-                                elif each == 'pages':
-                                    result += str(getattr(literature,each))+"."
-                                else:
-                                    result += str(getattr(literature,each)) +". "
+                stream = file("settings.yaml", 'r')
+                configData = yaml.load(stream)
+                stream.close()
 
-                elif getattr(literature,"literature_type_id")==2:#会议
-                    with open('exportConf.csv','r') as csvfile:
-                        settingsReader = csv.reader(csvfile,delimiter = ',')
-                        for row in settingsReader:
-                            for each in row:
-                                if each =='title':
-                                    result += "\""+str(getattr(literature,each))+"\". "
-                                elif each =='publisher':
-                                    result += str(getattr(literature,each))+". Ed. "
-                                elif each =='location':
-                                    result += str(getattr(literature,each))+": "
-                                elif each =='press':
-                                    result += str(getattr(literature,each))+", "
-                                else:
-                                    result += str(getattr(literature,each)) +". "
-            resultList+=result+"\n"
+                literature_types = Type.query.filter_by(type_id = 1)
+                for literature_type in literature_types:
+                    if literature_type.id == literature.literature_type_id:
+                        type_name = literature_type.name
+
+                exportFormat = configData['exportFormat']
+                settingLine = exportFormat[unicode(type_name)]
+                matchedFields = re.findall(r"\w+",settingLine)
+                for field in matchedFields:
+                    if getattr(literature,field):
+                        settingLine = re.sub(field,unicode(getattr(literature,field)),settingLine)
+            resultList+=settingLine+"\n"
         return resultList,201
 
 

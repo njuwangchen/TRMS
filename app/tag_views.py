@@ -32,14 +32,29 @@ class TagApi(Resource):
 
         return tag,201
 
+    def delete(self,tag_id):
+        tag = Tag.query.filter_by(id=tag_id).first()
+        if tag:
+            db.session.delete(tag)
+            db.session.commit();
+        else:
+            abort(404,"Tag not found");
+
 class TagListApi(Resource):
 
     def __init__(self):
         self.parser = reqparse.RequestParser()
         self.parser.add_argument('name', type=unicode, required=True, location='json')
         self.parser.add_argument('type', type=unicode, required=True, location='json')
-
         super(TagListApi,self).__init__()
+
+    @marshal_with(tag_fields)
+    def post(self):
+        args = self.parser.parse_args()
+        tag = Tag(name = args['name'],type = args['type']);
+        db.session.add(tag);
+        db.session.commit();
+        return tag,201
 
     def get(self):
         tagList = Tag.query.all()
