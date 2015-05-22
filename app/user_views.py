@@ -2,7 +2,8 @@ __author__ = 'ClarkWong'
 
 from app import db, api
 from flask.ext.restful import reqparse, abort, Resource, fields, marshal_with, marshal
-from models import User, Literature_meta, Data_set, Code, Report, Comment
+from models import User, Literature_meta, Data_set, Code, Report, Comment,Type
+import yaml,re
 
 user_fields = {
     'id' : fields.Integer,
@@ -184,7 +185,41 @@ class UserResourceApi(Resource):
                     item.updater_name = item.updater.name
             return [marshal(data, user_resource_fields) for data in result], 201
 
+class UserExportApi(Resource):
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+        super(UserExportApi,self).__init__()
+
+    def get(self,user_id):
+        comments = Comment.query.filter_by(commenter_id = user_id,type = 1)
+
+        resultList="";
+        stream = file("settings.yaml", 'r')
+        configData = yaml.load(stream)
+        stream.close()
+        for comment in comments:
+            resultList += "Literature:\n"
+            literature = Literature_meta.query.get(comment.resource_id)
+            if literature:
+
+                literature_types = Type.query.filter_by(type_id = 1)
+                for literature_type in literature_types:
+                    if literature_type.id == literature.literature_type_id:
+                        type_name = literature_type.name
+
+                exportFormat = configData['exportFormat']
+                settingLine = exportFormat[unicode(type_name)]
+                matchedFields = re.findall(r"\w+",settingLine)
+                for field in matchedFields:
+                    if getattr(literature,field):
+                        settingLine = re.sub(field,unicode(getattr(literature,field)),settingLine)
+            resultList+=settingLine+"\n"
+            resultList+="Comment:\n"+str(comment.comment_time)+"\t"+comment.content+"\n"
+
+        return resultList,201
+
 api.add_resource(UserListApi, '/api/v1/users', endpoint='userList')
 api.add_resource(UserApi, '/api/v1/users/<user_id>', endpoint='user')
 api.add_resource(UserLoginApi,'/api/v1/users/login', endpoint='userLogin')
 api.add_resource(UserResourceApi, '/api/v1/users/resources', endpoint='userResource')
+api.add_resource(UserExportApi,"/api/v1/users/export/<user_id>",endpoint = "userExport")
