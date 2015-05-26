@@ -197,11 +197,14 @@ class UserExportApi(Resource):
         stream = file("settings.yaml", 'r')
         configData = yaml.load(stream)
         stream.close()
-        for comment in comments:
-            resultList += "Literature:\n"
-            literature = Literature_meta.query.get(comment.resource_id)
-            if literature:
 
+        literatureIds = [comment.resource_id for comment in comments]
+        literatureIds = set(literatureIds)
+
+        for literatureId in literatureIds:
+            resultList += "Literature:\n"
+            literature = Literature_meta.query.get(literatureId)
+            if literature:
                 literature_types = Type.query.filter_by(type_id = 1)
                 for literature_type in literature_types:
                     if literature_type.id == literature.literature_type_id:
@@ -214,7 +217,31 @@ class UserExportApi(Resource):
                     if getattr(literature,field):
                         settingLine = re.sub(field,unicode(getattr(literature,field)),settingLine)
             resultList+=settingLine+"\n"
-            resultList+="Comment:\n"+str(comment.comment_time)+"\t"+comment.content+"\n"
+
+            for comment in comments:
+                resultList+="Comment:\n"+str(comment.comment_time)+"\t"+comment.content+"\n"
+
+            resultList+="\n"
+
+
+        # for comment in comments:
+        #     resultList += "Literature:\n"
+        #     literature = Literature_meta.query.get(comment.resource_id)
+        #     if literature:
+        #
+        #         literature_types = Type.query.filter_by(type_id = 1)
+        #         for literature_type in literature_types:
+        #             if literature_type.id == literature.literature_type_id:
+        #                 type_name = literature_type.name
+        #
+        #         exportFormat = configData['exportFormat']
+        #         settingLine = exportFormat[unicode(type_name)]
+        #         matchedFields = re.findall(r"\w+",settingLine)
+        #         for field in matchedFields:
+        #             if getattr(literature,field):
+        #                 settingLine = re.sub(field,unicode(getattr(literature,field)),settingLine)
+        #     resultList+=settingLine+"\n"
+        #     resultList+="Comment:\n"+str(comment.comment_time)+"\t"+comment.content+"\n"
 
         return resultList,201
 

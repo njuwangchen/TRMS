@@ -13,7 +13,29 @@ favorite_resource_fields = {
     'favorite_id': fields.Integer
 }
 
-class favorite_resourceApi(Resource):
+class favorite_resourceDeleteApi(Resource):
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('resource_id', type=int, required=True, location='json')
+        self.parser.add_argument('type', type=int, required=True, location='json')
+        self.parser.add_argument('favorite_id', type=int, required=True, location='json')
+        super(favorite_resourceDeleteApi, self).__init__()
+
+
+    def post(self):
+        args = self.parser.parse_args()
+        Fav_res = Favorite_resource.query.filter_by(resource_id=args['resource_id'],
+                                                 type=args['type'],
+                                                 favorite_id=args['favorite_id']).first()
+        db.session.delete(Fav_res)
+        db.session.commit()
+
+        return "success",201
+
+api.add_resource(favorite_resourceDeleteApi, '/api/v1/favorite_resources/delete', endpoint='favorite_resource_delete')
+
+
+class favorite_resourceListApi(Resource):
 
     def __init__(self):
         self.parser = reqparse.RequestParser()
@@ -21,7 +43,7 @@ class favorite_resourceApi(Resource):
         self.parser.add_argument('type', type=int, required=True, location='json')
         self.parser.add_argument('favorite_id', type=int, required=True, location='json')
         self.parser.add_argument('favorite_time', required=True, location='json')
-        super(favorite_resourceApi, self).__init__()
+        super(favorite_resourceListApi, self).__init__()
 
     # add a new favorite_resource
     # code finished
@@ -37,7 +59,7 @@ class favorite_resourceApi(Resource):
         db.session.commit()
         return favorite_resource, 201
 
-api.add_resource(favorite_resourceApi, '/api/v1/favorite_resources', endpoint='favorite_resource')
+api.add_resource(favorite_resourceListApi, '/api/v1/favorite_resources', endpoint='favorite_resource')
 
 class favorite_resourceQuery(Resource):
     def __init__(self):
@@ -59,6 +81,10 @@ class favorite_resourceQuery(Resource):
                             qList.append(innerq)
                 else:
                     q = q.filter(getattr(Favorite_resource, k) == v)
+
+        if len(qList)==0:
+            return [marshal(favorite_resource,favorite_resource_fields) for favorite_resource in q.all()]
+
         type_list = [marshal(favorite_resource,favorite_resource_fields) for favorite_resource in q.all()]
         qList = [marshal(favorite_resource,favorite_resource_fields) for favorite_resource in qList]
         result = [];
