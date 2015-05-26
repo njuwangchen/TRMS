@@ -6,10 +6,10 @@ from models import User, Literature_meta, Data_set, Code, Report, Comment,Type
 import yaml,re
 
 user_fields = {
-    'id' : fields.Integer,
-    'name' : fields.String,
-    'password' : fields.String,
-    'privilege' : fields.Integer,
+    'id': fields.Integer,
+    'name': fields.String,
+    'password': fields.String,
+    'privilege': fields.Integer,
 }
 
 login_fields = {
@@ -27,6 +27,7 @@ user_resource_fields = {
     'updater_name': fields.String,
     'update_time': fields.String
 }
+
 
 class UserApi(Resource):
     def __init__(self):
@@ -50,7 +51,7 @@ class UserApi(Resource):
         if user:
             db.session.delete(user)
             db.session.commit()
-            return { 'message' : 'Delete User {} succeed'.format(user_id)}, 201
+            return {'message': 'Delete User {} succeed'.format(user_id)}, 201
         else:
             abort(404, message='User {} not found'.format(user_id))
 
@@ -59,8 +60,8 @@ class UserApi(Resource):
         user = User.query.filter_by(id=user_id).first()
         if user:
             args = self.parser.parse_args()
-            for k,v in args.iteritems():
-                if v!= None:
+            for k, v in args.iteritems():
+                if v != None:
                     setattr(user, k, v)
             db.session.commit()
             return user, 201
@@ -69,7 +70,6 @@ class UserApi(Resource):
 
 
 class UserListApi(Resource):
-
     def __init__(self):
         self.parser = reqparse.RequestParser()
         self.parser.add_argument('name', type=unicode, required=True, location='json')
@@ -95,12 +95,13 @@ class UserListApi(Resource):
         db.session.commit()
         return user, 201
 
+
 class UserLoginApi(Resource):
     def __init__(self):
         self.parser = reqparse.RequestParser()
         self.parser.add_argument('username', type=unicode, required=True, location='json')
         self.parser.add_argument('password', type=unicode, required=True, location='json')
-        super(UserLoginApi,self).__init__()
+        super(UserLoginApi, self).__init__()
 
     @marshal_with(login_fields)
     def post(self):
@@ -119,6 +120,7 @@ class UserLoginApi(Resource):
             result['name'] = user.name
             result['privilege'] = user.privilege
         return result, 201
+
 
 class UserResourceApi(Resource):
     def __init__(self):
@@ -185,6 +187,38 @@ class UserResourceApi(Resource):
                     item.updater_name = item.updater.name
             return [marshal(data, user_resource_fields) for data in result], 201
 
+
+class RecentResourceApi(Resource):
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('query_type', type=int, required=True, location='json')
+        self.parser.add_argument('resource_type', type=int, required=True, location='json')
+
+    def post(self):
+        args = self.parser.parse_args()
+        if args['query_type'] == 0:
+            if args['resource_type'] == 0:
+                result = Literature_meta.query.order_by(Literature_meta.id.desc()).limit(3)
+            if args['resource_type'] == 1:
+                result = Data_set.query.order_by(Data_set.id.desc()).limit(3)
+            if args['resource_type'] == 2:
+                result = Code.query.order_by(Code.id.desc()).limit(3)
+            if args['resource_type'] == 3:
+                result = Report.query.order_by(Report.id.desc()).limit(3)
+        if args['query_type'] == 1:
+            if args['resource_type'] == 0:
+                result = Literature_meta.query.order_by(Literature_meta.update_time.desc()).limit(3)
+            if args['resource_type'] == 1:
+                result = Data_set.query.order_by(Data_set.update_time.desc()).limit(3)
+            if args['resource_type'] == 2:
+                result = Code.query.order_by(Code.update_time.desc()).limit(3)
+            if args['resource_type'] == 3:
+                result = Report.query.order_by(Report.update_time.desc()).limit(3)
+        for item in result:
+                if item and item.updater:
+                    item.updater_name = item.updater.name
+        return [marshal(data, user_resource_fields) for data in result], 201
+
 class UserExportApi(Resource):
     def __init__(self):
         self.parser = reqparse.RequestParser()
@@ -247,6 +281,7 @@ class UserExportApi(Resource):
 
 api.add_resource(UserListApi, '/api/v1/users', endpoint='userList')
 api.add_resource(UserApi, '/api/v1/users/<user_id>', endpoint='user')
-api.add_resource(UserLoginApi,'/api/v1/users/login', endpoint='userLogin')
+api.add_resource(UserLoginApi, '/api/v1/users/login', endpoint='userLogin')
 api.add_resource(UserResourceApi, '/api/v1/users/resources', endpoint='userResource')
+api.add_resource(RecentResourceApi, '/api/v1/users/recent', endpoint='recentResource')
 api.add_resource(UserExportApi,"/api/v1/users/export/<user_id>",endpoint = "userExport")
