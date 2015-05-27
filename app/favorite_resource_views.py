@@ -67,6 +67,7 @@ class favorite_resourceQuery(Resource):
         self.parser.add_argument('resource_id', type=int, location='json')
         self.parser.add_argument('type', type=int,location='json')
         self.parser.add_argument('favorites', type=list, location='json')
+        self.parser.add_argument('user_id', type=int, location='json')
         super(favorite_resourceQuery,self).__init__()
 
     def post(self):
@@ -97,5 +98,18 @@ class favorite_resourceQuery(Resource):
 
         return res_id_list
 
+    @marshal_with(favorite_resource_fields)
+    def put(self):
+        args = self.parser.parse_args()
+        result = Favorite_resource.query.filter_by(resource_id=args['resource_id'], type=args['type']).all()
+        print(result)
+        if result:
+            for item in result:
+                print(item.favorite_dir)
+                if item.favorite_dir.user_id == args['user_id']:
+                    return item, 201;
+            abort(404)
+        else:
+            abort(404)
 
 api.add_resource(favorite_resourceQuery,'/api/v1/favorite_resource/query', endpoint='favorite_resourceQuery')
