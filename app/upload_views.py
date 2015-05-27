@@ -2,7 +2,7 @@ __author__ = 'ClarkWong'
 
 from app import db, app
 from flask import request, send_from_directory, url_for
-from models import Literature_meta, Video, Ppt, Code, Data_set, Report_attachment, Report_recording,Personalized
+from models import Literature_meta, Video, Ppt, Code, Data_set, Report_attachment, Report_recording,Personalized, Code_files, Data_set_files
 import os
 import json
 import werkzeug
@@ -124,8 +124,9 @@ def uploadCode():
     saved_code_url = url_for('get_uploadedCode', codename=codename)
 
     if chunk == (chunks - 1):
-        code = Code.query.filter_by(id=code_id).first()
-        code.uri = saved_code_url
+        size = request.content_length + chunks * 1024 * 1024
+        code_data = Code_files(code_id, size=size, uri=saved_code_url)
+        db.session.add(code_data)
         db.session.commit()
     return json.dumps(saved_code_url)
 
@@ -153,8 +154,9 @@ def uploadDataset():
     saved_data_set_url = url_for('get_uploadedDataset', data_set_name=data_set_name)
 
     if chunk == (chunks - 1):
-        data_set = Data_set.query.filter_by(id=data_set_id).first()
-        data_set.uri = saved_data_set_url
+        size = request.content_length + chunks * 1024 * 1024
+        data_set_data = Data_set_files(data_set_id, size=size, uri=saved_data_set_url)
+        db.session.add(data_set_data)
         db.session.commit()
     return json.dumps(saved_data_set_url)
 

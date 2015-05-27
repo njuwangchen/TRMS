@@ -328,6 +328,22 @@ class Data_set(db.Model):
         self.upload_history = upload_history
         self.from_literature_id = from_literature_id
 
+class Data_set_files(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+
+    data_set_id = db.Column(db.Integer, db.ForeignKey('data_set.id'))
+    data_set = db.relationship('Data_set', backref=db.backref('Data_set_files', lazy='dynamic'))
+
+    size = db.Column(db.Float)
+    uri = db.Column(db.String(256))
+
+    file_name = db.Column(db.String(256))
+
+    def __init__(self, data_set_id, size=0, uri='', file_name=''):
+        self.data_set_id = data_set_id
+        self.size = size
+        self.uri = uri
+        self.file_name = file_name
 
 class Code(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -379,6 +395,22 @@ class Code(db.Model):
         self.upload_history = upload_history
         self.from_literature_id = from_literature_id
 
+class Code_files(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+
+    code_id = db.Column(db.Integer, db.ForeignKey('code.id'))
+    code = db.relationship('Code', backref=db.backref('Code_files', lazy='dynamic'))
+
+    size = db.Column(db.Float)
+    uri = db.Column(db.String(256))
+
+    file_name = db.Column(db.String(256))
+
+    def __init__(self, code_id, size=0, uri='', file_name=''):
+        self.code_id = code_id
+        self.size = size
+        self.uri = uri
+        self.file_name = file_name
 
 class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
