@@ -22,8 +22,11 @@ class favoriteApi(Resource):
 
     def delete(self,favorite_id):
         favorite = Favorite.query.filter_by(id=favorite_id).first()
+        fav_res = Favorite_resource.query.filter_by(favorite_id=favorite_id).all()
         if favorite:
             db.session.delete(favorite)
+            for favr in fav_res:
+                db.session.delete(favr)
             db.session.commit()
             return 201
         else:
