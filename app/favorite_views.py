@@ -32,6 +32,14 @@ class favoriteApi(Resource):
         else:
             abort("not found",404)
 
+    @marshal_with(favorite_fields)
+    def put(self,favorite_id):
+        args = self.parser.parse_args()
+        favorite = Favorite.query.filter_by(id=favorite_id).first()
+        favorite.name = args['name']
+        db.session.commit()
+        return favorite,201
+
 
 
 class favoriteListApi(Resource):
