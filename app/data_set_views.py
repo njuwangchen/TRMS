@@ -66,6 +66,9 @@ class Data_setApi(Resource):
     def delete(self, data_set_id):
         data_set = Data_set.query.filter_by(id=data_set_id).first()
         if data_set:
+            data_set_files = data_set.Data_set_files
+            for data_set_file in data_set_files:
+                db.session.delete(data_set_file)
             db.session.delete(data_set)
             db.session.commit()
             return { 'message' : 'Delete Data_set {} succeed'.format(data_set_id)}, 201

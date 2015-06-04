@@ -4,10 +4,16 @@
   "\u671F\u520A": !!python/unicode 'title. author, published_year, edition, press,
     volume,issue.'}
 !!python/unicode 'refTypesIds': [!!python/unicode '32', !!python/unicode '34']
+!!python/unicode 'test': []
+!!python/unicode 'test1': []
+!!python/unicode 'test2': []
 !!python/unicode 'version': 1.2
-"\u4F1A\u8BAE": [!!python/unicode 'title', !!python/unicode 'author', !!python/unicode 'published_year',
-  !!python/unicode 'publisher', !!python/unicode 'location']
+"\u4F1A\u8BAE": [!!python/unicode 'title', !!python/unicode 'abstract', !!python/unicode 'author',
+  !!python/unicode 'published_year', !!python/unicode 'publisher', !!python/unicode 'key_words',
+  !!python/unicode 'location', !!python/unicode 'editor', !!python/unicode 'publisher_abbreviation']
 "\u4F60\u597D": [!!python/unicode 'ISBN', !!python/unicode 'ISSN']
 "\u6211\u597D": [!!python/unicode 'title', !!python/unicode 'ISBN', !!python/unicode 'authorCN']
-"\u671F\u520A": [!!python/unicode 'title', !!python/unicode 'author', !!python/unicode 'volume',
-  !!python/unicode 'issue', !!python/unicode 'edition', !!python/unicode 'press']
+"\u671F\u520A": [!!python/unicode 'title', !!python/unicode 'abstract', !!python/unicode 'author',
+  !!python/unicode 'published_year', !!python/unicode 'publisher', !!python/unicode 'key_words',
+  !!python/unicode 'volume', !!python/unicode 'issue', !!python/unicode 'section',
+  !!python/unicode 'edition', !!python/unicode 'editor', !!python/unicode 'publisher_abbreviation']

@@ -63,6 +63,9 @@ class CodeApi(Resource):
     def delete(self, code_id):
         code = Code.query.filter_by(id=code_id).first()
         if code:
+            code_files = code.Code_files
+            for code_file in code_files:
+                db.session.delete(code_file)
             db.session.delete(code)
             db.session.commit()
             return {'message': 'Delete Code {} succeed'.format(code_id)}, 201

@@ -66,6 +66,21 @@ class ReportApi(Resource):
         else:
             abort(404, message='Report {} not found'.format(report_id))
 
+    def delete(self, report_id):
+        report = Report.query.filter_by(id=report_id).first()
+        if report:
+            attachments = report.attachments
+            recordings = report.recordings
+            for attachment in attachments:
+                db.session.delete(attachment)
+            for recording in recordings:
+                db.session.delete(recording)
+            db.session.delete(report)
+            db.session.commit()
+            return { 'message' : 'Delete Report {} succeed'.format(report_id)}, 201
+        else:
+            abort(404, message='Report {} not found'.format(report_id))
+
 class ReportListApi(Resource):
 
     def __init__(self):
