@@ -7,11 +7,13 @@
    - . env/bin/activate #打开虚拟环境
    - pip install -r requirement.txt #读取文件，从中安装本项目所有依赖的环境
 
+###2. 导入数据库文件
 
-###2. 运行：
+###3. 运行：
+   + //在虚拟环境打开的情况下
    + python run.py
 
-###3. API说明：
+###4. API说明（以用户操作为例，其余类似）：
    <table>
     <tbody>
         <tr>
